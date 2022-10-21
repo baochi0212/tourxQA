@@ -31,10 +31,9 @@ class IntentPOSModule(nn.Module):
         self.intent_head = nn.Linear(config.embedding_size, config.n_intent)
         self.pos_head = nn.Linear(config.embedding_size, config.n_pos)
 
-    def forward(self, x):
-        x = self.embedding(x)
-        print(x['last_hidden_state'].shape)
-        return self.intent_head(x['last_hidden_state'].mean(dim=1)), self.pos_head(x['last_hidden_state'])
+    def forward(self, input, mask):
+        x = self.embedding(input_ids=input, attention_mask=mask)
+        return nn.functional.relu(self.intent_head(x['last_hidden_state'].mean(dim=1))), nn.functional.relu(self.pos_head(x['last_hidden_state']))
 
 if __name__ == '__main__':
     dataset = IntentPOSDataset(raw_dir, MAX_LENGTH=30)
@@ -43,5 +42,5 @@ if __name__ == '__main__':
     net = IntentPOSModule(config)
     sample = next(iter(dataloader))
     # print("sample: ", sample[0]['input_ids'].shape, sample[0]['attention_mask'].shape)
-    print("test output: ", net(sample[0])[0].shape, net(sample[0])[1].shape, sample[1].shape, sample[2].shape)
+    print("test output: ", net(sample[0], sample[1])[0].shape, net(sample[0], sample[1])[1].shape, sample[1].shape, sample[2].shape)
 

@@ -3,7 +3,7 @@ from transformers import AutoTokenizer
 
 tokenizer = AutoTokenizer.from_pretrained("vinai/phobert-base")
 
-def preprocess_fn(text, max_length=10):
+def preprocess_fn(text, max_length=5):
     def join_fn(word):
         word = '_'.join([w for w in word.split(' ')])
         return word
@@ -12,5 +12,5 @@ def preprocess_fn(text, max_length=10):
     return text
 
 if __name__ == '__main__':
-    text = "Tôi có một khách sạn ven biển"
-    print("join", preprocess_fn(text), tokenizer.decode(preprocess_fn(text)['input_ids'].view(-1)))
+    text = "Tôi có một khách sạn ven biển a a a a a a a a a a a a a a a a a a a a a a a a a a a a a"
+    print("join", preprocess_fn(text))
