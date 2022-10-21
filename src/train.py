@@ -77,7 +77,6 @@ def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, va
 
             # Compute loss and accumulate the loss values
             loss_1 = loss_fn(intent_logits, b_intent_labels)
-            print("shape:", pos_logits.view(-1, pos_logits.shape[-1]).shape)
             loss_2 = loss_fn(pos_logits.view(-1, pos_logits.shape[-1]), b_pos_labels.view(-1))
             
             batch_loss_1 += loss_1.item()
