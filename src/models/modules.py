@@ -13,7 +13,7 @@ data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/ta/processed/PhoATIS'
 class CustomConfig:
-    def __init__(self, n_intent, n_pos, embedding_size=1024):
+    def __init__(self, n_intent, n_pos, embedding_size=768):
         self.embedding_size = embedding_size
         self.n_intent = n_intent
         self.n_pos = n_pos
@@ -33,15 +33,15 @@ class IntentPOSModule(nn.Module):
 
     def forward(self, x):
         x = self.embedding(x)
-        print(x)
-        # return self.intent_head(x['last']), self.pos_head()
+        print(x['last_hidden_state'].shape)
+        return self.intent_head(x['last_hidden_state'].mean(dim=1)), self.pos_head(x['last_hidden_state'])
 
 if __name__ == '__main__':
-    dataset = IntentPOSDataset(raw_dir)
+    dataset = IntentPOSDataset(raw_dir, MAX_LENGTH=30)
     dataloader = data.DataLoader(dataset, batch_size=32, shuffle=True)
     config = CustomConfig(n_pos=dataset.n_pos, n_intent=dataset.n_intent)
     net = IntentPOSModule(config)
     sample = next(iter(dataloader))
     # print("sample: ", sample[0]['input_ids'].shape, sample[0]['attention_mask'].shape)
-    print("test output: ", net(sample[0]).shape)
+    print("test output: ", net(sample[0])[0].shape, net(sample[0])[1].shape, sample[1].shape, sample[2].shape)
 
