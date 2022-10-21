@@ -176,6 +176,8 @@ def evaluate(model, val_dataloader):
   
 
         # Calculate the accuracy rate
+        print("INTENT preds", intent_preds.view(-1))
+        print("INTENT LABELS", b_intent_labels.view(-1))
         accuracy = (intent_preds == b_intent_labels.view(-1)).cpu().numpy().mean() * 100
         # print("intent accuracy: ", accuracy)
         val_accuracy_1.append(accuracy)
@@ -215,5 +217,5 @@ if __name__ == '__main__':
     net, optimizer, train_dataloader, val_dataloader = accelerator.prepare(
                             net, optimizer, train_dataloader, val_dataloader
                             )
-    train(net, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=val_dataloader, evaluation=True, overfit_batch=False)
-    # evaluate(net, val_dataloader)
+    # train(net, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=val_dataloader, evaluation=True, overfit_batch=False)
+    print(evaluate(net, val_dataloader))
