@@ -24,7 +24,6 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 def CE_loss_fn(pred, label):
     loss = nn.CrossEntropyLoss(reduction='none')(pred, label)
     loss = torch.where(label != 0, loss, torch.tensor([0.]).to(device))
-    print(loss)
     loss = loss.mean()
     return loss
 
@@ -164,7 +163,7 @@ def evaluate(model, val_dataloader):
             intent_logits, pos_logits = model(b_input_ids, b_attn_mask)
 
         # Compute loss
-        loss_1 = BCE_loss_fn(intent_logits, b_intent_labels)
+        loss_1 = nn.BCEWithLogitsLoss()(intent_logits, b_intent_labels)
         loss_2 = CE_loss_fn(pos_logits.view(-1, pos_logits.shape[-1]), b_pos_labels.view(-1))
 
         val_loss_1.append(loss_1.item())
@@ -213,5 +212,5 @@ if __name__ == '__main__':
     net, optimizer, train_dataloader, val_dataloader = accelerator.prepare(
                             net, optimizer, train_dataloader, val_dataloader
                             )
-    train(net, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=val_dataloader, evaluation=True, overfit_batch=False)
-    # evaluate(net, val_dataloader)
+    # train(net, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=val_dataloader, evaluation=True, overfit_batch=False)
+    evaluate(net, val_dataloader)
