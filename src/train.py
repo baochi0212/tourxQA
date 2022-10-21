@@ -51,7 +51,7 @@ def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, va
         t0_epoch, t0_batch = time.time(), time.time()
 
         # Reset tracking variables at the beginning of each epoch
-        total_loss, batch_loss, batch_counts = 0, 0, 0
+        total_loss_1, total_loss_2, batch_loss_1, batch_loss_2, batch_counts = 0, 0, 0, 0, 0
 
         # Put the model into the training mode
         model.train()
