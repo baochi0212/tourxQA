@@ -20,14 +20,15 @@ raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/ta/processed/PhoATIS'
 
 # Specify loss function
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 def BCE_loss_fn(pred, label):
     loss = nn.BCEWithLogitsLoss(reduction='none')(pred, label)
-    loss = torch.where(label != 0, loss, torch.tensor([0.]))
+    loss = torch.where(label != 0, loss, torch.tensor([0.]).to(device))
     loss = loss.mean(dim=[0, 1])
     return loss
 
 CE_loss_fn = nn.CrossEntropyLoss()
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
 def set_seed(seed_value=42):
     """Set seed for reproducibility.
     """
