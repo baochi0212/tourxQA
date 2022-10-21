@@ -52,10 +52,18 @@ class IntentPOSDataset(data.Dataset):
     def __len__(self):
         return len(self.data)
 if __name__ == '__main__':
-    dataset = IntentPOSDataset(raw_dir)
-    dataloader = data.DataLoader(dataset, batch_size=32, shuffle=True)
-    # print("test: ", dataset.intent_dict, dataset.pos_dict)
-    # print("sample: ", dataset[0][0].shape, dataset[0][1])
-    sample = next(iter(dataloader))
-    print("sample: ", sample[0].shape, sample[-1])
-    print("NUM: ", dataset.n_pos, dataset.pos_dict)
+    '''
+    -check the dict label carefully
+    -check the padding and truncation 
+    -check the masking
+    '''
+    dataset = IntentPOSDataset(raw_dir, mode='train')
+    dev_dataset = IntentPOSDataset(raw_dir, mode='test')
+    # dataloader = data.DataLoader(dataset, batch_size=32, shuffle=True)
+    # # print("test: ", dataset.intent_dict, dataset.pos_dict)
+    # # print("sample: ", dataset[0][0].shape, dataset[0][1])
+    # sample = next(iter(dataloader))
+    # print("sample: ", sample[0].shape, sample[-1])
+    print("NUM: ", dataset.n_intent, dataset.n_pos, dataset.intent_dict)
+    for i in range(len(dev_dataset)):
+        a = dataset[i]
