@@ -10,6 +10,7 @@ import torch
 import torch.nn as nn
 import torchvision
 from torch.utils import data
+from accelerate import Accelerator
 
 from transformers import AutoModel, AutoTokenizer, AdamW, get_linear_schedule_with_warmup
 from dataset.test_dataset import IntentPOSDataset
@@ -201,5 +202,8 @@ if __name__ == '__main__':
     scheduler = get_linear_schedule_with_warmup(optimizer,
                                                 num_warmup_steps=0, # Default value
                                                 num_training_steps=total_steps)
-    
+    accelerator = Accelerator()
+    net, optimizer, train_dataloader, val_dataloader = accelerator.prepare(
+                            net, optimizer, train_dataloader, val_dataloader
+                            )
     train(net, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=None, evaluation=False, overfit_batch=True)
