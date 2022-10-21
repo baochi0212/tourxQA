@@ -21,13 +21,12 @@ processed_dir = data_dir + '/ta/processed/PhoATIS'
 
 # Specify loss function
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-def BCE_loss_fn(pred, label):
-    loss = nn.BCEWithLogitsLoss(reduction='none')(pred, label)
+def CE_loss_fn(pred, label):
+    loss = nn.CrossEntropyLoss(reduction='none')(pred, label)
     loss = torch.where(label != 0, loss, torch.tensor([0.]).to(device))
-    loss = loss.mean(dim=[0, 1])
+    print(loss)
+    loss = loss.mean()
     return loss
-
-CE_loss_fn = nn.CrossEntropyLoss()
 
 def set_seed(seed_value=42):
     """Set seed for reproducibility.
@@ -84,7 +83,7 @@ def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, va
     
 
             # Compute loss and accumulate the loss values
-            loss_1 = BCE_loss_fn(intent_logits, b_intent_labels)
+            loss_1 = nn.BCEWithLogitsLoss()(intent_logits, b_intent_labels)
             loss_2 = CE_loss_fn(pos_logits.view(-1, pos_logits.shape[-1]), b_pos_labels.view(-1))
     
             batch_loss_1 += loss_1.item()
@@ -103,7 +102,7 @@ def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, va
 
             # Update parameters and the learning rate
             optimizer.step()
-            scheduler.step()
+            # scheduler.step()
             run.update(1)
 
 
@@ -203,7 +202,7 @@ if __name__ == '__main__':
     train_dataloader = data.DataLoader(train_dataset, batch_size=32, shuffle=True, drop_last=True)
     val_dataloader = data.DataLoader(val_dataset, batch_size=32, shuffle=True, drop_last=True)
     net = IntentPOSModule(config)
-    optimizer = AdamW(net.parameters(), lr=3e-4)
+    optimizer = AdamW(net.parameters(), lr=5e-4)
     epochs = 9
     total_steps = len(train_dataloader) * epochs
  
