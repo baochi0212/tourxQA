@@ -128,12 +128,12 @@ def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, va
         if evaluation == True:
             # After the completion of each training epoch, measure the model's performance
             # on our validation set.
-            val_loss_1, val_loss_2, val_accuracy = evaluate(model, val_dataloader)
+            val_loss_1, val_loss_2, val_accuracy_1, val_accuracy_2 = evaluate(model, val_dataloader)
 
             # Print performance over the entire training data
             time_elapsed = time.time() - t0_epoch
             
-            print(f"{epoch_i + 1:^7} | {'-':^7} | {avg_train_loss_1:^12.6f}, {avg_train_loss_2:^12.6f} | {val_loss_1:^10.6f}, {val_loss_2:^10.6f} | {val_accuracy:^9.2f} | {time_elapsed:^9.2f}")
+            print(f"{epoch_i + 1:^7} | {'-':^7} | {avg_train_loss_1:^12.6f}, {avg_train_loss_2:^12.6f} | {val_loss_1:^10.6f}, {val_loss_2:^10.6f} | {val_accuracy_1:^9.2f}, {val_accuracy_2:^9.2f} | {time_elapsed:^9.2f}")
             print("-"*70)
         print("\n")
     
@@ -149,7 +149,8 @@ def evaluate(model, val_dataloader):
     model.eval()
 
     # Tracking variables
-    val_accuracy = []
+    val_accuracy_1 = []
+    val_accuracy_2 = []
     val_loss_1 = []
     val_loss_2 = []
 
@@ -170,21 +171,23 @@ def evaluate(model, val_dataloader):
         val_loss_2.append(loss_2.item())
 
         # Get the predictions
-        intent_preds, pos_preds = intent_logits.view(-1) > 0,  torch.argmax(pos_logits, dim=-1).flatten()
+        intent_preds, pos_preds = intent_logits.view(-1) > 0,  torch.argmax(pos_logits, dim=-1).view(-1)
         # prob = nn.functional.softmax(intent_logits, dim=1)
   
 
         # Calculate the accuracy rate
         accuracy = (intent_preds == b_intent_labels.view(-1)).cpu().numpy().mean() * 100
         # print("intent accuracy: ", accuracy)
-        val_accuracy.append(accuracy)
+        val_accuracy_1.append(accuracy)
+        accuracy = (pos_preds == b_pos_labels.view(-1)).cpu().numpy().mean() * 100
+        val_accuracy_2.append(accuracy)
 
     # Compute the average accuracy and loss over the validation set.
     val_loss_1 = np.mean(val_loss_1)
     val_loss_2 = np.mean(val_loss_2)
-    val_accuracy = np.mean(val_accuracy)
-
-    return val_loss_1, val_loss_2, val_accuracy
+    val_accuracy_1 = np.mean(val_accuracy_1)
+    val_accuracy_2 = np.mean(val_accuracy_2)
+    return val_loss_1, val_loss_2, val_accuracy_1, val_accuracy_2
 
 if __name__ == '__main__':
     dataset = IntentPOSDataset(raw_dir, MAX_LENGTH=30)
