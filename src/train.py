@@ -163,7 +163,6 @@ def evaluate(model, val_dataloader):
         # Compute logits
         with torch.no_grad():
             intent_logits, pos_logits = model(b_input_ids, b_attn_mask)
-            print("SHAPE", intent_logits.shape, b_intent_labels.shape)
 
         # Compute loss
         loss_1 = BCE_loss_fn(intent_logits, b_intent_labels)
@@ -215,5 +214,5 @@ if __name__ == '__main__':
     net, optimizer, train_dataloader, val_dataloader = accelerator.prepare(
                             net, optimizer, train_dataloader, val_dataloader
                             )
-    # train(net, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=val_dataloader, evaluation=True, overfit_batch=False)
-    evaluate(net, val_dataloader)
+    train(net, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=val_dataloader, evaluation=True, overfit_batch=False)
+    # evaluate(net, val_dataloader)
