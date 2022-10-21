@@ -30,8 +30,8 @@ class IntentPOSDataset(data.Dataset):
         self.intent_dict = dict([(k.strip(), i) for i, k in enumerate(open(intent_path, 'r').readlines())])
         self.pos_dict = dict([(k.strip(), i) for i, k in enumerate(open(pos_path, 'r').readlines())])
         self.MAX_LENGTH = MAX_LENGTH
-        self.n_intent = len(self.intent_dict.keys()) - 1 #UNK
-        self.n_pos = len(self.pos_dict.keys()) - 2 #PAD UNK
+        self.n_intent = len(self.intent_dict.keys())#UNK
+        self.n_pos = len(self.pos_dict.keys())#PAD UNK
     def __getitem__(self, idx):
         '''
         pad and truncate tokens, pos_label and get the intent_label
@@ -57,4 +57,5 @@ if __name__ == '__main__':
     # print("test: ", dataset.intent_dict, dataset.pos_dict)
     # print("sample: ", dataset[0][0].shape, dataset[0][1])
     sample = next(iter(dataloader))
-    print("sample: ", sample[0].shape)
+    print("sample: ", sample[0].shape, sample[-1])
+    print("NUM: ", dataset.n_pos, dataset.pos_dict)
