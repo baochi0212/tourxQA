@@ -39,12 +39,14 @@ class IntentPOSDataset(data.Dataset):
         self.MAX_LENGTH = MAX_LENGTH
         self.n_intent = len(self.intent_dict.keys())#UNK
         self.n_pos = len(self.pos_dict.keys())#PAD UNK
+        self.n_intent = 16
+        self.n_pos = 142
     def __getitem__(self, idx):
         '''
         pad and truncate tokens, pos_label and get the intent_label
         '''
         tokens = preprocess_fn(self.data[idx], max_length=self.MAX_LENGTH)
-        intent_label = torch.tensor([1 if label in self.intent_label[idx].split("#") else 0 for label in self.intent_dict.keys()], dtype=torch.float)
+        intent_label = torch.tensor([1 if label in self.intent_label[idx].split("#") else 0 for label in range(self.n_intent)], dtype=torch.float)
         pos_label = torch.tensor([self.pos_dict[self.pos_label[idx].strip().split(' ')[i]] for i in range(len(self.pos_label[idx].strip().split(' ')))], dtype=torch.long)
         if 2 in tokens: #[SEP] not be truncated
             pos_label = torch.cat([torch.tensor([0]), pos_label, torch.tensor([0])], dim=-1) #cls and sep token will have pos-tag 0
@@ -65,12 +67,12 @@ if __name__ == '__main__':
     -check the masking
     '''
     dataset = IntentPOSDataset(raw_dir, mode='train')
-    dev_dataset = IntentPOSDataset(raw_dir, mode='test')
-    dataloader = data.DataLoader(dataset, batch_size=32, shuffle=True)
+    dev_dataset = IntentPOSDataset(raw_dir, mode='dev')
+    dataloader = data.DataLoader(dev_dataset, batch_size=32, shuffle=True)
     # # print("test: ", dataset.intent_dict, dataset.pos_dict)
     # # print("sample: ", dataset[0][0].shape, dataset[0][1])
     sample = next(iter(dataloader))
-    print("sample: ", sample[0].shape, sample[2].shape)
-    print("NUM: ", dataset.n_intent, dataset.n_pos, dataset.intent_dict)
-    for i in range(len(dev_dataset)):
-        a = dataset[i]
+    print("sample: ", sample[2].shape, sample[3].shape)
+    print("NUM: ", dataset.n_intent, dataset.n_pos)
+    # for i in range(len(dev_dataset)):
+    #     a = dataset[i]
