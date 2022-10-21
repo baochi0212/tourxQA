@@ -79,61 +79,60 @@ def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, va
             loss_1 = loss_fn(intent_logits, b_intent_labels)
             print("shape:", pos_logits.view(-1, pos_logits.shape[-1]).shape)
             loss_2 = loss_fn(pos_logits.view(-1, pos_logits.shape[-1]), b_pos_labels.view(-1))
-            print(loss_1, loss_2)
             
-    #         batch_loss_1 += loss_1.item()
-    #         batch_loss_2 += loss_2.item()
-    #         total_loss_1 += loss_1.item()
-    #         total_loss_2 += loss_2.item()
+            batch_loss_1 += loss_1.item()
+            batch_loss_2 += loss_2.item()
+            total_loss_1 += loss_1.item()
+            total_loss_2 += loss_2.item()
 
-    #         # Perform a backward pass to calculate gradients
-    #         (loss_1 + loss_2).backward()
-    #         '''
-    #         END!!!! (MODIFY THE VAL LOADER AS WELL, and maybe LOSS PRINTER)
-    #         '''
+            # Perform a backward pass to calculate gradients
+            (loss_1 + loss_2).backward()
+            '''
+            END!!!! (MODIFY THE VAL LOADER AS WELL, and maybe LOSS PRINTER)
+            '''
 
-    #         # Clip the norm of the gradients to 1.0 to prevent "exploding gradients"
-    #         # torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            # Clip the norm of the gradients to 1.0 to prevent "exploding gradients"
+            # torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
 
-    #         # Update parameters and the learning rate
-    #         optimizer.step()
-    #         scheduler.step()
-    #         run.update(1)
+            # Update parameters and the learning rate
+            optimizer.step()
+            scheduler.step()
+            run.update(1)
 
 
-    #         # Print the loss values and time elapsed for every 20 batches
-    #         if (step % 20 == 0 and step != 0) or (step == len(train_dataloader) - 1):
-    #             # Calculate time elapsed for 20 batches
-    #             time_elapsed = time.time() - t0_batch
+            # Print the loss values and time elapsed for every 20 batches
+            if (step % 20 == 0 and step != 0) or (step == len(train_dataloader) - 1):
+                # Calculate time elapsed for 20 batches
+                time_elapsed = time.time() - t0_batch
 
-    #             # Print training results
-    #             print(f"{epoch_i + 1:^7} | {step:^7} | {batch_loss_1 / batch_counts:^12.6f},{batch_loss_2 / batch_counts:^12.6f} | {'-':^10} | {'-':^9} | {time_elapsed:^9.2f}")
+                # Print training results
+                print(f"{epoch_i + 1:^7} | {step:^7} | {batch_loss_1 / batch_counts:^12.6f},{batch_loss_2 / batch_counts:^12.6f} | {'-':^10} | {'-':^9} | {time_elapsed:^9.2f}")
 
-    #             # Reset batch tracking variables
-    #             batch_loss_1, batch_loss_2, batch_counts = 0, 0, 0
-    #             t0_batch = time.time()
+                # Reset batch tracking variables
+                batch_loss_1, batch_loss_2, batch_counts = 0, 0, 0
+                t0_batch = time.time()
 
-    #     # Calculate the average loss over the entire training data
-    #     avg_train_loss_1 = total_loss_1/len(train_dataloader)
-    #     avg_train_loss_2 = total_loss_2/len(train_dataloader)
+        # Calculate the average loss over the entire training data
+        avg_train_loss_1 = total_loss_1/len(train_dataloader)
+        avg_train_loss_2 = total_loss_2/len(train_dataloader)
 
-    #     print("-"*70)
-    #     # =======================================
-    #     #               Evaluation
-    #     # =======================================
-    #     if evaluation == True:
-    #         # After the completion of each training epoch, measure the model's performance
-    #         # on our validation set.
-    #         val_loss, val_accuracy = evaluate(model, val_dataloader)
+        print("-"*70)
+        # =======================================
+        #               Evaluation
+        # =======================================
+        if evaluation == True:
+            # After the completion of each training epoch, measure the model's performance
+            # on our validation set.
+            val_loss, val_accuracy = evaluate(model, val_dataloader)
 
-    #         # Print performance over the entire training data
-    #         time_elapsed = time.time() - t0_epoch
+            # Print performance over the entire training data
+            time_elapsed = time.time() - t0_epoch
             
-    #         print(f"{epoch_i + 1:^7} | {'-':^7} | {avg_train_loss_1:^12.6f}, {avg_train_loss_2:^12.6f} | {val_loss:^10.6f} | {val_accuracy:^9.2f} | {time_elapsed:^9.2f}")
-    #         print("-"*70)
-    #     print("\n")
+            print(f"{epoch_i + 1:^7} | {'-':^7} | {avg_train_loss_1:^12.6f}, {avg_train_loss_2:^12.6f} | {val_loss:^10.6f} | {val_accuracy:^9.2f} | {time_elapsed:^9.2f}")
+            print("-"*70)
+        print("\n")
     
-    # print("Training complete!")
+    print("Training complete!")
 
 
 def evaluate(model, val_dataloader):
@@ -208,4 +207,4 @@ if __name__ == '__main__':
     net, optimizer, train_dataloader, val_dataloader = accelerator.prepare(
                             net, optimizer, train_dataloader, val_dataloader
                             )
-    train(net, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=None, evaluation=False, overfit_batch=False)
+    train(net, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=val_dataloader, evaluation=True, overfit_batch=False)
