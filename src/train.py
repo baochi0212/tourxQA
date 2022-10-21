@@ -81,67 +81,65 @@ def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, va
             # print(b_input_ids.shape, b_attn_mask.shape)
             # Perform a forward pass. This will return logits.
             intent_logits, pos_logits = model(b_input_ids, b_attn_mask)
-            print("???", intent_logits.shape, pos_logits.shape, b_intent_labels.shape, b_pos_labels.shape)
-            break
-        break
-
-    #         # Compute loss and accumulate the loss values
-    #         loss_1 = BCE_loss_fn(intent_logits, b_intent_labels)
-    #         loss_2 = CE_loss_fn(pos_logits.view(-1, pos_logits.shape[-1]), b_pos_labels.view(-1))
     
-    #         batch_loss_1 += loss_1.item()
-    #         batch_loss_2 += loss_2.item()
-    #         total_loss_1 += loss_1.item()
-    #         total_loss_2 += loss_2.item()
 
-    #         # Perform a backward pass to calculate gradients
-    #         (loss_1 + loss_2).backward()
-    #         '''
-    #         END!!!! (MODIFY THE VAL LOADER AS WELL, and maybe LOSS PRINTER)
-    #         '''
+            # Compute loss and accumulate the loss values
+            loss_1 = BCE_loss_fn(intent_logits, b_intent_labels)
+            loss_2 = CE_loss_fn(pos_logits.view(-1, pos_logits.shape[-1]), b_pos_labels.view(-1))
+    
+            batch_loss_1 += loss_1.item()
+            batch_loss_2 += loss_2.item()
+            total_loss_1 += loss_1.item()
+            total_loss_2 += loss_2.item()
 
-    #         # Clip the norm of the gradients to 1.0 to prevent "exploding gradients"
-    #         # torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            # Perform a backward pass to calculate gradients
+            (loss_1 + loss_2).backward()
+            '''
+            END!!!! (MODIFY THE VAL LOADER AS WELL, and maybe LOSS PRINTER)
+            '''
 
-    #         # Update parameters and the learning rate
-    #         optimizer.step()
-    #         scheduler.step()
-    #         run.update(1)
+            # Clip the norm of the gradients to 1.0 to prevent "exploding gradients"
+            # torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+
+            # Update parameters and the learning rate
+            optimizer.step()
+            scheduler.step()
+            run.update(1)
 
 
-    #         # Print the loss values and time elapsed for every 20 batches
-    #         if (step % 20 == 0 and step != 0) or (step == len(train_dataloader) - 1):
-    #             # Calculate time elapsed for 20 batches
-    #             time_elapsed = time.time() - t0_batch
+            # Print the loss values and time elapsed for every 20 batches
+            if (step % 20 == 0 and step != 0) or (step == len(train_dataloader) - 1):
+                # Calculate time elapsed for 20 batches
+                time_elapsed = time.time() - t0_batch
 
-    #             # Print training results
-    #             print(f"{epoch_i + 1:^7} | {step:^7} | {batch_loss_1 / batch_counts:^12.6f},{batch_loss_2 / batch_counts:^12.6f} | {'-':^10} | {'-':^9} | {time_elapsed:^9.2f}")
+                # Print training results
+                print(f"{epoch_i + 1:^7} | {step:^7} | {batch_loss_1 / batch_counts:^12.6f},{batch_loss_2 / batch_counts:^12.6f} | {'-':^10} | {'-':^9} | {time_elapsed:^9.2f}")
 
-    #             # Reset batch tracking variables
-    #             batch_loss_1, batch_loss_2, batch_counts = 0, 0, 0
-    #             t0_batch = time.time()
+                # Reset batch tracking variables
+                batch_loss_1, batch_loss_2, batch_counts = 0, 0, 0
+                t0_batch = time.time()
 
-    #     # Calculate the average loss over the entire training data
-    #     avg_train_loss_1 = total_loss_1/len(train_dataloader)
-    #     avg_train_loss_2 = total_loss_2/len(train_dataloader)
+        # Calculate the average loss over the entire training data
+        avg_train_loss_1 = total_loss_1/len(train_dataloader)
+        avg_train_loss_2 = total_loss_2/len(train_dataloader)
 
-    #     print("-"*70)
-    #     # =======================================
-    #     #               Evaluation
-    #     # =======================================
-    #     if evaluation == True:
-    #         # After the completion of each training epoch, measure the model's performance
-    #         # on our validation set.
-    #         val_loss, val_accuracy = evaluate(model, val_dataloader)
+        print("-"*70)
+        # =======================================
+        #               Evaluation
+        # =======================================
+        if evaluation == True:
+            # After the completion of each training epoch, measure the model's performance
+            # on our validation set.
+            val_loss_1, val_loss_2, val_accuracy = evaluate(model, val_dataloader)
 
-    #         # Print performance over the entire training data
-    #         time_elapsed = time.time() - t0_epoch
+            # Print performance over the entire training data
+            time_elapsed = time.time() - t0_epoch
             
-    #         print(f"{epoch_i + 1:^7} | {'-':^7} | {avg_train_loss_1:^12.6f}, {avg_train_loss_2:^12.6f} | {val_loss:^10.6f} | {val_accuracy:^9.2f} | {time_elapsed:^9.2f}")
-    #         print("-"*70)
-    #     print("\n")
+            print(f"{epoch_i + 1:^7} | {'-':^7} | {avg_train_loss_1:^12.6f}, {avg_train_loss_2:^12.6f} | {val_loss_1:^10.6f}, {val_loss_2:^10.6f} | {val_accuracy:^9.2f} | {time_elapsed:^9.2f}")
+            print("-"*70)
+        print("\n")
     
-    # print("Training complete!")
+    print("Training complete!")
 
 
 def evaluate(model, val_dataloader):
@@ -181,7 +179,7 @@ def evaluate(model, val_dataloader):
 
         # Calculate the accuracy rate
         accuracy = (intent_preds == b_intent_labels.view(-1)).cpu().numpy().mean() * 100
-        print("intent accuracy: ", accuracy)
+        # print("intent accuracy: ", accuracy)
         val_accuracy.append(accuracy)
 
     # Compute the average accuracy and loss over the validation set.
