@@ -44,7 +44,7 @@ class IntentPOSDataset(data.Dataset):
         pad and truncate tokens, pos_label and get the intent_label
         '''
         tokens = preprocess_fn(self.data[idx], max_length=self.MAX_LENGTH)
-        intent_label = torch.tensor([1 if label in self.intent_label[idx].split("#") else 0 for label in self.intent_dict.keys()], dtype=torch.long)
+        intent_label = torch.tensor([1 if label in self.intent_label[idx].split("#") else 0 for label in self.intent_dict.keys()], dtype=torch.float)
         pos_label = torch.tensor([self.pos_dict[self.pos_label[idx].strip().split(' ')[i]] for i in range(len(self.pos_label[idx].strip().split(' ')))], dtype=torch.long)
         if 2 in tokens: #[SEP] not be truncated
             pos_label = torch.cat([torch.tensor([0]), pos_label, torch.tensor([0])], dim=-1) #cls and sep token will have pos-tag 0
