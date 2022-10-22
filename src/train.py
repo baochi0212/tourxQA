@@ -46,11 +46,11 @@ def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, va
     -Overfit one batch: for check sanity of model
     -init model before training
     """
-    def init_weights(m):
-        if isinstance(m, nn.Linear):
-            torch.nn.init.xavier_uniform(m.weight)
-            m.bias.data.fill_(0.01)
-    model.apply(init_weights)
+    # def init_weights(m):
+    #     if isinstance(m, nn.Linear):
+    #         torch.nn.init.xavier_uniform(m.weight)
+    #         m.bias.data.fill_(0.01)
+    # model.apply(init_weights)
     #for overfit
     fixed_batch = next(iter(train_dataloader))
     # Start training loop
