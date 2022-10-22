@@ -171,7 +171,7 @@ def evaluate(model, val_dataloader, print_fn=False):
         val_loss_2.append(loss_2.item())
 
         # Get the predictions
-        intent_preds, pos_preds = torch.sigmoid(intent_logits) > 0.5,  torch.argmax(pos_logits, dim=-1).view(-1)
+        intent_preds, pos_preds = intent_logits > 0.5,  torch.argmax(pos_logits, dim=-1).view(-1)
         # prob = nn.functional.softmax(intent_logits, dim=1)
   
 
@@ -231,5 +231,5 @@ if __name__ == '__main__':
     net, optimizer, train_dataloader, val_dataloader = accelerator.prepare(
                             net, optimizer, train_dataloader, val_dataloader
                             )
-    train(net, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=val_dataloader, evaluation=True, overfit_batch=False)
-    # print(evaluate(net, val_dataloader, print_fn=True))
+    # train(net, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=val_dataloader, evaluation=True, overfit_batch=False)
+    print(evaluate(net, val_dataloader, print_fn=True))
