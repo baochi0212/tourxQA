@@ -179,10 +179,13 @@ def evaluate(model, val_dataloader, print_fn=False):
         #INTENT accuracy
         accuracy = 0
         for i in range(intent_preds.shape[0]):
-            if (intent_preds[i] == b_intent_labels[i]).type(torch.float32).sum() == 1:
-                # print(intent_preds[i], b_intent_labels[i])
+            # print((intent_preds[i] == b_intent_labels[i]).type(torch.float32).sum())
+            # # print("Logits: ", intent_logits[i])
+            if (intent_preds[i] == b_intent_labels[i]).type(torch.float32).sum() == intent_preds.shape[1]:
+            #     print(intent_preds[i], b_intent_labels[i])
+               
                 accuracy += 1 
-                break
+            #     break
 
         accuracy = accuracy/intent_preds.shape[0] * 100
         # print("intent accuracy: ", accuracy)
@@ -220,7 +223,7 @@ if __name__ == '__main__':
     train_dataloader = data.DataLoader(train_dataset, batch_size=32, shuffle=True, drop_last=True)
     val_dataloader = data.DataLoader(val_dataset, batch_size=32, shuffle=True, drop_last=True)
     net = IntentPOSModule(config)
-    optimizer = AdamW(net.parameters(), lr=5e-4)
+    optimizer = torch.optim.Adam(net.parameters(), lr=5e-4)
     epochs = 9
     total_steps = len(train_dataloader) * epochs
  
@@ -231,5 +234,5 @@ if __name__ == '__main__':
     net, optimizer, train_dataloader, val_dataloader = accelerator.prepare(
                             net, optimizer, train_dataloader, val_dataloader
                             )
-    train(net, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=val_dataloader, evaluation=True, overfit_batch=False)
-    # print(evaluate(net, val_dataloader, print_fn=True))
+    # train(net, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=val_dataloader, evaluation=True, overfit_batch=False)
+    print(evaluate(net, val_dataloader, print_fn=True))
