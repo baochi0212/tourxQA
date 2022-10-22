@@ -11,10 +11,11 @@ import torch.nn as nn
 import torchvision
 from torch.utils import data
 from accelerate import Accelerator
+from torchcrf import CRF 
 
 from transformers import AutoModel, AutoTokenizer, AdamW, get_linear_schedule_with_warmup
 from dataset.test_dataset import IntentPOSDataset
-from models.modules import IntentPOSModule, CustomConfig
+from models.modules import IntentPOSModule, CRFPOS, CustomConfig
 data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/ta/processed/PhoATIS'
@@ -40,7 +41,7 @@ def set_seed(seed_value=42):
     torch.manual_seed(seed_value)
     torch.cuda.manual_seed_all(seed_value)
 
-def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=None, evaluation=False, overfit_batch=False):
+def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=None, evaluation=False, overfit_batch=False, crf=False):
     """
     -Set the val to None: if don't wanna keep track of validation.
     -Overfit one batch: for check sanity of model
@@ -89,20 +90,24 @@ def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, va
             optimizer.zero_grad()
             # print(b_input_ids.shape, b_attn_mask.shape)
             # Perform a forward pass. This will return logits.
-            intent_logits, pos_logits = model(b_input_ids, b_attn_mask)
+            if not crf:
+                intent_logits, pos_logits = model(b_input_ids, b_attn_mask)
     
 
-            # Compute loss and accumulate the loss values
-            loss_1 = BCE_loss_fn(intent_logits, b_intent_labels)
-            loss_2 = CE_loss_fn(pos_logits.view(-1, pos_logits.shape[-1]), b_pos_labels.view(-1))
-    
+                # Compute loss and accumulate the loss values
+                loss_1 = BCE_loss_fn(intent_logits, b_intent_labels)
+                loss_2 = CE_loss_fn(pos_logits.view(-1, pos_logits.shape[-1]), b_pos_labels.view(-1))
+            else:
+                intent_logits, pos_logits, loss_2 = model(b_input_ids, b_pos_labels, b_attn_mask)
+                loss_1 = BCE_loss_fn(intent_logits, b_intent_labels)
             batch_loss_1 += loss_1.item()
             batch_loss_2 += loss_2.item()
             total_loss_1 += loss_1.item()
             total_loss_2 += loss_2.item()
 
             # Perform a backward pass to calculate gradients
-            (loss_1 + loss_2).backward()
+            # (loss_1 + loss_2).backward()
+            loss_2.backward()
             '''
             END!!!! (MODIFY THE VAL LOADER AS WELL, and maybe LOSS PRINTER)
             '''
@@ -139,7 +144,7 @@ def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, va
         if evaluation == True:
             # After the completion of each training epoch, measure the model's performance
             # on our validation set.
-            val_loss_1, val_loss_2, val_accuracy_1, val_accuracy_2 = evaluate(model, val_dataloader)
+            val_loss_1, val_loss_2, val_accuracy_1, val_accuracy_2 = evaluate(model, val_dataloader, crf)
 
             # Print performance over the entire training data
             time_elapsed = time.time() - t0_epoch
@@ -147,11 +152,10 @@ def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, va
             print(f"{epoch_i + 1:^7} | {'-':^7} | {avg_train_loss_1:^12.6f}, {avg_train_loss_2:^12.6f} | {val_loss_1:^10.6f}, {val_loss_2:^10.6f} | {val_accuracy_1:^9.2f}, {val_accuracy_2:^9.2f} | {time_elapsed:^9.2f}")
             print("-"*70)
         print("\n")
-    
     print("Training complete!")
 
 
-def evaluate(model, val_dataloader, print_fn=False):
+def evaluate(model, val_dataloader, print_fn=False, crf=False):
     """After the completion of each training epoch, measure the model's performance
     on our validation set.
     """
@@ -172,8 +176,14 @@ def evaluate(model, val_dataloader, print_fn=False):
         b_input_ids, b_attn_mask, b_intent_labels, b_pos_labels = tuple(t.to(device) for t in batch)
 
         # Compute logits
-        with torch.no_grad():
-            intent_logits, pos_logits = model(b_input_ids, b_attn_mask)
+        if not crf:
+            with torch.no_grad():
+                intent_logits, pos_logits = model(b_input_ids, b_attn_mask)
+        else:
+            with torch.no_grad():
+                intent_logits, pos_logits, loss_2 = model(b_input_ids, b_pos_labels, b_attn_mask)
+
+            
 
         # Compute loss
         loss_1 = BCE_loss_fn(intent_logits, b_intent_labels)
@@ -181,6 +191,18 @@ def evaluate(model, val_dataloader, print_fn=False):
 
         val_loss_1.append(loss_1.item())
         val_loss_2.append(loss_2.item())
+        if not crf:
+            with torch.no_grad():
+                intent_logits, pos_logits = model(b_input_ids, b_attn_mask)
+
+            # Compute loss and accumulate the loss values
+            loss_1 = BCE_loss_fn(intent_logits, b_intent_labels)
+            loss_2 = CE_loss_fn(pos_logits.view(-1, pos_logits.shape[-1]), b_pos_labels.view(-1))
+        else:
+            with torch.no_grad():
+                intent_logits, pos_logits, loss_2 = model(b_input_ids, b_pos_labels, b_attn_mask)
+
+            loss_1 = BCE_loss_fn(intent_logits, b_intent_labels)
 
         # Get the predictions
         intent_preds, pos_preds = intent_logits > 0.5,  torch.argmax(pos_logits, dim=-1).view(-1)
@@ -236,7 +258,8 @@ if __name__ == '__main__':
     val_dataset = IntentPOSDataset(raw_dir, mode='dev', MAX_LENGTH=30)
     train_dataloader = data.DataLoader(train_dataset, batch_size=32, shuffle=True, drop_last=True)
     val_dataloader = data.DataLoader(val_dataset, batch_size=32, shuffle=True, drop_last=True)
-    net = IntentPOSModule(config)
+    # net = IntentPOSModule(config)
+    net = CRFPOS(config)
     optimizer = AdamW(net.parameters(), lr=3e-5)
     epochs = 9
     total_steps = len(train_dataloader) * epochs
@@ -249,4 +272,4 @@ if __name__ == '__main__':
                             net, optimizer, train_dataloader, val_dataloader
                             )
     train(net, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=val_dataloader, evaluation=True, overfit_batch=False)
-    # print(evaluate(net, val_dataloader, print_fn=True))
+    # print(evaluate(net, val_dataloader, print_fn=True, crf=True))
