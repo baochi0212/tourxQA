@@ -44,7 +44,10 @@ def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, va
     """
     -Set the val to None: if don't wanna keep track of validation.
     -Overfit one batch: for check sanity of model
+    -init model before training
     """
+    for weight in model.parameters():
+        nn.init.xavier_normal_(weight)
     #for overfit
     fixed_batch = next(iter(train_dataloader))
     # Start training loop
@@ -159,6 +162,7 @@ def evaluate(model, val_dataloader, print_fn=False):
     val_loss_1 = []
     val_loss_2 = []
     temp = 0
+    set_seed(3)
     # For each batch in our validation set...
     for batch in val_dataloader:
         # Load batch to GPU
