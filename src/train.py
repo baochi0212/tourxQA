@@ -91,7 +91,7 @@ def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, va
             total_loss_2 += loss_2.item()
 
             # Perform a backward pass to calculate gradients
-            (loss_1 + loss_2).backward()
+            loss_1.backward()
             '''
             END!!!! (MODIFY THE VAL LOADER AS WELL, and maybe LOSS PRINTER)
             '''
