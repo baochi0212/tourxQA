@@ -171,18 +171,18 @@ def evaluate(model, val_dataloader, print_fn=False):
         val_loss_2.append(loss_2.item())
 
         # Get the predictions
-        intent_preds, pos_preds = intent_logits > 0,  torch.argmax(pos_logits, dim=-1).view(-1)
+        intent_preds, pos_preds = nn.functional.softmax(intent_logits, dim=-1) > 0,  torch.argmax(pos_logits, dim=-1).view(-1)
         # prob = nn.functional.softmax(intent_logits, dim=1)
   
 
         # Calculate the accuracy rate
-        if print_fn:
-          print((intent_preds == b_intent_labels).shape)
         #INTENT accuracy
         accuracy = 0
         for i in range(intent_preds.shape[0]):
             if (intent_preds[i] == b_intent_labels[i]).type(torch.float32).sum() == 1:
+                # print(intent_preds[i], b_intent_labels[i])
                 accuracy += 1 
+                break
 
         accuracy = accuracy/intent_preds.shape[0] * 100
         # print("intent accuracy: ", accuracy)
