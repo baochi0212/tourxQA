@@ -234,5 +234,5 @@ if __name__ == '__main__':
     net, optimizer, train_dataloader, val_dataloader = accelerator.prepare(
                             net, optimizer, train_dataloader, val_dataloader
                             )
-    # train(net, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=val_dataloader, evaluation=True, overfit_batch=False)
-    print(evaluate(net, val_dataloader, print_fn=True))
+    train(net, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=val_dataloader, evaluation=True, overfit_batch=False)
+    # print(evaluate(net, val_dataloader, print_fn=True))
