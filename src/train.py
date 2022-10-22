@@ -208,7 +208,7 @@ if __name__ == '__main__':
     val_dataloader = data.DataLoader(val_dataset, batch_size=32, shuffle=True, drop_last=True)
     net = IntentPOSModule(config)
     optimizer = AdamW(net.parameters(), lr=5e-4)
-    epochs = 1
+    epochs = 9
     total_steps = len(train_dataloader) * epochs
  
     scheduler = get_linear_schedule_with_warmup(optimizer,
