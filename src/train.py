@@ -220,7 +220,7 @@ if __name__ == '__main__':
     train_dataloader = data.DataLoader(train_dataset, batch_size=32, shuffle=True, drop_last=True)
     val_dataloader = data.DataLoader(val_dataset, batch_size=32, shuffle=True, drop_last=True)
     net = IntentPOSModule(config)
-    optimizer = AdamW(net.parameters(), lr=5e-6)
+    optimizer = AdamW(net.parameters(), lr=5e-4)
     epochs = 9
     total_steps = len(train_dataloader) * epochs
  
