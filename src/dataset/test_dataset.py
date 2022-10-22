@@ -30,17 +30,17 @@ class IntentPOSDataset(data.Dataset):
         self.pos_label = open((data_path + '/seq.out'), 'r').readlines()
         count = 0
         self.intent_dict = {}
-        for label in self.intent_label:
+        for label in open(intent_path, 'r').readlines():
             if "#" not in label:
-                self.intent_dict[label] = count 
+                self.intent_dict[label.strip()] = count 
                 count += 1 
 
         self.pos_dict = dict([(k.strip(), i) for i, k in enumerate(open(pos_path, 'r').readlines())])
         self.MAX_LENGTH = MAX_LENGTH
         self.n_intent = len(self.intent_dict.keys())#UNK
         self.n_pos = len(self.pos_dict.keys())#PAD UNK
-        self.n_intent = 16
-        self.n_pos = 142
+        self.n_intent = len(self.intent_dict.keys())
+        self.n_pos = len(self.pos_dict.keys())
     def __getitem__(self, idx):
         '''
         pad and truncate tokens, pos_label and get the intent_label
@@ -65,13 +65,15 @@ if __name__ == '__main__':
     -check the dict label carefully
     -check the padding and truncation 
     -check the masking
+    -check the label set carefully!!!
     '''
     dataset = IntentPOSDataset(raw_dir, mode='train')
     dev_dataset = IntentPOSDataset(raw_dir, mode='dev')
-    dataloader = data.DataLoader(dev_dataset, batch_size=32, shuffle=True)
+    dataloader = data.DataLoader(dataset, batch_size=32, shuffle=True)
     # # print("test: ", dataset.intent_dict, dataset.pos_dict)
     # # print("sample: ", dataset[0][0].shape, dataset[0][1])
     sample = next(iter(dataloader))
-    print("sample: ", sample[2], sample[2].shape)
+    print("sample: ", sample[2], sample[2].shape, dataset.intent_dict)
+    # print("dict: ", dataset.intent_label, len(dataset.intent_label))
     # for i in range(len(dev_dataset)):
     #     a = dataset[i]
