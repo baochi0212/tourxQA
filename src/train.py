@@ -190,8 +190,8 @@ def evaluate(model, val_dataloader, print_fn=False):
             #     print(intent_preds[i], b_intent_labels[i])
                
                 accuracy += 1 
-                if temp == 0:
-                    print(intent_preds[i], b_intent_labels[i])
+                # if temp == 0:
+                #     print(intent_preds[i], b_intent_labels[i])
             #     break
 
         accuracy = accuracy/intent_preds.shape[0] * 100
