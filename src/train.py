@@ -29,7 +29,7 @@ def CE_loss_fn(pred, label):
 def BCE_loss_fn(pred, label):
     # batch x logits bce loss
     loss = nn.BCELoss(reduction='none')(pred, label)
-    loss = torch.where(label != 0, loss, loss*0.5) #put weight
+    # loss = torch.where(label != 0, loss, loss*0.5) #put weight
     return loss.mean()
 
 def set_seed(seed_value=42):
