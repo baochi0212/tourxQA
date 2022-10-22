@@ -52,7 +52,7 @@ class CRFPOS(nn.Module):
     def forward(self, input, pos_label, mask):
         x = self.embedding(input_ids=input, attention_mask=mask)
         crf_pos = nn.functional.relu(self.pos_head(x['last_hidden_state']))
-        return torch.sigmoid(nn.functional.relu(self.intent_head(x['last_hidden_state'].mean(dim=1)))), crf_pos, self.CRF(crf_pos.permute(1, 0, 2), pos_label.permute(1, 0))
+        return torch.sigmoid(nn.functional.relu(self.intent_head(x['last_hidden_state'].mean(dim=1)))), crf_pos, -self.CRF(crf_pos.permute(1, 0, 2), pos_label.permute(1, 0))
 if __name__ == '__main__':
     dataset = IntentPOSDataset(raw_dir, MAX_LENGTH=30)
     dataloader = data.DataLoader(dataset, batch_size=32, shuffle=True)

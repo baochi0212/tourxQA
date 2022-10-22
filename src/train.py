@@ -144,7 +144,7 @@ def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, va
         if evaluation == True:
             # After the completion of each training epoch, measure the model's performance
             # on our validation set.
-            val_loss_1, val_loss_2, val_accuracy_1, val_accuracy_2 = evaluate(model, val_dataloader, crf)
+            val_loss_1, val_loss_2, val_accuracy_1, val_accuracy_2 = evaluate(model, val_dataloader, crf=crf)
 
             # Print performance over the entire training data
             time_elapsed = time.time() - t0_epoch
