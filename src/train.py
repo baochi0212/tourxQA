@@ -107,7 +107,7 @@ def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, va
 
             # Perform a backward pass to calculate gradients
             # (loss_1 + loss_2).backward()
-            loss_2.backward()
+            (loss_1 + loss_2).backward()
             '''
             END!!!! (MODIFY THE VAL LOADER AS WELL, and maybe LOSS PRINTER)
             '''
@@ -258,8 +258,8 @@ if __name__ == '__main__':
     val_dataset = IntentPOSDataset(raw_dir, mode='dev', MAX_LENGTH=30)
     train_dataloader = data.DataLoader(train_dataset, batch_size=32, shuffle=True, drop_last=True)
     val_dataloader = data.DataLoader(val_dataset, batch_size=32, shuffle=True, drop_last=True)
-    # net = IntentPOSModule(config)
-    net = CRFPOS(config)
+    net = IntentPOSModule(config)
+    # net = CRFPOS(config)
     optimizer = AdamW(net.parameters(), lr=3e-5)
     epochs = 9
     total_steps = len(train_dataloader) * epochs
@@ -271,5 +271,5 @@ if __name__ == '__main__':
     net, optimizer, train_dataloader, val_dataloader = accelerator.prepare(
                             net, optimizer, train_dataloader, val_dataloader
                             )
-    train(net, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=val_dataloader, evaluation=True, overfit_batch=False, crf=True)
+    train(net, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=val_dataloader, evaluation=True, overfit_batch=False, crf=False)
     # print(evaluate(net, val_dataloader, print_fn=True, crf=True))
