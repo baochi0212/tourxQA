@@ -26,6 +26,11 @@ def CE_loss_fn(pred, label):
     loss = torch.where(label != 0, loss, torch.tensor([0.]).to(device))
     loss = loss.mean()
     return loss
+def BCE_loss_fn(pred, label):
+    # batch x logits bce loss
+    loss = nn.BCELoss(reduction='none')(pred, label)
+    loss = torch.where(label != 0, loss, loss*0.5) #put weight
+    return loss.mean()
 
 def set_seed(seed_value=42):
     """Set seed for reproducibility.
@@ -82,7 +87,7 @@ def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, va
     
 
             # Compute loss and accumulate the loss values
-            loss_1 = nn.BCELoss()(intent_logits, b_intent_labels)
+            loss_1 = BCE_loss_fn(intent_logits, b_intent_labels)
             loss_2 = CE_loss_fn(pos_logits.view(-1, pos_logits.shape[-1]), b_pos_labels.view(-1))
     
             batch_loss_1 += loss_1.item()
@@ -164,7 +169,7 @@ def evaluate(model, val_dataloader, print_fn=False):
             intent_logits, pos_logits = model(b_input_ids, b_attn_mask)
 
         # Compute loss
-        loss_1 = nn.BCELoss()(intent_logits, b_intent_labels)
+        loss_1 = BCE_loss_fn(intent_logits, b_intent_labels)
         loss_2 = CE_loss_fn(pos_logits.view(-1, pos_logits.shape[-1]), b_pos_labels.view(-1))
 
         val_loss_1.append(loss_1.item())
