@@ -158,7 +158,7 @@ def evaluate(model, val_dataloader, print_fn=False):
     val_accuracy_2 = []
     val_loss_1 = []
     val_loss_2 = []
-
+    temp = 0
     # For each batch in our validation set...
     for batch in val_dataloader:
         # Load batch to GPU
@@ -190,6 +190,8 @@ def evaluate(model, val_dataloader, print_fn=False):
             #     print(intent_preds[i], b_intent_labels[i])
                
                 accuracy += 1 
+                if temp == 0:
+                    print(intent_preds[i], b_intent_labels[i])
             #     break
 
         accuracy = accuracy/intent_preds.shape[0] * 100
@@ -228,7 +230,7 @@ if __name__ == '__main__':
     train_dataloader = data.DataLoader(train_dataset, batch_size=32, shuffle=True, drop_last=True)
     val_dataloader = data.DataLoader(val_dataset, batch_size=32, shuffle=True, drop_last=True)
     net = IntentPOSModule(config)
-    optimizer = torch.optim.Adam(net.parameters(), lr=5e-4)
+    optimizer = AdamW(net.parameters(), lr=3e-5)
     epochs = 9
     total_steps = len(train_dataloader) * epochs
  
