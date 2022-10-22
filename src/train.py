@@ -82,7 +82,7 @@ def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, va
     
 
             # Compute loss and accumulate the loss values
-            loss_1 = nn.BCEWithLogitsLoss()(intent_logits, b_intent_labels)
+            loss_1 = nn.BCELoss()(intent_logits, b_intent_labels)
             loss_2 = CE_loss_fn(pos_logits.view(-1, pos_logits.shape[-1]), b_pos_labels.view(-1))
     
             batch_loss_1 += loss_1.item()
@@ -164,14 +164,14 @@ def evaluate(model, val_dataloader, print_fn=False):
             intent_logits, pos_logits = model(b_input_ids, b_attn_mask)
 
         # Compute loss
-        loss_1 = nn.BCEWithLogitsLoss()(intent_logits, b_intent_labels)
+        loss_1 = nn.BCELoss()(intent_logits, b_intent_labels)
         loss_2 = CE_loss_fn(pos_logits.view(-1, pos_logits.shape[-1]), b_pos_labels.view(-1))
 
         val_loss_1.append(loss_1.item())
         val_loss_2.append(loss_2.item())
 
         # Get the predictions
-        intent_preds, pos_preds = nn.functional.softmax(intent_logits, dim=-1) > 0,  torch.argmax(pos_logits, dim=-1).view(-1)
+        intent_preds, pos_preds = torch.sigmoid(intent_logits) > 0.5,  torch.argmax(pos_logits, dim=-1).view(-1)
         # prob = nn.functional.softmax(intent_logits, dim=1)
   
 
