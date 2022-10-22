@@ -33,7 +33,7 @@ class IntentPOSModule(nn.Module):
 
     def forward(self, input, mask):
         x = self.embedding(input_ids=input, attention_mask=mask)
-        return nn.functional.relu(self.intent_head(x['last_hidden_state'].mean(dim=1))), nn.functional.relu(self.pos_head(x['last_hidden_state']))
+        return torch.sigmoid(nn.functional.relu(self.intent_head(x['last_hidden_state'].mean(dim=1)))), nn.functional.relu(self.pos_head(x['last_hidden_state']))
 
 if __name__ == '__main__':
     dataset = IntentPOSDataset(raw_dir, MAX_LENGTH=30)
