@@ -3,7 +3,7 @@ import torch.nn as nn
 from torchcrf import CRF
 from transformers.models.roberta.modeling_roberta import RobertaModel, RobertaPreTrainedModel
 
-from module import IntentClassifier, SlotClassifier, IntentAttentionClassifier, SlotAttentionClassifier
+from .module import IntentClassifier, SlotClassifier, IntentAttentionClassifier, SlotAttentionClassifier
 
 '''
 inherit Pretrained model for from_pretrained methods
