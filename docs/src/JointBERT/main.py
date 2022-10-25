@@ -34,7 +34,7 @@ if __name__ == '__main__':
     parser.add_argument("--intent_label_file", default="intent_label.txt", type=str, help="Intent Label file")
     parser.add_argument("--slot_label_file", default="slot_label.txt", type=str, help="Slot Label file")
 
-    parser.add_argument("--model_type", default="bert", type=str, help="Model type selected in the list: " + ", ".join(MODEL_CLASSES.keys()))
+    parser.add_argument("--model_type", default="phobert", type=str, help="Model type selected in the list: " + ", ".join(MODEL_CLASSES.keys()))
 
     parser.add_argument('--seed', type=int, default=1234, help="random seed for initialization")
     parser.add_argument("--train_batch_size", default=32, type=int, help="Batch size for training.")
@@ -66,7 +66,31 @@ if __name__ == '__main__':
     # CRF option
     parser.add_argument("--use_crf", action="store_true", help="Whether to use CRF")
     parser.add_argument("--slot_pad_label", default="PAD", type=str, help="Pad token for slot label pad (to be ignore when calculate loss)")
+        # Slot-intent interaction
+    parser.add_argument(
+        "--use_intent_context_concat",
+        action="store_true",
+        help="Whether to feed context information of intent into slots vectors (simple concatenation)",
+    )
+    parser.add_argument(
+        "--use_intent_context_attention",
+        action="store_true",
+        help="Whether to feed context information of intent into slots vectors (dot product attention)",
+    )
+    parser.add_argument(
+        "--attention_embedding_size", type=int, default=200, help="hidden size of attention output vector"
+    )
 
+    # parser.add_argument(
+    #     "--slot_pad_label",
+    #     default="PAD",
+    #     type=str,
+    #     help="Pad token for slot label pad (to be ignore when calculate loss)",
+    # )
+    parser.add_argument(
+        "--embedding_type", default="soft", type=str, help="Embedding type for intent vector (hard/soft)"
+    )
+    parser.add_argument("--use_attention_mask", action="store_true", help="Whether to use attention mask")
     args = parser.parse_args()
 
     args.model_name_or_path = MODEL_PATH_MAP[args.model_type]
