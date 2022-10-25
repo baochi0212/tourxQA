@@ -141,7 +141,7 @@ def convert_examples_to_features(examples, max_seq_len, tokenizer,
         # Tokenize word by word (for NER)
         tokens = []
         slot_labels_ids = []
-        for word, slot_label in zip(example.words, example.slot_labels):
+        for word, slot_label in zip(example.words.split(' '), example.slot_labels):
             word_tokens = tokenizer.tokenize(word)
             if not word_tokens:
                 word_tokens = [unk_token]  # For handling the bad-encoded word
