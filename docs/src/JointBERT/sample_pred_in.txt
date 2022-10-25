@@ -1,1 +1,1 @@
-Tôi muốn tìm chuyến bay từ Sài Gòn vào Hà Nội vào 7 giờ sáng 
+tôi muốn tìm chuyến_bay từ Sài_Gòn vào Hà_Nội vào 7 giờ sáng 
