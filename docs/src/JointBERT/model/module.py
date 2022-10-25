@@ -89,7 +89,7 @@ class Attention(nn.Module):
 
 class IntentAttentionClassifier(nn.Module):
     def __init__(self, input_dim, num_intent_labels, dropout_rate=0.0):
-        super(IntentClassifier, self).__init__()
+        super(IntentAttentionClassifier, self).__init__()
         self.dropout = nn.Dropout(dropout_rate)
         self.linear = nn.Linear(input_dim, num_intent_labels)
 
@@ -110,7 +110,7 @@ class SlotAttentionClassifier(nn.Module):
         attention_embedding_size=200,
         dropout_rate=0.0,
     ):
-        super(SlotClassifier, self).__init__()
+        super(SlotAttentionClassifier, self).__init__()
         self.use_intent_context_attn = use_intent_context_attn
         self.use_intent_context_concat = use_intent_context_concat
         self.max_seq_len = max_seq_len
