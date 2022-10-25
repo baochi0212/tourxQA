@@ -14,7 +14,7 @@ from model import JointBERT, JointDistilBERT, JointAlbert, JointPhoBERT
 MODEL_CLASSES = {
     'bert': (BertConfig, JointBERT, AutoTokenizer),
     'distilbert': (DistilBertConfig, JointDistilBERT, DistilBertTokenizer),
-    'albert': (AlbertConfig, JointAlbert, AlbertTokenizer)
+    'albert': (AlbertConfig, JointAlbert, AlbertTokenizer),
     'phobert': (RobertaConfig, JointPhoBERT, AutoTokenizer)}
 
 MODEL_PATH_MAP = {
