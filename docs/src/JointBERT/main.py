@@ -33,7 +33,7 @@ if __name__ == '__main__':
     parser.add_argument("--data_dir", default="./data", type=str, help="The input data dir")
     parser.add_argument("--intent_label_file", default="intent_label.txt", type=str, help="Intent Label file")
     parser.add_argument("--slot_label_file", default="slot_label.txt", type=str, help="Slot Label file")
-    parser.add_argument("--use_dev_training", default=False, type=bool)
+    parser.add_argument("--use_dev_training", action="store_true", help="Use for concat dev and train")
     parser.add_argument("--model_type", default="phobert", type=str, help="Model type selected in the list: " + ", ".join(MODEL_CLASSES.keys()))
 
     parser.add_argument('--seed', type=int, default=1234, help="random seed for initialization")
