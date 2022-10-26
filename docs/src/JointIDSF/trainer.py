@@ -267,8 +267,10 @@ class Trainer(object):
             logger.info("  %s = %s", key, str(results[key]))
         if mode == "test":
             self.write_evaluation_result("eval_test_results.txt", results)
+            logger.info("results", results)
         elif mode == "dev":
             self.write_evaluation_result("eval_dev_results.txt", results)
+        
         return results
 
     def save_model(self):

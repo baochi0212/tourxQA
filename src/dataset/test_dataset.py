@@ -25,7 +25,7 @@ class IntentPOSDataset(data.Dataset):
         data_path = path + f'/{mode}'
         intent_path, pos_path = path + '/intent_label.txt', path + '/slot_label.txt'
 
-        self.data = open((data_path + '/seq.in'), 'r').readlines()
+        self.data = open((data_path + '/seq.in')``, 'r').readlines()
         self.intent_label = [i.strip() for i in open((data_path + '/label'), 'r').readlines()]
         self.pos_label = open((data_path + '/seq.out'), 'r').readlines()
         count = 0
