@@ -117,7 +117,8 @@ class JointProcessor(object):
 processors = {
     "atis": JointProcessor,
     "snips": JointProcessor,
-    "phoATIS": JointProcessor
+    "phoATIS": JointProcessor,
+    "phoATIS-s": JointProcessor
 }
 
 
