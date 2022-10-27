@@ -16,6 +16,7 @@ MODEL_CLASSES = {
     'distilbert': (DistilBertConfig, JointDistilBERT, DistilBertTokenizer),
     'albert': (AlbertConfig, JointAlbert, AlbertTokenizer),
     'phobert': (RobertaConfig, JointPhoBERT, AutoTokenizer),
+    'phobert-s': (RobertaConfig, JointPhoBERT, AutoTokenizer), 
     'nlphust_electra': (ElectraConfig, JointPhoBERT, AutoTokenizer)}
 
 MODEL_PATH_MAP = {
@@ -23,6 +24,7 @@ MODEL_PATH_MAP = {
     'distilbert': 'distilbert-base-uncased',
     'albert': 'albert-xxlarge-v1',
     'phobert': 'vinai/phobert-base',
+    'phobert-s': 'NlpHUST/roberta-large-vn', 
     'nlphust_electra': 'NlpHUST/electra-base-vn'
 }
 
