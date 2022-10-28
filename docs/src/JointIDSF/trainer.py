@@ -146,8 +146,8 @@ class Trainer(object):
                             print("Early stopping")
                             break
 
-                    # if self.args.save_steps > 0 and global_step % self.args.save_steps == 0:
-                    #     self.save_model()
+                    if self.args.save_steps > 0 and global_step % self.args.save_steps == 0:
+                        self.save_model()
 
                 if 0 < self.args.max_steps < global_step:
                     epoch_iterator.close()
