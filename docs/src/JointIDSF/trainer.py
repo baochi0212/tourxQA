@@ -281,7 +281,7 @@ class Trainer(object):
         model_to_save.save_pretrained(self.args.model_dir)
 
         # Save training arguments together with the trained model
-        torch.save(self.args, os.path.join(self.args.model_dir, "training_args.bin"))
+        torch.save(self.args, os.path.join(self.args.model_dir, 'training_args.bin'))
         logger.info("Saving model checkpoint to %s", self.args.model_dir)
 
     def load_model(self):
