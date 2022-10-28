@@ -20,7 +20,7 @@ MODEL_CLASSES = {
     'nlphust_electra': (ElectraConfig, JointPhoBERT, AutoTokenizer)}
 
 MODEL_PATH_MAP = {
-    'bert': 'vinai/phobert-base',
+    'bert': 'bert-base-case',
     'distilbert': 'distilbert-base-uncased',
     'albert': 'albert-xxlarge-v1',
     'phobert': 'vinai/phobert-base',
