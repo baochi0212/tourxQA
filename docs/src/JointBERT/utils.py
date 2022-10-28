@@ -6,7 +6,7 @@ import torch
 import numpy as np
 from seqeval.metrics import precision_score, recall_score, f1_score
 
-from transformers import BertConfig, DistilBertConfig, AlbertConfig, RobertaConfig, ElectraConfig
+from transformers import BertConfig, DistilBertConfig, AlbertConfig, RobertaConfig, ElectraConfig, XLMRobertaConfig
 from transformers import AutoTokenizer, DistilBertTokenizer, AlbertTokenizer
 
 from model import JointBERT, JointDistilBERT, JointAlbert, JointPhoBERT
@@ -16,7 +16,7 @@ MODEL_CLASSES = {
     'distilbert': (DistilBertConfig, JointDistilBERT, DistilBertTokenizer),
     'albert': (AlbertConfig, JointAlbert, AlbertTokenizer),
     'phobert': (RobertaConfig, JointPhoBERT, AutoTokenizer),
-    'phobert-s': (RobertaConfig, JointPhoBERT, AutoTokenizer), 
+    'phobert-s': (XLMRobertaConfig, JointPhoBERT, AutoTokenizer), 
     'nlphust_electra': (ElectraConfig, JointPhoBERT, AutoTokenizer)}
 
 MODEL_PATH_MAP = {

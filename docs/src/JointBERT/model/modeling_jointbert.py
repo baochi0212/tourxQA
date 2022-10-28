@@ -1,11 +1,11 @@
 import torch
 import torch.nn as nn
-from transformers import BertPreTrainedModel, BertModel, BertConfig
+from transformers import BertPreTrainedModel, BertModel, BertConfig, AutoModel
 from torchcrf import CRF
 from .module import IntentClassifier, SlotClassifier
 
 
-class JointBERT(BertPreTrainedModel):
+class JointBERT(AutoModel):
     def __init__(self, config, args, intent_label_lst, slot_label_lst):
         super(JointBERT, self).__init__(config)
         self.args = args
