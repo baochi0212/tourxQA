@@ -267,8 +267,9 @@ class Trainer(object):
             logger.info("  %s = %s", key, str(results[key]))
         if mode == "test":
             self.write_evaluation_result("eval_test_results.txt", results)
-            print("results", results)
+            print("TEST RESULTS HERE", results)
         elif mode == "dev":
+            print("DEV RESULTS HERE", results)
             self.write_evaluation_result("eval_dev_results.txt", results)
         
         return results
