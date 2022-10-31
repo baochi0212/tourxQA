@@ -22,4 +22,4 @@ echo "${MODEL_DIR}"
 #                   --intent_loss_coef $c \
 #                   --learning_rate $lr
 #                   --use_attention_mask
-python3 main.py --token_level word-level --model_dir $MODEL_DIR --model_type phobert  --data_dir PhoATIS --seed $s --do_train --do_eval --save_steps 140 --logging_steps 140 --num_train_epochs 2 --use_crf --gpu_id 0 --embedding_type soft --intent_loss_coef $c --learning_rate $lr --use_attention_mask
+python3 main.py --token_level word-level --model_type phobert --model_dir $MODEL_DIR  --data_dir PhoATIS --seed $s --do_train --do_eval --save_steps 140 --logging_steps 140 --num_train_epochs 2 --use_crf --gpu_id 0 --embedding_type soft --intent_loss_coef $c --learning_rate $lr --use_attention_mask
