@@ -81,7 +81,12 @@ if __name__ == '__main__':
     parser.add_argument(
         "--attention_embedding_size", type=int, default=200, help="hidden size of attention output vector"
     )
-
+    parser.add_argument(
+        "--early_stopping",
+        type=int,
+        default=5,
+        help="Number of unincreased validation step to wait for early stopping",
+    )
     # parser.add_argument(
     #     "--slot_pad_label",
     #     default="PAD",
