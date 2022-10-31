@@ -3,7 +3,7 @@
 #Train JointIDSF
 export lr=4e-5
 export c=0.5
-export s=100
+export s=1001
 echo "${lr}"
 export MODEL_DIR=JointIDSF_PhoBERTencoder
 export MODEL_DIR=$MODEL_DIR"/"$lr"/"$c"/"$s
