@@ -1,6 +1,6 @@
 export lr=3e-5
 export c=0.5
-export s=100189129812
+export s=1001
 echo "${lr}"
 export MODEL_DIR=JointBERT-CRF_PhoBERTencoder
 export MODEL_DIR=$MODEL_DIR"/"$lr"/"$c"/"$s
