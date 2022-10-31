@@ -74,8 +74,8 @@ class Trainer(object):
         train_iterator = trange(int(self.args.num_train_epochs), desc="Epoch")
         early_stopping = EarlyStopping(patience=self.args.early_stopping, verbose=True)
         for _ in train_iterator:
-            # epoch_iterator = tqdm(train_dataloader, desc="Iteration")
-            for step, batch in train_dataloader:
+            epoch_iterator = tqdm(train_dataloader, desc="Iteration")
+            for step, batch in epoch_iterator:
                 self.model.train()
                 batch = tuple(t.to(self.device) for t in batch)  # GPU or CPU
 
