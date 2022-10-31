@@ -78,6 +78,7 @@ class Trainer(object):
                 "weight_decay": 0.0,
             },
         ]
+        #optimizer + scheduler
         optimizer = AdamW(optimizer_grouped_parameters, lr=self.args.learning_rate, eps=self.args.adam_epsilon)
         scheduler = get_linear_schedule_with_warmup(
             optimizer, num_warmup_steps=self.args.warmup_steps, num_training_steps=t_total

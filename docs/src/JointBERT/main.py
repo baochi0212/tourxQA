@@ -77,6 +77,7 @@ if __name__ == '__main__':
         action="store_true",
         help="Whether to feed context information of intent into slots vectors (dot product attention)",
     )
+    parser.add_argument("--tuning_metric", default="loss", type=str, help="Metrics to tune when training")
     parser.add_argument(
         "--attention_embedding_size", type=int, default=200, help="hidden size of attention output vector"
     )

@@ -6,6 +6,7 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler, ConcatDataset
 from transformers import BertConfig, AdamW, get_linear_schedule_with_warmup
+from early_stopping import EarlyStopping
 
 from utils import MODEL_CLASSES, compute_metrics, get_intent_labels, get_slot_labels
 
@@ -71,7 +72,7 @@ class Trainer(object):
         self.model.zero_grad()
 
         train_iterator = trange(int(self.args.num_train_epochs), desc="Epoch")
-
+        early_stopping = EarlyStopping(patience=self.args.early_stopping, verbose=True)
         for _ in train_iterator:
             epoch_iterator = tqdm(train_dataloader, desc="Iteration")
             for step, batch in enumerate(epoch_iterator):
@@ -102,7 +103,12 @@ class Trainer(object):
                     global_step += 1
 
                     if self.args.logging_steps > 0 and global_step % self.args.logging_steps == 0:
-                        self.evaluate("dev")
+                        results = self.evaluate("dev")
+                        early_stopping(results['loss'], self.model, self.args)
+                        if early_stopping.early_stop:
+                            print("Early stopping")
+                            break
+
 
                     if self.args.save_steps > 0 and global_step % self.args.save_steps == 0:
                         self.save_model()
@@ -114,6 +120,7 @@ class Trainer(object):
             if 0 < self.args.max_steps < global_step:
                 train_iterator.close()
                 break
+     
 
         return global_step, tr_loss / global_step
 
@@ -204,13 +211,13 @@ class Trainer(object):
                     slot_preds_list[i].append(slot_label_map[slot_preds[i][j]])
 
         total_result = compute_metrics(intent_preds, out_intent_label_ids, slot_preds_list, out_slot_label_list)
-        for a, b in zip(intent_preds.reshape(-1), out_intent_label_ids.reshape(-1)):
-          if a != b:
-            print("Diff intent", a, b)
-        for a, b in zip(slot_preds_list, out_slot_label_list):
-          for m, n in zip(a, b):
-            if m != n:
-              print("Diff POS", m, n)
+        # for a, b in zip(intent_preds.reshape(-1), out_intent_label_ids.reshape(-1)):
+        #   if a != b:
+        #     print("Diff intent", a, b)
+        # for a, b in zip(slot_preds_list, out_slot_label_list):
+        #   for m, n in zip(a, b):
+        #     if m != n:
+        #       print("Diff POS", m, n)
 
         results.update(total_result)
 
