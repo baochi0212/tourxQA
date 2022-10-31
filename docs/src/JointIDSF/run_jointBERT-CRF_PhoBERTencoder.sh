@@ -21,3 +21,4 @@ python3 main.py --token_level word-level \
                   --embedding_type soft \
                   --intent_loss_coef $c \
                   --learning_rate $lr
+                  --use_attention_mask
