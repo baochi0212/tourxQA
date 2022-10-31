@@ -18,7 +18,6 @@ python3 main.py --token_level word-level \
                   --save_steps 140 \
                   --logging_steps 140 \
                   --num_train_epochs 50 \
-
                   --use_intent_context_attention \
                   --attention_embedding_size 200 \
                   --use_crf \

@@ -15,9 +15,9 @@ python3 main.py --token_level word-level \
                   --save_steps 140 \
                   --logging_steps 140 \
                   --num_train_epochs 2 \
-                #  `--tuning_metric mean_intent_slot \
                   --use_crf \
                   --gpu_id 0 \
+                  --use_intent_context_attention\
                   --embedding_type soft \
                   --intent_loss_coef $c \
                   --learning_rate $lr
