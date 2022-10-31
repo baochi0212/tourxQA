@@ -224,7 +224,10 @@ class Trainer(object):
         logger.info("***** Eval results *****")
         for key in sorted(results.keys()):
             logger.info("  %s = %s", key, str(results[key]))
-
+        if mode == 'dev':
+            print("DEV RESULTS: ", results)
+        else:
+            print("TEST RESULTS: ", results)
         return results
 
     def save_model(self):
