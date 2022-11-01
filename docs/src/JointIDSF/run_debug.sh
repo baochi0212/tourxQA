@@ -27,6 +27,7 @@ python3 main.py --token_level word-level \
                   --embedding_type soft \
                   --intent_loss_coef $c \
                   --learning_rate $lr
+                  --use_crf \
 
 python3 main.py --token_level word-level \
                   --model_type phobert \
@@ -39,3 +40,9 @@ python3 main.py --token_level word-level \
                   --logging_steps 140 \
                   --num_train_epochs $e\
                   --tuning_metric loss \
+                  --attention_embedding_size 200 \
+                  --use_crf \
+                  --gpu_id 0 \
+                  --embedding_type soft \
+                  --intent_loss_coef $c \
+                  --learning_rate $lr
