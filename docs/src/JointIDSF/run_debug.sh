@@ -3,6 +3,7 @@
 #Train JointIDSF
 export lr=5e-5
 export c=0.15
+export e=1
 export s=10001
 echo "${lr}"
 export MODEL_DIR=JointIDSF_PhoBERTencoder
@@ -17,7 +18,7 @@ python3 main.py --token_level word-level \
                   --do_eval \
                   --save_steps 140 \
                   --logging_steps 140 \
-                  --num_train_epochs 3 \
+                  --num_train_epochs $e\
                   --tuning_metric mean_intent_slot \
 
                   --attention_embedding_size 200 \
@@ -36,7 +37,7 @@ python3 main.py --token_level word-level \
                   --do_eval \
                   --save_steps 140 \
                   --logging_steps 140 \
-                  --num_train_epochs 3 \
+                  --num_train_epochs $e\
                   --tuning_metric mean_intent_slot \
                   --attention_embedding_size 200 \
                   --use_crf \
