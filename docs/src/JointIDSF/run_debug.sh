@@ -19,7 +19,7 @@ python3 main.py --token_level word-level \
                   --save_steps 140 \
                   --logging_steps 140 \
                   --num_train_epochs $e\
-                  --tuning_metric mean_intent_slot \
+                  --tuning_metric loss \
 
                   --attention_embedding_size 200 \
                   --use_crf \
@@ -38,7 +38,7 @@ python3 main.py --token_level word-level \
                   --save_steps 140 \
                   --logging_steps 140 \
                   --num_train_epochs $e\
-                  --tuning_metric mean_intent_slot \
+                  --tuning_metric loss \
                   --attention_embedding_size 200 \
                   --use_crf \
                   --gpu_id 0 \
