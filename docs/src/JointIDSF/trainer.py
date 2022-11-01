@@ -239,7 +239,6 @@ class Trainer(object):
                 out_slot_labels_ids = np.append(
                     out_slot_labels_ids, inputs["slot_labels_ids"].detach().cpu().numpy(), axis=0
                 )
-        print(f"LOSS: {eval_loss:.2f} and STEP: {nb_eval_steps}")
         eval_loss = eval_loss / nb_eval_steps
         results = {"loss": eval_loss}
 
@@ -267,9 +266,7 @@ class Trainer(object):
             logger.info("  %s = %s", key, str(results[key]))
         if mode == "test":
             self.write_evaluation_result("eval_test_results.txt", results)
-            print("TEST RESULTS HERE", results)
         elif mode == "dev":
-            print("DEV RESULTS HERE", results)
             self.write_evaluation_result("eval_dev_results.txt", results)
         
         return results
