@@ -240,7 +240,7 @@ class Trainer(object):
                 out_slot_labels_ids = np.append(
                     out_slot_labels_ids, inputs["slot_labels_ids"].detach().cpu().numpy(), axis=0
                 )
-
+        print(f"LOSS: {eval_loss:.2f} and STEP: {nb_eval_steps}")
         eval_loss = eval_loss / nb_eval_steps
         results = {"loss": eval_loss}
 
