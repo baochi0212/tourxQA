@@ -25,6 +25,5 @@ python3 main.py --token_level word-level \
                   --gpu_id 0 \
                   --embedding_type soft \
                   --intent_loss_coef $c \
-                  --pretrained \
-                  --pretrained_path JointBERT-CRF_PhoBERTencoder/3e-5/0.6/100 \
+
                   --learning_rate $lr
