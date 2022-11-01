@@ -63,6 +63,7 @@ class JointPhoBERT(RobertaPreTrainedModel):
                 intent_loss = intent_loss_fct(
                     intent_logits.view(-1, self.num_intent_labels), intent_label_ids.view(-1)
                 )
+            print("INTENT LOSS: ", intent_loss.item())
             total_loss += self.args.intent_loss_coef * intent_loss
 
         # 2. Slot Softmax
@@ -80,6 +81,7 @@ class JointPhoBERT(RobertaPreTrainedModel):
                     slot_loss = slot_loss_fct(active_logits, active_labels)
                 else:
                     slot_loss = slot_loss_fct(slot_logits.view(-1, self.num_slot_labels), slot_labels_ids.view(-1))
+            print("SLOT LOSS: ", slot_loss.item())
             total_loss += (1 - self.args.intent_loss_coef) * slot_loss
 
         outputs = ((intent_logits, slot_logits),) + outputs[2:]  # add hidden states and attention if they are here
