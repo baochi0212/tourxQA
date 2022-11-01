@@ -25,5 +25,5 @@ python3 main.py --token_level word-level \
                   --gpu_id 0 \
                   --embedding_type soft \
                   --intent_loss_coef $c \
-                  --learning_rate $lr
+                  --learning_rate $lr \
                   --use_crf \
