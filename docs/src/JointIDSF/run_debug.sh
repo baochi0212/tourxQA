@@ -4,7 +4,7 @@
 export lr=5e-5
 export c=0.2
 export e=50
-export s=10001
+export s=333
 echo "${lr}"
 export MODEL_DIR=JointIDSF_PhoBERTencoder
 export MODEL_DIR=$MODEL_DIR"/"$lr"/"$c"/"$s
@@ -23,6 +23,7 @@ python3 main.py --token_level word-level \
                   --attention_embedding_size 200 \
                   --use_crf \
                   --gpu_id 0 \
+                  --use_intent_context_attention\
                   --embedding_type soft \
                   --intent_loss_coef $c \
                   --learning_rate $lr \
