@@ -2,7 +2,7 @@
 # ./run_jointBERT-CRF_PhoBERTencoder.sh
 #Train JointIDSF
 export lr=5e-5
-export c=0.2
+export c=0.15
 export e=50
 export s=333
 echo "${lr}"
@@ -23,7 +23,6 @@ python3 main.py --token_level word-level \
                   --attention_embedding_size 200 \
                   --use_crf \
                   --gpu_id 0 \
-                  --use_intent_context_attention\
                   --embedding_type soft \
                   --intent_loss_coef $c \
                   --learning_rate $lr \
