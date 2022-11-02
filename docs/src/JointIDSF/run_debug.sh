@@ -22,6 +22,7 @@ python3 main.py --token_level word-level \
                   --tuning_metric loss \
                   --attention_embedding_size 200 \
                   --use_crf \
+                  --use_intent_context_attention\
                   --gpu_id 0 \
                   --embedding_type soft \
                   --intent_loss_coef $c \
