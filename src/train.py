@@ -465,7 +465,7 @@ if __name__ == '__main__':
     val_df = pd.read_csv(qa_processed + '/dev.csv')
     test_df = pd.read_csv(qa_processed + '/test.csv')
     train_dataset = QADataset(test_df, tokenizer=tokenizer, mode='train')
-    test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='dev')
+    test_dataset = QADataset(val_df, tokenizer=tokenizer, mode='test')
     test_loader = data.DataLoader(test_dataset, batch_size=batch_size)
     print(evaluate_QA(model.to(device), test_loader, test=True))
     # for i in range(len(test_loader)):
