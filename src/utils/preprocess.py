@@ -1,12 +1,21 @@
 import os
+import json
+import numpy as np
+import re
 
+import torch
 from underthesea import word_tokenize
 from transformers import AutoTokenizer
-
+from glob import glob
+import pandas as pd
+#Intent&SLOT
 data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/data/processed/PhoATIS'
-tokenizer = AutoTokenizer.from_pretrained("vinai/phobert-base")
+# tokenizer = AutoTokenizer.from_pretrained("vinai/phobert-base")
+#QA
+qa_dir = data_dir + '/data/raw/ViSquadv1.1'
+qa_processed = data_dir + '/data/processed/QA'
 '''
 - preprocess text
 - query statistics of dataset 
@@ -85,12 +94,79 @@ def query_stat(files=['train', 'dev', 'test']):
 
     return intent_label, pos_label, num_samples, og_intent, og_pos, test_special
 
+def get_corpus(path):
+    for file in glob(path + "/*"):
+        data_dict = dict([(i, []) for i in ['question', 'context', 'start', 'text']])
+        data = json.load(open(file, 'rb'))['data']
+        for i in range(len(data)):
+            #topic i
+            for j in range(len(data[i]['paragraphs'])):
+                #para j (with one context and many QAs)
+                sample = data[i]['paragraphs'][j]
+                c = sample['context']
+                for k in range(len(sample['qas'])):
+                    #QA k (with one question and some answers)
+                    qa = sample['qas'][k]
+                    q = qa['question'] 
+                    a = [int(item['answer_start']) for item in qa['answers']]
+                    text = ''
+                    for item in qa['answers']:
+                        text += '@@@' + item['text']
+                    #add to dataframe
+                    data_dict['question'].append(q)
+                    data_dict['start'].append(a)
+                    data_dict['text'].append(text)
+                    data_dict['context'].append(c)
+
+        df = pd.DataFrame.from_dict(data_dict)
+        for i in ['train', 'dev', 'test']:
+            if i in os.path.basename(file):
+                basename = i
+        df.to_csv(qa_processed + f'/{basename}.csv', index=False)
+
+def get_label(off_set_map, text, start, end=False):
+    '''
+      if END_IDX is provided, just use it and leave TEXT=''
+    '''
+    start_idx, end_idx = 0, 0
+    for i in range(len(off_set_map)):
+        if off_set_map[i][0] == start:
+            start_idx = i
+        if text != '':
+            if off_set_map[i][1] == start + len(text):
+              end_idx = i 
+        else:
+            if off_set_map[i][1] == end:
+              end_idx = i
+
+    return torch.tensor(start_idx, dtype=torch.long), torch.tensor(end_idx, dtype=torch.long)
+
+def string2list(text, type='str'):
+    '''Convert a list_string to original list''' 
+    ''' 1-D arr'''
+    if type == 'int':
+        text = list([int(i) for i in re.sub('[\[\]]', '' , text).split(',')])
+    if type == 'str':
+        temp = []
+        for i in text.split('@@@'):
+            if i != '':
+                temp.append(i)
+        text = temp
+
+
+    return text
+            
+
+
+            
+
+    
+    
+
 
 
 if __name__ == '__main__':
-    text = "Tôi có một khách sạn ven biển a a a a a a a a a a a a a a a a a a a a a a a a a a a a a"
-    print("join", preprocess_fn(text))
-    output = query_stat(['train', 'dev', 'test'])
-    # print("unique: ", len(output[0]), len(output[1]), output[2], len(output[3]), len(output[4]))
-    print("special: ", output[-1])
-    # print(tracking_frequency("I-aircraft_code", type='pos'))
+    get_corpus(qa_dir)
+    # text = str(['các vùng người Đức', '@', 'các vùng người Đức', '@', '"các vùng người Đức"', '@', 'các vùng người Đức', '@'])
+    # # print(text)
+    # print(string2list(text))

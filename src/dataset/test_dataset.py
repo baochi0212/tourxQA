@@ -1,17 +1,22 @@
 import os
 import sys
+#add source directory 
 src_dir = os.environ['src']
 sys.path.append(src_dir)
 import torch 
 from torch.utils import data
-
+import pandas as pd
 
 from utils.preprocess import preprocess_fn
+from utils.preprocess import get_label, string2list
+
+from transformers import AutoTokenizer
 
 data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/data/processed/PhoATIS'
-
+qa_processed = data_dir + '/data/processed/QA'
+tokenizer = AutoTokenizer.from_pretrained('deepset/roberta-base-squad2')
 
 class IntentPOSDataset(data.Dataset):
     '''
@@ -25,7 +30,7 @@ class IntentPOSDataset(data.Dataset):
         data_path = path + f'/{mode}'
         intent_path, pos_path = path + '/intent_label.txt', path + '/slot_label.txt'
 
-        self.data = open((data_path + '/seq.in')``, 'r').readlines()
+        self.data = open(data_path + '/seq.in', 'r').readlines()
         self.intent_label = [i.strip() for i in open((data_path + '/label'), 'r').readlines()]
         self.pos_label = open((data_path + '/seq.out'), 'r').readlines()
         count = 0
@@ -60,6 +65,61 @@ class IntentPOSDataset(data.Dataset):
         return tokens['input_ids'].view(-1), tokens['attention_mask'].view(-1), intent_label, pos_label
     def __len__(self):
         return len(self.data)
+
+class QADataset(data.Dataset):
+    def __init__(self, df, tokenizer, MAX_LENGTH=386, mode='train', pipeline=False):
+        self.df = df
+        self.MAX_LENGTH = MAX_LENGTH
+        self.mode = mode
+        self.tokenizer = tokenizer
+        self.pipeline = pipeline
+        self.max_answer_length = 4 
+
+    def __getitem__(self, idx):
+        '''
+        TEST SET: more answer options and will compare with the PIPELINE api
+        '''
+        item = self.df.iloc[idx]
+        q, c, answer_start, text = item['question'], item['context'], string2list(item['start'], type='int'), string2list(item['text'])
+        # print(len(answer_start), len(text))
+        # if len(text) > 4:
+        #     print(text)
+        input = self.tokenizer(q.strip(), c, return_tensors='pt',
+            max_length=self.MAX_LENGTH,
+            truncation="only_second",
+            return_offsets_mapping=True,
+            padding="max_length",)
+        if self.mode != 'test':
+            if len(text) == 0:
+                start, end = torch.tensor(0, dtype=torch.long), torch.tensor(0, dtype=torch.long)
+            else:
+                start, end = get_label(input['offset_mapping'][0], text, answer_start)
+                if start > self.MAX_LENGTH or self.MAX_LENGTH < end: 
+                    start, end = torch.tensor(0, dtype=torch.long), torch.tensor(0, dtype=torch.long)
+
+        else:
+            if len(text) == 0:
+                start_list, end_list = [0], [0]
+            else:
+                start_list, end_list = [], []
+                for i in range(len(text)):
+                    start, end = get_label(input['offset_mapping'][0], text[i], answer_start[i])
+                    if start > self.MAX_LENGTH or self.MAX_LENGTH < end: 
+                        start, end = torch.tensor(0, dtype=torch.long), torch.tensor(0, dtype=torch.long)
+                    start_list.append(start.item())
+                    end_list.append(end.item())
+            # max length of test answers
+            while len(start_list) < self.max_answer_length:
+                start_list.append(-1)
+                end_list.append(-1)
+            start, end = torch.tensor(start_list), torch.tensor(end_list)
+
+            if self.pipeline:
+                return input['input_ids'][0], input['attention_mask'][0], start, end, q, c, input['offset_mapping'][0]
+        return input['input_ids'][0], input['attention_mask'][0], start, end
+    def __len__(self):
+        return len(self.df)
+
 if __name__ == '__main__':
     '''
     -check the dict label carefully
@@ -67,13 +127,19 @@ if __name__ == '__main__':
     -check the masking
     -check the label set carefully!!!
     '''
-    dataset = IntentPOSDataset(raw_dir, mode='train')
-    dev_dataset = IntentPOSDataset(raw_dir, mode='dev')
-    dataloader = data.DataLoader(dataset, batch_size=32, shuffle=True)
-    # # print("test: ", dataset.intent_dict, dataset.pos_dict)
-    # # print("sample: ", dataset[0][0].shape, dataset[0][1])
-    sample = next(iter(dataloader))
-    print("sample: ", sample[2], sample[2].shape, dataset.intent_dict)
-    # print("dict: ", dataset.intent_label, len(dataset.intent_label))
-    # for i in range(len(dev_dataset)):
-    #     a = dataset[i]
+    # dataset = IntentPOSDataset(raw_dir, mode='train')
+    # dev_dataset = IntentPOSDataset(raw_dir, mode='dev')
+    # dataloader = data.DataLoader(dataset, batch_size=32, shuffle=True)
+    # # # print("test: ", dataset.intent_dict, dataset.pos_dict)
+    # # # print("sample: ", dataset[0][0].shape, dataset[0][1])
+    # sample = next(iter(dataloader))
+    # print("sample: ", sample[2], sample[2].shape, dataset.intent_dict)
+    # # print("dict: ", dataset.intent_label, len(dataset.intent_label))
+    # # for i in range(len(dev_dataset)):
+    # #     a = dataset[i]
+
+    test_df = pd.read_csv(qa_processed + '/test.csv')
+    test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test')
+    test_loader = data.DataLoader(test_dataset, batch_size=16)
+    # for i in test_loader:
+    #     print(i[-1].shape)

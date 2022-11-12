@@ -53,6 +53,32 @@ class CRFPOS(nn.Module):
         x = self.embedding(input_ids=input, attention_mask=mask)
         crf_pos = nn.functional.relu(self.pos_head(x['last_hidden_state']))
         return torch.sigmoid(nn.functional.relu(self.intent_head(x['last_hidden_state'].mean(dim=1)))), crf_pos, -self.CRF(crf_pos.permute(1, 0, 2), pos_label.permute(1, 0))
+class QAModule(torch.nn.Module):
+  def __init__(self, hidden=768, out=500):
+    super().__init__()
+#     self.bert_qa = AutoModelForQuestionAnswering.from_pretrained(model_checkpoint).cuda()
+    self.bert_model = AutoModel.from_pretrained(model_checkpoint)
+    self.linear = torch.nn.Linear(hidden, 2)
+    self.relu = torch.nn.ReLU()
+    self.loss_fn = CE_loss_fn
+  def forward(self, input_ids, attention_mask, start=None, end=None ):
+    outputs = self.bert_model(input_ids=input_ids, attention_mask=attention_mask)['last_hidden_state']
+#     print("outputs", outputs.shape)
+#     start_logits, end_logits = outputs['start_logits'], outputs['end_logits']
+    logits = self.relu(self.linear(outputs))
+    
+    start_logits, end_logits = logits[:, :, 0], logits[:, :, 1]
+    if start is not None:
+      loss = self.loss_fn(start_logits, start) + self.loss_fn(end_logits, end)
+#       return loss, outputs
+      return loss, {'start_logits':  start_logits, 'end_logits': end_logits}
+    else:
+      return start_logits, end_logits
+
+
+
+      
+
 if __name__ == '__main__':
     dataset = IntentPOSDataset(raw_dir, MAX_LENGTH=30)
     dataloader = data.DataLoader(dataset, batch_size=32, shuffle=True)

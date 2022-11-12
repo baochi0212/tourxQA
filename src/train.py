@@ -12,16 +12,24 @@ import torchvision
 from torch.utils import data
 from accelerate import Accelerator
 from torchcrf import CRF 
+import pandas as pd 
 
-from transformers import AutoModel, AutoTokenizer, AdamW, get_linear_schedule_with_warmup
-from dataset.test_dataset import IntentPOSDataset
-from models.modules import IntentPOSModule, CRFPOS, CustomConfig
+import transformers
+from transformers import AutoModelForQuestionAnswering, AutoTokenizer, AdamW, get_linear_schedule_with_warmup
+from dataset.test_dataset import IntentPOSDataset, QADataset
+from models.modules import IntentPOSModule, CRFPOS, CustomConfig, QAModule
+from utils.preprocess import get_label
+
 data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/ta/processed/PhoATIS'
-
+data_dir = os.environ['dir']
+raw_dir = data_dir + '/data/raw/PhoATIS'
+processed_dir = data_dir + '/data/processed/PhoATIS'
+qa_processed = data_dir + '/data/processed/QA'
+checkpoint = 'deepset/roberta-base-squad2'
+tokenizer = AutoTokenizer.from_pretrained(checkpoint)
 # Specify loss function
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
 def CE_loss_fn(pred, label):
     loss = nn.CrossEntropyLoss(reduction='none')(pred, label)
     loss = torch.where(label != 0, loss, torch.tensor([0.]).to(device))
@@ -243,33 +251,122 @@ def evaluate(model, val_dataloader, print_fn=False, crf=False):
     val_accuracy_1 = np.mean(val_accuracy_1)
     val_accuracy_2 = np.mean(val_accuracy_2)
     return val_loss_1, val_loss_2, val_accuracy_1, val_accuracy_2
+def metrics(start, end, l_start, l_end, metrics='acc', test=False):
+  '''
+  compare the pred with label ('l')
+  '''
+  if not test:
+      start, end, l_start, l_end = start.view(-1), end.view(-1), l_start.view(-1), l_end.view(-1)
+      count = 0
+      if metrics == 'acc':
+        for i in range(start.shape[0]):
+          if start[i] == l_start[i] and end[i] == l_end[i]:
+             count += 1 
+        return count/start.shape[0]
+  else:
+      start, end = start.view(-1), end.view(-1)
+      l_start, l_end =  l_start.view(start.shape[0], -1), l_end.view(end.shape[0], -1)
+      count = 0
+      if metrics == 'acc':
+        for i in range(start.shape[0]):
+            start_end = (start[i].item(), end[i].item())
+            l_start_end  = [(m.item(), n.item()) for m, n in zip(l_start[i], l_end[i])]
+            if start_end in l_start_end:
+                count += 1 
+        return count/start.shape[0]
+def metrics_pipeline(mapping, start, end, l_start, l_end):
+    '''
+    convert string idx to token idx , USED IN TEST SET ONLY
+    '''
+    count = 0
+    l_start, l_end =  l_start.view(batch_size, -1), l_end.view(batch_size, -1)
+    for i in range(batch_size):
+        start, end = list(i.item() for i in get_label(mapping[i], '', start, end))
+        start_end = (start, end)
+        l_start_end  = [(m.item(), n.item()) for m, n in zip(l_start[i], l_end[i])]
+        if start_end in l_start_end:
+            count += 1 
+    print("COUNT", count)
+    return count/batch_size
+
+def evaluate_QA(model, val_dataloader, print_fn=False, test=False, pipeline=False):
+    """After the completion of each training epoch, measure the model's performance
+    on our validation set.
+    """
+    # Put the model into the evaluation mode. The dropout layers are disabled during
+    # the test time.
+    model.eval()
+
+    # Tracking variables
+    val_accuracy = []
+    val_loss = []
+    # For each batch in our validation set...
+    count = 0
+    with torch.no_grad():
+      if not pipeline:
+          for batch in val_dataloader:
+                # print(batch)
+                # Load batch to GPU
+                b_input_ids, b_attn_mask, b_start, b_end = tuple(t.to(device) for t in batch)
+
+
+    #             loss, outputs  = model(b_input_ids, b_attn_mask, b_start, b_end)
+                outputs = model(b_input_ids, b_attn_mask)
+                start_logits = outputs['start_logits']
+                end_logits  = outputs['end_logits']
+                print("START, END")
+                start, end = torch.argmax(start_logits, -1), torch.argmax(end_logits, -1)
+    #             val_loss.append(loss.item())
+                val_accuracy.append(metrics(start, end, b_start, b_end, metrics='acc', test=test))
+          val_loss =  np.array(val_loss).mean()
+          val_accuracy = np.array(val_accuracy).mean()
+      else:
+          for batch in val_dataloader:
+                 b_input_ids, b_attn_mask, b_start, b_end, q, c, mapping = batch
+                 q = list(item for item in q)
+                 c = list(item for item in c)
+                 QA_input = {
+                            'question': q,
+                            'context': c
+                        }
+                 res = nlp(QA_input)
+                 start = [item['start'] for item in res]
+                 end = [item['end'] for item in res]
+                 val_accuracy.append(metrics_pipeline(mapping, start, end, b_start, b_end))
+          val_accuracy = np.array(val_accuracy).mean()
+
+                 
+                 
+                
+          
+
+
+
+          
+
+    return val_loss, val_accuracy
 
 if __name__ == '__main__':
-    dataset = IntentPOSDataset(raw_dir, MAX_LENGTH=30)
-    dataloader = data.DataLoader(dataset, batch_size=32, shuffle=True)
-    config = CustomConfig(n_pos=dataset.n_pos, n_intent=dataset.n_intent)
-    sample = next(iter(dataloader))
-    print("SAMPLE", sample[0][0].shape)
-
-    '''
-    define train process
-    '''
-    train_dataset = IntentPOSDataset(raw_dir, mode='train', MAX_LENGTH=30)
-    val_dataset = IntentPOSDataset(raw_dir, mode='dev', MAX_LENGTH=30)
-    train_dataloader = data.DataLoader(train_dataset, batch_size=32, shuffle=True, drop_last=True)
-    val_dataloader = data.DataLoader(val_dataset, batch_size=32, shuffle=True, drop_last=True)
-    net = IntentPOSModule(config)
-    # net = CRFPOS(config)
-    optimizer = AdamW(net.parameters(), lr=3e-5)
+    batch_size = 32
+    device  = 'cuda' if torch.cuda.is_available() else 'cpu'
+    # model = QAModule().to(device)
+    model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
+    optimizer = transformers.AdamW(model.parameters(), lr=5e-5)
     epochs = 9
-    total_steps = len(train_dataloader) * epochs
- 
-    scheduler = get_linear_schedule_with_warmup(optimizer,
-                                                num_warmup_steps=0, # Default value
-                                                num_training_steps=total_steps)
-    accelerator = Accelerator()
-    net, optimizer, train_dataloader, val_dataloader = accelerator.prepare(
-                            net, optimizer, train_dataloader, val_dataloader
-                            )
-    train(net, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=val_dataloader, evaluation=True, overfit_batch=False, crf=False)
-    # print(evaluate(net, val_dataloader, print_fn=True, crf=True))
+
+
+    # total_steps = len(train_loader) * epochs
+    # scheduler = transformers.get_linear_schedule_with_warmup(optimizer,
+    #                                             num_warmup_steps=0, # Default value
+    #                                             num_training_steps=total_steps)
+    test_df = pd.read_csv(qa_processed + '/test.csv')
+    test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test')
+    test_loader = data.DataLoader(test_dataset, batch_size=batch_size)
+    print(evaluate_QA(model, test_loader, test=True))
+    # for i in range(len(test_loader)):
+    #     print(next(iter(test_loader))[-1].shape)
+    # test_df = pd.read_csv(qa_processed + '/test.csv')
+    # test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test')
+    # test_loader = data.DataLoader(test_dataset, batch_size=32)
+    # for i in range(len(test_loader)):
+    #     print(next(iter(test_loader))[-1].shape)
