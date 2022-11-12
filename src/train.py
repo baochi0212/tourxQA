@@ -27,7 +27,7 @@ data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/data/processed/PhoATIS'
 qa_processed = data_dir + '/data/processed/QA'
-checkpoint = 'deepset/roberta-base-squad2'
+checkpoint = 'nguyenvulebinh/vi-mrc-large'
 tokenizer = AutoTokenizer.from_pretrained(checkpoint)
 # Specify loss function
 def CE_loss_fn(pred, label):
