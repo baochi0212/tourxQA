@@ -314,7 +314,7 @@ def evaluate_QA(model, val_dataloader, print_fn=False, test=False, pipeline=Fals
                 outputs = model(b_input_ids, b_attn_mask)
                 start_logits = outputs['start_logits']
                 end_logits  = outputs['end_logits']
-                print("START, END")
+                # print("START, END")
                 start, end = torch.argmax(start_logits, -1), torch.argmax(end_logits, -1)
     #             val_loss.append(loss.item())
                 val_accuracy.append(metrics(start, end, b_start, b_end, metrics='acc', test=test))
