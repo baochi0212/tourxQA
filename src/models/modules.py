@@ -74,6 +74,7 @@ class QAModule(torch.nn.Module):
     logits = self.relu(self.linear(outputs))
     
     start_logits, end_logits = logits[:, :, 0], logits[:, :, 1]
+    print("XXXXX", start_logits.shape, start.shape)
     if start is not None:
       loss = self.loss_fn(start_logits, start) + self.loss_fn(end_logits, end)
 #       return loss, outputs

@@ -339,7 +339,7 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
             print("????", b_input_ids.shape, b_attn_mask.shape, b_end.shape, b_start.shape)
             # Zero out any previously calculated gradients
             optimizer.zero_grad()
-            # print(b_input_ids.shape, b_attn_mask.shape)
+            print(b_input_ids.shape, b_attn_mask.shape)
             # Perform a forward pass. This will return logits.
             loss, _ = model(b_input_ids, b_attn_mask, b_end, b_start)
             batch_loss += loss.item()
