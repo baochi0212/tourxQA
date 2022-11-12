@@ -461,9 +461,10 @@ if __name__ == '__main__':
     test_df = pd.read_csv(qa_processed + '/test.csv')
     train_dataset = QADataset(test_df, tokenizer=tokenizer, mode='train')
     val_dataset = QADataset(val_df, tokenizer=tokenizer, mode='test')
-    test_dataset = QADataset(val_df, tokenizer=tokenizer, mode='test')
+    test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test')
     train_loader = data.DataLoader(train_dataset, batch_size=batch_size)
-    val_loader = data.DataLoader(val_dataset, batch_size=batch_size, mode='test')
+    val_loader = data.DataLoader(val_dataset, batch_size=batch_size)
+    test_loader = data.DataLoader(test_dataset, batch_size=batch_size)
 
     total_steps = len(train_loader) * epochs
     scheduler = transformers.get_linear_schedule_with_warmup(optimizer,
