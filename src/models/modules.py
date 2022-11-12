@@ -68,7 +68,7 @@ class QAModule(torch.nn.Module):
     self.loss_fn = CE_loss_fn
    
   def forward(self, input_ids, attention_mask, start=None, end=None ):
-    print("INPUT")
+    print("INPUT", input_ids.shape, attention_mask.shape)
     outputs = self.bert_model(input_ids=input_ids, attention_mask=attention_mask)['last_hidden_state']
     print("OUTPUS", outputs.shape)
 #     print("outputs", outputs.shape)
