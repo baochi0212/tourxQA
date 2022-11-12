@@ -286,6 +286,9 @@ def metrics_pipeline(mapping, start, end, l_start, l_end):
         l_start_end  = [(m.item(), n.item()) for m, n in zip(l_start[i], l_end[i])]
         if start_end in l_start_end:
             count += 1 
+        else:
+            print("PRED: ", start_end)
+            print("LABEL: ", l_start_end)
     print("COUNT", count)
     return count/batch_size
 
@@ -359,7 +362,7 @@ if __name__ == '__main__':
     # scheduler = transformers.get_linear_schedule_with_warmup(optimizer,
     #                                             num_warmup_steps=0, # Default value
     #                                             num_training_steps=total_steps)
-    test_df = pd.read_csv(qa_processed + '/test.csv')
+    test_df = pd.read_csv(qa_processed + '/dev.csv')
     test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test')
     test_loader = data.DataLoader(test_dataset, batch_size=batch_size)
     print(evaluate_QA(model.to(device), test_loader, test=True))
