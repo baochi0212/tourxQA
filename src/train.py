@@ -449,7 +449,7 @@ def evaluate_QA(model, val_dataloader, print_fn=False, test=False, pipeline=Fals
     return val_loss, val_accuracy
 
 if __name__ == '__main__':
-    batch_size = 32
+    batch_size = 16
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
     # checkpoint = 'vinai/phobert-base'
     model = QAModule(model_checkpoint=checkpoint).to(device)
