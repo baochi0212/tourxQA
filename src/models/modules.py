@@ -61,6 +61,11 @@ class QAModule(torch.nn.Module):
     self.linear = torch.nn.Linear(hidden, 2)
     self.relu = torch.nn.ReLU()
     self.loss_fn = CE_loss_fn
+    def CE_loss_fn(pred, label):
+    #     print("pred", pred.shape)
+        loss = torch.nn.CrossEntropyLoss(reduction='none')(pred, label)
+        loss = torch.where(label != 0, loss, torch.tensor(0, dtype=torch.float).to(device))
+        return loss.mean()
   def forward(self, input_ids, attention_mask, start=None, end=None ):
     outputs = self.bert_model(input_ids=input_ids, attention_mask=attention_mask)['last_hidden_state']
 #     print("outputs", outputs.shape)
@@ -78,7 +83,7 @@ class QAModule(torch.nn.Module):
 
 
       
-
+ 
 if __name__ == '__main__':
     dataset = IntentPOSDataset(raw_dir, MAX_LENGTH=30)
     dataloader = data.DataLoader(dataset, batch_size=32, shuffle=True)
