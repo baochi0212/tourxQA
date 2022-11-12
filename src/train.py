@@ -456,18 +456,23 @@ if __name__ == '__main__':
     optimizer = transformers.AdamW(model.parameters(), lr=5e-5)
     epochs = 9
 
-
-    # total_steps = len(train_loader) * epochs
-    # scheduler = transformers.get_linear_schedule_with_warmup(optimizer,
-    #                                             num_warmup_steps=0, # Default value
-    #                                             num_training_steps=total_steps)
     train_df = pd.read_csv(qa_processed + '/train.csv')
     val_df = pd.read_csv(qa_processed + '/dev.csv')
     test_df = pd.read_csv(qa_processed + '/test.csv')
     train_dataset = QADataset(test_df, tokenizer=tokenizer, mode='train')
+    val_dataset = QADataset(val_df, tokenizer=tokenizer, mode='test')
     test_dataset = QADataset(val_df, tokenizer=tokenizer, mode='test')
-    test_loader = data.DataLoader(train_dataset, batch_size=batch_size)
-    print(evaluate_QA(model.to(device), test_loader, test=False))
+    train_loader = data.DataLoader(train_dataset, batch_size=batch_size)
+    val_loader = data.DataLoader(val_dataset, batch_size=batch_size, mode='test')
+
+    total_steps = len(train_loader) * epochs
+    scheduler = transformers.get_linear_schedule_with_warmup(optimizer,
+                                                num_warmup_steps=0, # Default value
+                                                num_training_steps=total_steps)
+
+    train_QA(model, optimizer, scheduler, train_loader, total_steps, epochs, val_dataloader=val_loader, evaluation=True, overfit_batch=False)
+    # test_loader = data.DataLoader(train_dataset, batch_size=batch_size)
+    # print(evaluate_QA(model.to(device), test_loader, test=False))
     # for i in range(len(test_loader)):
     #     print(next(iter(test_loader))[-1].shape)
     # test_df = pd.read_csv(qa_processed + '/test.csv')
