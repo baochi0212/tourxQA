@@ -27,7 +27,7 @@ data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/data/processed/PhoATIS'
 qa_processed = data_dir + '/data/processed/QA'
-checkpoint = 'nguyenvulebinh/vi-mrc-large'
+tokenizer_checkpoint = 'nguyenvulebinh/vi-mrc-large'
 
 # Specify loss function
 def CE_loss_fn(pred, label):
@@ -449,11 +449,11 @@ def evaluate_QA(model, val_dataloader, print_fn=False, test=False, pipeline=Fals
     return val_loss, val_accuracy
 
 if __name__ == '__main__':
-    batch_size = 16
+    batch_size = 16 
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
-    # checkpoint = 'vinai/phobert-base'
-    model = QAModule(model_checkpoint=checkpoint).to(device)
-    tokenizer = AutoTokenizer.from_pretrained(checkpoint)
+    model_checkpoint = 'vinai/phobert-base'
+    model = QAModule(model_checkpoint=model_checkpoint).to(device)
+    tokenizer = AutoTokenizer.from_pretrained(tokenizer_checkpoint)
     # model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
     optimizer = transformers.AdamW(model.parameters(), lr=5e-5)
     epochs = 9
