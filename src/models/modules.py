@@ -54,18 +54,19 @@ class CRFPOS(nn.Module):
         crf_pos = nn.functional.relu(self.pos_head(x['last_hidden_state']))
         return torch.sigmoid(nn.functional.relu(self.intent_head(x['last_hidden_state'].mean(dim=1)))), crf_pos, -self.CRF(crf_pos.permute(1, 0, 2), pos_label.permute(1, 0))
 class QAModule(torch.nn.Module):
-  def __init__(self, hidden=768, out=500):
+  def __init__(self, model_checkpoint, hidden=768, out=386):
     super().__init__()
-#     self.bert_qa = AutoModelForQuestionAnswering.from_pretrained(model_checkpoint).cuda()
-    self.bert_model = AutoModel.from_pretrained(model_checkpoint)
-    self.linear = torch.nn.Linear(hidden, 2)
-    self.relu = torch.nn.ReLU()
-    self.loss_fn = CE_loss_fn
     def CE_loss_fn(pred, label):
     #     print("pred", pred.shape)
         loss = torch.nn.CrossEntropyLoss(reduction='none')(pred, label)
         loss = torch.where(label != 0, loss, torch.tensor(0, dtype=torch.float).to(device))
         return loss.mean()
+#     self.bert_qa = AutoModelForQuestionAnswering.from_pretrained(model_checkpoint).cuda()
+    self.bert_model = AutoModel.from_pretrained(model_checkpoint)
+    self.linear = torch.nn.Linear(hidden, 2)
+    self.relu = torch.nn.ReLU()
+    self.loss_fn = CE_loss_fn
+   
   def forward(self, input_ids, attention_mask, start=None, end=None ):
     outputs = self.bert_model(input_ids=input_ids, attention_mask=attention_mask)['last_hidden_state']
 #     print("outputs", outputs.shape)

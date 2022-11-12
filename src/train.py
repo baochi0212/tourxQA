@@ -451,7 +451,7 @@ def evaluate_QA(model, val_dataloader, print_fn=False, test=False, pipeline=Fals
 if __name__ == '__main__':
     batch_size = 32
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
-    checkpoint = 'vinai/phobert-base'
+    # checkpoint = 'vinai/phobert-base'
     model = QAModule(model_checkpoint=checkpoint).to(device)
     tokenizer = AutoTokenizer.from_pretrained(checkpoint)
     # model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
