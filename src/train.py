@@ -27,7 +27,7 @@ data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/data/processed/PhoATIS'
 qa_processed = data_dir + '/data/processed/QA'
-tokenizer_checkpoint = 'nguyenvulebinh/vi-mrc-large'
+tokenizer_checkpoint = 'NlpHUST/bert-base-vn'
 
 # Specify loss function
 def CE_loss_fn(pred, label):
@@ -336,16 +336,17 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
             if overfit_batch:
                 batch = fixed_batch
             b_input_ids, b_attn_mask, b_end, b_start = tuple(t.to(device) for t in batch)
-            print("????", b_input_ids.shape, b_attn_mask.shape, b_end.shape, b_start.shape)
             # Zero out any previously calculated gradients
             optimizer.zero_grad()
-            print(b_input_ids.shape, b_attn_mask.shape)
+            # print(b_input_ids.shape, b_attn_mask.shape)
             # Perform a forward pass. This will return logits.
             loss, _ = model(b_input_ids, b_attn_mask, b_end, b_start)
+            
             batch_loss += loss.item()
             total_loss += loss.item()
             # Perform a backward pass to calculate gradients
             loss.backward()
+            
             '''
             END!!!! (MODIFY THE VAL LOADER AS WELL, and maybe LOSS PRINTER)
             '''
@@ -451,8 +452,8 @@ def evaluate_QA(model, val_dataloader, print_fn=False, test=False, pipeline=Fals
 if __name__ == '__main__':
     batch_size = 16 
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
-    model_checkpoint = 'vinai/phobert-base'
-    model = QAModule(model_checkpoint=model_checkpoint).to(device)
+    model_checkpoint = 'NlpHUST/bert-base-vn'
+    model = QAModule(model_checkpoint=model_checkpoint, device=device).to(device)
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_checkpoint)
     # model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
     optimizer = transformers.AdamW(model.parameters(), lr=5e-5)

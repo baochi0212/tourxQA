@@ -7,12 +7,18 @@ import torch.nn as nn
 import torchvision
 from torch.utils import data
 from torchcrf import CRF
+import pandas as pd
 
-from transformers import AutoModel, AutoTokenizer
+from transformers import AutoModel, AutoTokenizer, RobertaModel
 from dataset.test_dataset import IntentPOSDataset
+import transformers
+from transformers import AutoModelForQuestionAnswering, AutoTokenizer, AdamW, get_linear_schedule_with_warmup
+from dataset.test_dataset import IntentPOSDataset, QADataset
+from utils.preprocess import get_label
 data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/ta/processed/PhoATIS'
+qa_processed = data_dir + '/data/processed/QA'
 class CustomConfig:
     def __init__(self, n_intent, n_pos, embedding_size=768):
         self.embedding_size = embedding_size
@@ -54,7 +60,7 @@ class CRFPOS(nn.Module):
         crf_pos = nn.functional.relu(self.pos_head(x['last_hidden_state']))
         return torch.sigmoid(nn.functional.relu(self.intent_head(x['last_hidden_state'].mean(dim=1)))), crf_pos, -self.CRF(crf_pos.permute(1, 0, 2), pos_label.permute(1, 0))
 class QAModule(torch.nn.Module):
-  def __init__(self, model_checkpoint, hidden=768, out=386):
+  def __init__(self, model_checkpoint, device, hidden=768, out=386):
     super().__init__()
     def CE_loss_fn(pred, label):
     #     print("pred", pred.shape)
@@ -67,16 +73,13 @@ class QAModule(torch.nn.Module):
     self.relu = torch.nn.ReLU()
     self.loss_fn = CE_loss_fn
    
-  def forward(self, input_ids, attention_mask, start=None, end=None ):
-    print("INPUT", input_ids.shape, attention_mask.shape)
+  def forward(self, input_ids, attention_mask, start=None, end=None):
     outputs = self.bert_model(input_ids=input_ids, attention_mask=attention_mask)['last_hidden_state']
-    print("OUTPUS", outputs.shape)
+
 #     print("outputs", outputs.shape)
 #     start_logits, end_logits = outputs['start_logits'], outputs['end_logits']
     logits = self.relu(self.linear(outputs))
-    
     start_logits, end_logits = logits[:, :, 0], logits[:, :, 1]
-    print("XXXXX", start_logits.shape, start.shape)
     if start is not None:
       loss = self.loss_fn(start_logits, start) + self.loss_fn(end_logits, end)
 #       return loss, outputs
@@ -89,13 +92,21 @@ class QAModule(torch.nn.Module):
       
  
 if __name__ == '__main__':
-    dataset = IntentPOSDataset(raw_dir, MAX_LENGTH=30)
-    dataloader = data.DataLoader(dataset, batch_size=32, shuffle=True)
-    config = CustomConfig(n_pos=dataset.n_pos, n_intent=dataset.n_intent)
-    # net = IntentPOSModule(config)
-    net = CRFPOS(config)
-    sample = next(iter(dataloader))
-    # print("sample: ", sample[0]['input_ids'].shape, sample[0]['attention_mask'].shape)
-    # print("test output: ", net(sample[0], sample[1])[0].shape, net(sample[0], sample[1])[1].shape, sample[1].shape, sample[2].shape)
-    print("test output: ", net(sample[0], sample[-1], sample[1])[2])
+    model_checkpoint = 'NlpHUST/bert-base-vn'
+    model = QAModule(model_checkpoint=model_checkpoint)
+    tokenizer_checkpoint = 'NlpHUST/bert-base-vn'
+    # model = RobertaModel.from_pretrained(model_checkpoint)
+    tokenizer = AutoTokenizer.from_pretrained(tokenizer_checkpoint)
+    train_df = pd.read_csv(qa_processed + '/train.csv')
+    train_dataset = QADataset(train_df, tokenizer=tokenizer, mode='train')
+    train_loader = data.DataLoader(train_dataset, batch_size=32)
+    device = 'cpu'
+    batch = next(iter(train_loader))
+    b_input_ids, b_attn_mask, b_end, b_start = tuple(t.to(device) for t in batch)
+
+    input = tokenizer("DIT CON ME", return_tensors='pt',
+            max_length=258,
+            truncation="only_second",
+            padding="max_length",)
+    print(model(b_input_ids, b_attn_mask, b_start, b_end))
 
