@@ -85,7 +85,7 @@ class QAModule(torch.nn.Module):
 #       return loss, outputs
       return loss, {'start_logits':  start_logits, 'end_logits': end_logits}
     else:
-      return start_logits, end_logits
+      return {'start_logits':  start_logits, 'end_logits': end_logits}
 
 
 
