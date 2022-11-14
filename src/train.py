@@ -278,6 +278,9 @@ def metrics(start, end, l_start, l_end, metrics='acc', test=False):
             l_start_end  = [(m.item(), n.item()) for m, n in zip(l_start[i], l_end[i])]
             if start_end in l_start_end:
                 count += 1 
+                if count % 10 == 0:
+                    print("SAMPLE", start_end, l_start_end)
+        print("COUNT": count)
         return count/start.shape[0]
 def metrics_pipeline(mapping, start, end, l_start, l_end):
     '''
