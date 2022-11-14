@@ -28,3 +28,4 @@ python3 main.py --token_level word-level \
                   --intent_loss_coef $c \
                   --learning_rate $lr \
                   --use_crf \
+                  
