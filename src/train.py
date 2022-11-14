@@ -425,10 +425,16 @@ def evaluate_QA(model, val_dataloader, device, print_fn=False, test=False, pipel
                     loss, outputs  = model(b_input_ids, b_attn_mask, b_start_sub, b_end_sub)
                     val_loss.append(loss.item())
                 else:
+
                     outputs = model(b_input_ids, b_attn_mask)
+                    #double check
+                    count += 1
                 start_logits = outputs['start_logits']
                 end_logits  = outputs['end_logits']
                 start, end = torch.argmax(start_logits, -1), torch.argmax(end_logits, -1)
+                if count == 1:
+                    print("Q and C: ", tokenizer.decode(b_input_ids[0]))
+                    print("answers:", tokenizer.decode(b_input_ids[0][start[0]:end[0]+1]))
                 #in squad-v2 val is same as train (1-label) but in Vi-squad it's multi-label
                 val_accuracy.append(metrics(start, end, b_start, b_end, metrics='acc', test=True))
           val_loss =  np.array(val_loss).mean()
