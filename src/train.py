@@ -33,6 +33,7 @@ raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/data/processed/PhoATIS'
 qa_processed = data_dir + '/data/processed/QA'
 tokenizer_checkpoint = 'NlpHUST/bert-base-vn'
+tokenizer = AutoTokenizer.from_pretrained(tokenizer_checkpoint)
 
 # Specify loss function
 def CE_loss_fn(pred, label):
