@@ -391,12 +391,13 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
         if evaluation == True:
             # After the completion of each training epoch, measure the model's performance
             # on our validation set.
+            _, train_accuracy = evaluate(model, train_dataloader, device=device)
             val_loss, val_accuracy = evaluate_QA(model, val_dataloader, device=device)
 
             # Print performance over the entire training data
             time_elapsed = time.time() - t0_epoch
             
-            print(f"{epoch_i + 1:^7} | {'-':^7} | {avg_train_loss:^12.6f}| {val_loss:^10.6f} | {val_accuracy:^9.2f} | {time_elapsed:^9.2f}")
+            print(f"{epoch_i + 1:^7} | {'-':^7} | {avg_train_loss:^12.6f}| {val_loss:^10.6f} | {val_accuracy:^9.2f}, {train_accuracy:^9.2f} | {time_elapsed:^9.2f}")
             print("-"*70)
         print("\n")
     print("Training complete!")
@@ -434,9 +435,9 @@ def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=Fal
                 start_logits = outputs['start_logits']
                 end_logits  = outputs['end_logits']
                 start, end = torch.argmax(start_logits, -1), torch.argmax(end_logits, -1)
-                if count % 3 == 0:
-                    print("Q and C: ", tokenizer.decode(b_input_ids[0]))
-                    print("answers:", tokenizer.decode(b_input_ids[0][start[0]:end[0]+1]))
+                # if count % 3 == 0:
+                #     print("Q and C: ", tokenizer.decode(b_input_ids[0]))
+                #     print("answers:", tokenizer.decode(b_input_ids[0][start[0]:end[0]+1]))
                 # in squad-v2 val is same as train (1-label) but in Vi-squad it's multi-label
                 val_accuracy.append(metrics(start, end, b_start, b_end, metrics='acc', test=True))
           val_loss =  np.array(val_loss).mean()
