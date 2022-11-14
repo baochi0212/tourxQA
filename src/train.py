@@ -400,7 +400,7 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
         print("\n")
     print("Training complete!")
 
-def evaluate_QA(model, val_dataloader, device, print_fn=False, test=False, pipeline=False):
+def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=False, test=False, pipeline=False):
     """After the completion of each training epoch, measure the model's performance
     on our validation set.
     """
