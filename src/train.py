@@ -19,7 +19,11 @@ from transformers import AutoModelForQuestionAnswering, AutoTokenizer, AdamW, ge
 from dataset.test_dataset import IntentPOSDataset, QADataset
 from models.modules import IntentPOSModule, CRFPOS, CustomConfig, QAModule
 from utils.preprocess import get_label
+import argparse
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--n_epochs', default=9, type=int, help='Number of epochs')
+parser.add_argument('--batch_size', default=32, type=int, help='Number of epochs')
 data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/ta/processed/PhoATIS'
@@ -452,14 +456,15 @@ def evaluate_QA(model, val_dataloader, print_fn=False, test=False, pipeline=Fals
     return val_loss, val_accuracy
 
 if __name__ == '__main__':
-    batch_size = 32
+    args = parser.parse_args()
+    batch_size = args.batch_size
+    epochs = args.n_epochs
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
     model_checkpoint = 'NlpHUST/bert-base-vn'
     model = QAModule(model_checkpoint=model_checkpoint, device=device).to(device)
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_checkpoint)
     # model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
     optimizer = transformers.AdamW(model.parameters(), lr=1e-5)
-    epochs = 9
     model_path = './models/weights/model.pt'
 
     train_df = pd.read_csv(qa_processed + '/train.csv')
