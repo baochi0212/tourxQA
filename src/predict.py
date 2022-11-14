@@ -46,6 +46,6 @@ if __name__ == '__main__':
 
     model.load_state_dict(torch.load(model_path))
     model.eval()
-    print(evaluate_QA(model.to(device), test_loader, test=True))
+    print(evaluate_QA(model.to(device), test_loader, device=device, test=True))
 
 

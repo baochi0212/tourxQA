@@ -296,7 +296,7 @@ def metrics_pipeline(mapping, start, end, l_start, l_end):
     print("COUNT", count)
     return count/batch_size
 
-def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs, val_dataloader=None, evaluation=False, overfit_batch=False):
+def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs, device, val_dataloader=None, evaluation=False, overfit_batch=False):
     """
     -Set the val to None: if don't wanna keep track of validation.
     -Overfit one batch: for check sanity of model
@@ -396,7 +396,7 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
         print("\n")
     print("Training complete!")
 
-def evaluate_QA(model, val_dataloader, print_fn=False, test=False, pipeline=False):
+def evaluate_QA(model, val_dataloader, device, print_fn=False, test=False, pipeline=False):
     """After the completion of each training epoch, measure the model's performance
     on our validation set.
     """
@@ -482,7 +482,7 @@ if __name__ == '__main__':
                                                 num_warmup_steps=0, # Default value
                                                 num_training_steps=total_steps)
 
-    train_QA(model.to(device), optimizer, scheduler, train_loader, total_steps, epochs, val_dataloader=val_loader, evaluation=True, overfit_batch=False)
+    train_QA(model.to(device), optimizer, scheduler, train_loader, total_steps, epochs, device=device, val_dataloader=val_loader, evaluation=True, overfit_batch=False)
     model.eval()
     torch.save(model.state_dict(), model_path)
 
