@@ -295,10 +295,10 @@ def metrics_pipeline(mapping, start, end, l_start, l_end):
         l_start_end  = [(m.item(), n.item()) for m, n in zip(l_start[i], l_end[i])]
         if start_end in l_start_end:
             count += 1 
-        else:
-            print("PRED: ", start_end)
-            print("LABEL: ", l_start_end)
-    print("COUNT", count)
+        # else:
+        #     print("PRED: ", start_end)
+        #     print("LABEL: ", l_start_end)
+    # print("COUNT", count)
     return count/batch_size
 
 def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs, device, val_dataloader=None, evaluation=False, overfit_batch=False):
