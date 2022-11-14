@@ -144,14 +144,14 @@ def get_label(off_set_map, text, start, end=False):
 def string2list(text, type='str'):
     '''Convert a list_string to original list''' 
     ''' 1-D arr'''
-        if type == 'int':
-            text = list([int(i) for i in re.sub('[\[\]]', '' , text).split(',')])
-        if type == 'str':
-            temp = []
-            for i in text.split('@@@'):
-                if i != '':
-                    temp.append(i)
-            text = temp
+    if type == 'int':
+        text = list([int(i) for i in re.sub('[\[\]]', '' , text).split(',')])
+    if type == 'str':
+        temp = []
+        for i in text.split('@@@'):
+            if i != '':
+                temp.append(i)
+        text = temp
 
 
     return text
