@@ -425,6 +425,7 @@ def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=Fal
                 if not test:
                     loss, outputs  = model(b_input_ids, b_attn_mask, b_start_sub, b_end_sub)
                     val_loss.append(loss.item())
+                    count += 1 
                 else:
 
                     outputs = model(b_input_ids, b_attn_mask)
