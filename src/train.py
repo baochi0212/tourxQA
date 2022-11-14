@@ -406,6 +406,7 @@ def evaluate_QA(model, val_dataloader, print_fn=False, test=False, pipeline=Fals
     # For each batch in our validation set...
     count = 0
     with torch.no_grad():
+      #if using the pipeline API of huggingface
       if not pipeline:
           for batch in val_dataloader:
                 # print(batch)
@@ -478,7 +479,7 @@ if __name__ == '__main__':
 
     train_QA(model.to(device), optimizer, scheduler, train_loader, total_steps, epochs, val_dataloader=val_loader, evaluation=True, overfit_batch=False)
     # test_loader = data.DataLoader(train_dataset, batch_size=batch_size)
-    # print(evaluate_QA(model.to(device), test_loader, test=False))
+    # print(evaluate_QA(model.to(device), test_loader, test=True))
     # for i in range(len(test_loader)):
     #     print(next(iter(test_loader))[-1].shape)
     # test_df = pd.read_csv(qa_processed + '/test.csv')
