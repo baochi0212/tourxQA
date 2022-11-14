@@ -23,7 +23,8 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--n_epochs', default=9, type=int, help='Number of epochs')
-parser.add_argument('--batch_size', default=32, type=int, help='Number of epochs')
+parser.add_argument('--batch_size', default=32, type=int, help='Batch size')
+parser.add_argument('--learning_rate', default=3e-5, type=float, help="Learning rate")
 data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/ta/processed/PhoATIS'
@@ -459,12 +460,13 @@ if __name__ == '__main__':
     args = parser.parse_args()
     batch_size = args.batch_size
     epochs = args.n_epochs
+    lr = args.learning_rate
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
     model_checkpoint = 'NlpHUST/bert-base-vn'
     model = QAModule(model_checkpoint=model_checkpoint, device=device).to(device)
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_checkpoint)
     # model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
-    optimizer = transformers.AdamW(model.parameters(), lr=5e-4)
+    optimizer = transformers.AdamW(model.parameters(), lr=lr)
     model_path = './models/weights/model.pt'
 
     train_df = pd.read_csv(qa_processed + '/train.csv')
