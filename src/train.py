@@ -464,7 +464,7 @@ if __name__ == '__main__':
     model = QAModule(model_checkpoint=model_checkpoint, device=device).to(device)
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_checkpoint)
     # model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
-    optimizer = transformers.AdamW(model.parameters(), lr=1e-5)
+    optimizer = transformers.AdamW(model.parameters(), lr=5e-4)
     model_path = './models/weights/model.pt'
 
     train_df = pd.read_csv(qa_processed + '/train.csv')
@@ -485,13 +485,3 @@ if __name__ == '__main__':
     train_QA(model.to(device), optimizer, scheduler, train_loader, total_steps, epochs, device=device, val_dataloader=val_loader, evaluation=True, overfit_batch=False)
     model.eval()
     torch.save(model.state_dict(), model_path)
-
-    # test_loader = data.DataLoader(train_dataset, batch_size=batch_size)
-    # print(evaluate_QA(model.to(device), val_loader, test=False))
-    # for i in range(len(test_loader)):
-    #     print(next(iter(test_loader))[-1].shape)
-    # test_df = pd.read_csv(qa_processed + '/test.csv')
-    # test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test')
-    # test_loader = data.DataLoader(test_dataset, batch_size=32)
-    # for i in range(len(test_loader)):
-    #     print(next(iter(test_loader))[-1].shape)
