@@ -32,7 +32,7 @@ tokenizer_checkpoint = 'NlpHUST/bert-base-vn'
 
 
 if __name__ == '__main__':
-    batch_size = 32
+    batch_size = 16
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
     model_checkpoint = 'NlpHUST/bert-base-vn'
     model = QAModule(model_checkpoint=model_checkpoint, device=device).to(device)
