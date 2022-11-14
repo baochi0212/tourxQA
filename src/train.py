@@ -479,7 +479,7 @@ if __name__ == '__main__':
 
     # train_QA(model.to(device), optimizer, scheduler, train_loader, total_steps, epochs, val_dataloader=val_loader, evaluation=True, overfit_batch=False)
     # test_loader = data.DataLoader(train_dataset, batch_size=batch_size)
-    print(evaluate_QA(model.to(device), val_loader, test=True))
+    print(evaluate_QA(model.to(device), val_loader, test=False))
     # for i in range(len(test_loader)):
     #     print(next(iter(test_loader))[-1].shape)
     # test_df = pd.read_csv(qa_processed + '/test.csv')
