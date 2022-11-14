@@ -421,6 +421,7 @@ def evaluate_QA(model, val_dataloader, print_fn=False, test=False, pipeline=Fals
                 start_logits = outputs['start_logits']
                 end_logits  = outputs['end_logits']
                 start, end = torch.argmax(start_logits, -1), torch.argmax(end_logits, -1)
+                #in squad-v2 val is same as train (1-label) but in Vi-squad it's multi-label
                 val_accuracy.append(metrics(start, end, b_start, b_end, metrics='acc', test=True))
           val_loss =  np.array(val_loss).mean()
           val_accuracy = np.array(val_accuracy).mean()
