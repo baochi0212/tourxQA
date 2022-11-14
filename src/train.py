@@ -412,10 +412,9 @@ def evaluate_QA(model, val_dataloader, print_fn=False, test=False, pipeline=Fals
                 # print(batch)
                 # Load batch to GPU
                 b_input_ids, b_attn_mask, b_start, b_end = tuple(t.to(device) for t in batch)
-
-
+                b_start_sub, b_end_sub = b_start[:, 0], b_end[:, 0]
                 if not test:
-                    loss, outputs  = model(b_input_ids, b_attn_mask, b_start, b_end)
+                    loss, outputs  = model(b_input_ids, b_attn_mask, b_start_sub, b_end_sub)
                     val_loss.append(loss.item())
                 else:
                     outputs = model(b_input_ids, b_attn_mask)
