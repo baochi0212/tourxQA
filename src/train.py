@@ -386,7 +386,7 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
         if evaluation == True:
             # After the completion of each training epoch, measure the model's performance
             # on our validation set.
-            val_loss, val_accuracy = evaluate_QA(model, val_dataloader)
+            val_loss, val_accuracy = evaluate_QA(model, val_dataloader, device=device)
 
             # Print performance over the entire training data
             time_elapsed = time.time() - t0_epoch
