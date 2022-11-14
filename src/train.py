@@ -476,9 +476,9 @@ if __name__ == '__main__':
                                                 num_warmup_steps=0, # Default value
                                                 num_training_steps=total_steps)
 
-    # train_QA(model.to(device), optimizer, scheduler, train_loader, total_steps, epochs, val_dataloader=val_loader, evaluation=True, overfit_batch=False)
+    train_QA(model.to(device), optimizer, scheduler, train_loader, total_steps, epochs, val_dataloader=val_loader, evaluation=True, overfit_batch=False)
     # test_loader = data.DataLoader(train_dataset, batch_size=batch_size)
-    print(evaluate_QA(model.to(device), val_loader, test=False))
+    # print(evaluate_QA(model.to(device), val_loader, test=False))
     # for i in range(len(test_loader)):
     #     print(next(iter(test_loader))[-1].shape)
     # test_df = pd.read_csv(qa_processed + '/test.csv')
