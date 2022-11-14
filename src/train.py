@@ -356,7 +356,7 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
 
             # Update parameters and the learning rate
             optimizer.step()
-            # scheduler.step()
+            scheduler.step()
             run.update(1)
             
 
@@ -452,14 +452,15 @@ def evaluate_QA(model, val_dataloader, print_fn=False, test=False, pipeline=Fals
     return val_loss, val_accuracy
 
 if __name__ == '__main__':
-    batch_size = 16 
+    batch_size = 32
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
     model_checkpoint = 'NlpHUST/bert-base-vn'
     model = QAModule(model_checkpoint=model_checkpoint, device=device).to(device)
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_checkpoint)
     # model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
-    optimizer = transformers.AdamW(model.parameters(), lr=5e-5)
+    optimizer = transformers.AdamW(model.parameters(), lr=1e-5)
     epochs = 9
+    model_path = './models/weights/model.pt'
 
     train_df = pd.read_csv(qa_processed + '/train.csv')
     val_df = pd.read_csv(qa_processed + '/dev.csv')
@@ -477,6 +478,9 @@ if __name__ == '__main__':
                                                 num_training_steps=total_steps)
 
     train_QA(model.to(device), optimizer, scheduler, train_loader, total_steps, epochs, val_dataloader=val_loader, evaluation=True, overfit_batch=False)
+    model.eval()
+    torch.save(model.state_dict(), model_path)
+
     # test_loader = data.DataLoader(train_dataset, batch_size=batch_size)
     # print(evaluate_QA(model.to(device), val_loader, test=False))
     # for i in range(len(test_loader)):
