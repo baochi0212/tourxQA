@@ -55,7 +55,7 @@ if __name__ == '__main__':
     model_path = './models/weights/model.pt'
 
     test_df = pd.read_csv(qa_processed + '/test.csv') if mode == 'test' else pd.read_csv(qa_processed + '/test.csv')
-    test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test', max_length=max_length)
+    test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test', MAX_LENGTH=max_length)
     test_loader = data.DataLoader(test_dataset, batch_size=batch_size)
 
     model.load_state_dict(torch.load(model_path))
