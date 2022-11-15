@@ -38,7 +38,7 @@ parser.add_argument('--batch_size', default=32, type=int, help='Batch size')
 parser.add_argument('--learning_rate', default=3e-5, type=float, help="Learning rate")
 parser.add_argument('--pretrained_model', default='NlpHUST/bert-base-vn', type=str)
 parser.add_argument('--pretrained_input', default=768, type=int)
-parser.add_argument('--predict_mode', default='test', type=str')
+parser.add_argument('--predict_mode', default='test', type=str)
 
 if __name__ == '__main__':
     args = parser.parse_args()
