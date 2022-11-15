@@ -39,11 +39,13 @@ parser.add_argument('--learning_rate', default=3e-5, type=float, help="Learning 
 parser.add_argument('--pretrained_model', default='NlpHUST/bert-base-vn', type=str)
 parser.add_argument('--pretrained_input', default=768, type=int)
 parser.add_argument('--predict_mode', default='test', type=str)
+parser.add_argument('--max_length', default=500, type=int)
 
 if __name__ == '__main__':
     args = parser.parse_args()
     batch_size = args.batch_size
     mode = args.predict_mode
+    max_length = args.max_length
 
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
     model_checkpoint = args.pretrained_model
@@ -52,8 +54,8 @@ if __name__ == '__main__':
     # model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
     model_path = './models/weights/model.pt'
 
-    test_df = pd.read_csv(qa_processed + '/test.csv') if mode == 'test' else pd.read_csv(qa_processed + '/dev.csv')
-    test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test')
+    test_df = pd.read_csv(qa_processed + '/test.csv') if mode == 'test' else pd.read_csv(qa_processed + '/test.csv')
+    test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test', max_length=max_length)
     test_loader = data.DataLoader(test_dataset, batch_size=batch_size)
 
     model.load_state_dict(torch.load(model_path))

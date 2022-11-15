@@ -27,6 +27,7 @@ parser.add_argument('--batch_size', default=32, type=int, help='Batch size')
 parser.add_argument('--learning_rate', default=3e-5, type=float, help="Learning rate")
 parser.add_argument('--pretrained_model', default='NlpHUST/bert-base-vn', type=str)
 parser.add_argument('--pretrained_input', default=768, type=int)
+parser.add_argument('--max_length', default=500, type=int)
 data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/ta/processed/PhoATIS'
@@ -481,6 +482,7 @@ if __name__ == '__main__':
     epochs = args.n_epochs
     model_checkpoint = args.pretrained_model
     lr = args.learning_rate
+    max_length = args.max_length
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
     
     model = QAModule(model_checkpoint=model_checkpoint, device=device, hidden=args.pretrained_input).to(device)
@@ -495,9 +497,9 @@ if __name__ == '__main__':
     train_df = pd.read_csv(qa_processed + '/train.csv')
     val_df = pd.read_csv(qa_processed + '/dev.csv')
     test_df = pd.read_csv(qa_processed + '/test.csv')
-    train_dataset = QADataset(test_df, tokenizer=tokenizer, mode='train')
-    val_dataset = QADataset(val_df, tokenizer=tokenizer, mode='test')
-    test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test')
+    train_dataset = QADataset(test_df, tokenizer=tokenizer, mode='train', max_length=max_length)
+    val_dataset = QADataset(val_df, tokenizer=tokenizer, mode='test', max_length=max_length)
+    test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test', max_length=max_length)
     train_loader = data.DataLoader(train_dataset, batch_size=batch_size)
     val_loader = data.DataLoader(val_dataset, batch_size=batch_size)
     test_loader = data.DataLoader(test_dataset, batch_size=batch_size)
