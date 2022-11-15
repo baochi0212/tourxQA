@@ -124,26 +124,41 @@ def get_corpus(path):
                 basename = i
         df.to_csv(qa_processed + f'/{basename}.csv', index=False)
 
-def get_label(off_set_map, text, start, end=False):
-    '''
-      if END_IDX is provided, just use it and leave TEXT=''
-    '''
-    start_idx, end_idx = 0, 0
-    for i in range(len(off_set_map)):
-        if off_set_map[i][0] == start:
-            start_idx = i
-        elif off_set_map[i][0] == start + 1:
-            start_idx = i
+def get_label(input, text, start):
 
-        if text != '' and start_idx != 0:
-            if off_set_map[i][1] == start + len(text):
-              # print(i)
-              end_idx = i 
-            elif off_set_map[i][1] == start + len(text) + 1:
-              end_idx = i
+    sequence_ids = input.sequence_ids()
+    idx = 0
+    while sequence_ids[idx] != 1:
+            idx += 1
+    context_start = idx
+    while sequence_ids[idx] == 1:
+            idx += 1
+    context_end = idx - 1
+    offset = input['offset_mapping']
+    
 
-    # print("what", start_idx, end_idx)
-    return torch.tensor(start_idx, dtype=torch.long), torch.tensor(end_idx, dtype=torch.long)
+    start_positions, end_positions = [], []
+    start_positions = []
+    end_positions = []
+    start_char = start
+    end_char = start + len(text)
+    offset = input['offset_mapping'][0]
+    if offset[context_start][0] > start_char or offset[context_end][1] < end_char:
+        start_positions.append(0)
+        end_positions.append(0)
+    else:
+        # Otherwise it's the start and end token positions
+        idx = context_start
+        while idx <= context_end and offset[idx][0] <= start_char:
+            idx += 1
+        start_positions.append(idx - 1)
+        idx = context_end
+        while idx >= context_start and offset[idx][1] >= end_char:
+            idx -= 1
+        end_positions.append(idx + 1)
+
+ 
+    return torch.tensor(start_positions, dtype=torch.long), torch.tensor(end_positions, dtype=torch.long)
 
 def string2list(text, type='str'):
     '''Convert a list_string to original list''' 

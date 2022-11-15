@@ -93,7 +93,7 @@ class QADataset(data.Dataset):
             if len(text) == 0:
                 start, end = torch.tensor(0, dtype=torch.long), torch.tensor(0, dtype=torch.long)
             else:
-                start, end = get_label(input['offset_mapping'][0], text[0], answer_start[0])
+                start, end = get_label(input, text[0], answer_start[0])
                 if start > self.MAX_LENGTH or self.MAX_LENGTH < end: 
                     start, end = torch.tensor(0, dtype=torch.long), torch.tensor(0, dtype=torch.long)
 
