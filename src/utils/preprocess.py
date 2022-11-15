@@ -132,13 +132,17 @@ def get_label(off_set_map, text, start, end=False):
     for i in range(len(off_set_map)):
         if off_set_map[i][0] == start:
             start_idx = i
-        if text != '':
+        elif off_set_map[i][0] == start + 1:
+            start_idx = i
+
+        if text != '' and start_idx != 0:
             if off_set_map[i][1] == start + len(text):
+              # print(i)
               end_idx = i 
-        else:
-            if off_set_map[i][1] == end:
+            elif off_set_map[i][1] == start + len(text) + 1:
               end_idx = i
 
+    # print("what", start_idx, end_idx)
     return torch.tensor(start_idx, dtype=torch.long), torch.tensor(end_idx, dtype=torch.long)
 
 def string2list(text, type='str'):
