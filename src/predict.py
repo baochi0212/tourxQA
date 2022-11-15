@@ -54,7 +54,7 @@ if __name__ == '__main__':
     # model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
     model_path = './models/weights/model.pt'
 
-    test_df = pd.read_csv(qa_processed + '/test.csv') if mode == 'test' else pd.read_csv(qa_processed + '/test.csv')
+    test_df = pd.read_csv(qa_processed + '/test.csv') if mode == 'test' else pd.read_csv(qa_processed + '/dev.csv')
     test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test', MAX_LENGTH=max_length)
     test_loader = data.DataLoader(test_dataset, batch_size=batch_size)
 
