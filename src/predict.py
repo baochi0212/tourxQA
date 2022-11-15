@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
     model_checkpoint = args.pretrained_model
-    model = QAModule(model_checkpoint=model_checkpoint, device=device).to(device)
+    model = QAModule(model_checkpoint=model_checkpoint, device=device, hidden=args.pretrained_input).to(device)
     tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
     # model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
     model_path = './models/weights/model.pt'
