@@ -460,7 +460,7 @@ def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=Fal
                             'context': c
                         }
                  res = nlp(QA_input)
-                start = [item['start'] for item in res]
+                 start = [item['start'] for item in res]
                  end = [item['end'] for item in res]
                  val_accuracy.append(metrics_pipeline(mapping, start, end, b_start, b_end))
           val_accuracy = np.array(val_accuracy).mean()
