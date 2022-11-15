@@ -26,6 +26,7 @@ parser.add_argument('--n_epochs', default=9, type=int, help='Number of epochs')
 parser.add_argument('--batch_size', default=32, type=int, help='Batch size')
 parser.add_argument('--learning_rate', default=3e-5, type=float, help="Learning rate")
 parser.add_argument('--pretrained_model', default='NlpHUST/bert-base-vn', type=str)
+parser.add_argument('--pretrained_input', default=768, type=int)
 data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/ta/processed/PhoATIS'
@@ -480,7 +481,7 @@ if __name__ == '__main__':
     lr = args.learning_rate
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
     
-    model = QAModule(model_checkpoint=model_checkpoint, device=device).to(device)
+    model = QAModule(model_checkpoint=model_checkpoint, device=device, hidden=args.pretrained_input).to(device)
     if model_checkpoint != 'vinai/phobert-base':
         tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
     else:
