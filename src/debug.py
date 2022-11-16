@@ -150,6 +150,6 @@ if __name__ == '__main__':
 
 
     model.eval()
-    # print(evaluate_QA(model.to(device), test_loader, tokenizer=tokenizer, device=device, test=True, training=False))
+    print(evaluate_QA(model.to(device), test_loader, tokenizer=tokenizer, device=device, test=True, training=False))
 
 
