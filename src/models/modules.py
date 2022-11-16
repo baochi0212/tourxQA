@@ -81,7 +81,7 @@ class QAModule(torch.nn.Module):
         logits = self.relu(self.linear(outputs))
         start_logits, end_logits = logits[:, :, 0], logits[:, :, 1]
     else:
-        outputs = self.bert_model(input_ids=input_ids, attention_mask=attention_mask)
+        outputs = self.bert_qa(input_ids=input_ids, attention_mask=attention_mask)
         start_logits, end_logits = outputs['start_logits'], outputs['end_logits']
         
     if start is not None:
