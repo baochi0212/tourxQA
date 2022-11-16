@@ -67,7 +67,7 @@ if __name__ == '__main__':
     test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test', MAX_LENGTH=max_length)
     test_loader = data.DataLoader(test_dataset, batch_size=batch_size)
 
-    model.load_state_dict(torch.load(model_path))
+
     model.eval()
     print(evaluate_QA(model.to(device), test_loader, device=device, test=True, training=False))
 
