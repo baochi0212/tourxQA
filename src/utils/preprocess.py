@@ -131,7 +131,7 @@ def get_label(input, text, start):
     while sequence_ids[idx] != 1:
             idx += 1
     context_start = idx
-    while sequence_ids[idx] == 1:
+    while sequence_ids[idx] == 1 and idx < len(sequence_ids):
             idx += 1
     context_end = idx - 1
     offset = input['offset_mapping']

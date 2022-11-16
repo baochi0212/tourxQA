@@ -138,8 +138,8 @@ if __name__ == '__main__':
     # # for i in range(len(dev_dataset)):
     # #     a = dataset[i]
 
-    test_df = pd.read_csv(qa_processed + '/test.csv')
+    test_df = pd.read_csv(qa_processed + '/train.csv')
     test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test')
     test_loader = data.DataLoader(test_dataset, batch_size=16)
-    # for i in test_loader:
-    #     print(i[-1].shape)
+    for i in test_loader:
+        print(i[-1].shape)
