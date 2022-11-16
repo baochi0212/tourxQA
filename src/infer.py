@@ -52,7 +52,7 @@ def predict(model, tokenizer, device, file='sample_input.txt', out='sample_outpu
     context = []
     with open(file, 'r') as f:
         for line in f.readlines():
-            q, c = line.strip().split("$$$")
+            c, q = line.strip().split("$$$")
             question.append(q.strip())
             context.append(c.strip())
     with open(out, 'w') as f:
