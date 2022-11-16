@@ -30,7 +30,6 @@ raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/data/processed/PhoATIS'
 qa_processed = data_dir + '/data/processed/QA'
 tokenizer_checkpoint = 'NlpHUST/bert-base-vn'
-logger = logging.getLogger(__name__)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--n_epochs', default=9, type=int, help='Number of epochs')
@@ -139,14 +138,14 @@ if __name__ == '__main__':
         if os.path.exists(model_path):
             model.load_state_dict(torch.load(model_path))
     else:
-        logger.info("------------USING THE PRETRAINED-----------")
+        print("------------USING THE PRETRAINED-----------")
         tokenizer = AutoTokenizer.from_pretrained(checkpoint)
         model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
      
 
     test_df = pd.read_csv(qa_processed + '/dev.csv') if mode == 'test' else pd.read_csv(qa_processed + '/dev.csv')
     test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test', MAX_LENGTH=max_length)
-    test_loader = data.DataLoader(test_dataset, batch_size=32)
+    test_loader = data.DataLoader(test_dataset, batch_size=1)
 
 
     model.eval()
