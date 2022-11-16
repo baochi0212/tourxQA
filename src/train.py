@@ -28,6 +28,7 @@ parser.add_argument('--learning_rate', default=3e-5, type=float, help="Learning 
 parser.add_argument('--pretrained_model', default='NlpHUST/bert-base-vn', type=str)
 parser.add_argument('--pretrained_input', default=768, type=int)
 parser.add_argument('--max_length', default=500, type=int)
+parser.add_argument('--compare', action='store_true', default=False)
 data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/ta/processed/PhoATIS'
