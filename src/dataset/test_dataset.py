@@ -94,7 +94,6 @@ class QADataset(data.Dataset):
                 start, end = torch.tensor(0, dtype=torch.long), torch.tensor(0, dtype=torch.long)
             else:
                 start, end = get_label(input, text[0], answer_start[0])
-                start, end = start.squeeze(0), end.squeeze(0)
                 if start > self.MAX_LENGTH or self.MAX_LENGTH < end: 
                     start, end = torch.tensor(0, dtype=torch.long), torch.tensor(0, dtype=torch.long)
 
