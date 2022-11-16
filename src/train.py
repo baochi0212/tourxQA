@@ -280,12 +280,10 @@ def metrics(start, end, l_start, l_end, metrics='acc', test=False, training=True
         for i in range(start.shape[0]):
             start_end = (start[i].item(), end[i].item())
             l_start_end  = [(m.item(), n.item()) for m, n in zip(l_start[i], l_end[i])]
-            if l_start_end[0] == (0, 0):
-                print("MISTAKES", start_end, l_start_end)
             if start_end in l_start_end:
                 count += 1 
-            # elif not training:
-            #     print("MISTAKES", start_end, l_start_end)
+            elif not training:
+                print("MISTAKES", start_end, l_start_end)
         #         if count % 10 == 0:
         #             # print("SAMPLE", start_end, l_start_end)
         # # print("COUNT:", count)
