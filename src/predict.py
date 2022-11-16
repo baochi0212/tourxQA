@@ -49,10 +49,18 @@ if __name__ == '__main__':
 
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
     model_checkpoint = args.pretrained_model
-    model = QAModule(model_checkpoint=model_checkpoint, device=device, hidden=args.pretrained_input).to(device)
-    tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
-    # model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
-    model_path = './models/weights/model.pt'
+    checkpoint = 'nguyenvulebinh/vi-mrc-large'
+    
+    if not args.compare:
+        tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
+        model = QAModule(model_checkpoint=model_checkpoint, device=device, hidden=args.pretrained_input).to(device)
+        model_path = './models/weights/model.pt'
+        if os.path.exists(model_path):
+            model.load_state_dict(torch.load(model_path))
+    else:
+        print("------------USING THE PRETRAINED-----------")
+        tokenizer = AutoTokenizer.from_pretrained(checkpoint)
+        model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
 
     test_df = pd.read_csv(qa_processed + '/test.csv') if mode == 'test' else pd.read_csv(qa_processed + '/dev.csv')
     test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test', MAX_LENGTH=max_length)
