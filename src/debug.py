@@ -137,7 +137,7 @@ if __name__ == '__main__':
 
     if not args.compare:
         tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
-        model = QAModule(model_checkpoint=model_checkpoint, device=device, hidden=args.pretrained_input).to(device)
+        model = QAModule(model_checkpoint=model_checkpoint, device=device, hidden=args.pretrained_input, args=args).to(device)
         model_path = './models/weights/model.pt'
         if os.path.exists(model_path):
             model.load_state_dict(torch.load(model_path))

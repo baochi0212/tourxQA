@@ -485,7 +485,7 @@ if __name__ == '__main__':
     max_length = args.max_length
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
     
-    model = QAModule(model_checkpoint=model_checkpoint, device=device, hidden=args.pretrained_input).to(device)
+    model = QAModule(model_checkpoint=model_checkpoint, device=device, hidden=args.pretrained_input, args=args).to(device)
     if model_checkpoint != 'vinai/phobert-base':
         tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
     else:
