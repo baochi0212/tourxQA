@@ -40,6 +40,7 @@ parser.add_argument('--pretrained_input', default=768, type=int)
 parser.add_argument('--predict_mode', default='test', type=str)
 parser.add_argument('--max_length', default=500, type=int)
 parser.add_argument('--compare', action='store_true', default=False)
+parser.add_argument('--fast', action='store_true', default=False)
 
 
 def metrics(start, end, l_start, l_end, metrics='acc', input_ids=None, tokenizer=None, test=False, training=True):

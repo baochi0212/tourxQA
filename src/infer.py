@@ -44,6 +44,7 @@ parser.add_argument('--pretrained_input', default=768, type=int)
 parser.add_argument('--predict_mode', default='test', type=str)
 parser.add_argument('--max_length', default=500, type=int)
 parser.add_argument('--compare', action='store_true', default=False)
+parser.add_argument('--fast', action='store_true', default=False)
 
 
 def predict(model, tokenizer, device, file='sample_input.txt', out='sample_output.txt', MAX_LENGTH=386):
@@ -85,7 +86,7 @@ if __name__ == '__main__':
 
     if not args.compare:
         tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
-        model = QAModule(model_checkpoint=model_checkpoint, device=device, hidden=args.pretrained_input).to(device)
+        model = QAModule(model_checkpoint=model_checkpoint, device=device, hidden=args.pretrained_input, args=args).to(device)
         model_path = './models/weights/model.pt'
         if os.path.exists(model_path):
             model.load_state_dict(torch.load(model_path))
