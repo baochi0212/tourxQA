@@ -142,8 +142,8 @@ def get_label(input, text, start):
     end_char = start + len(text)
     offset = input['offset_mapping'][0]
     if offset[context_start][0] > start_char or offset[context_end][1] < end_char:
-        start_positions.append(0)
-        end_positions.append(0)
+        start_positions = 0
+        end_positions = 0
     else:
         # Otherwise it's the start and end token positions
         idx = context_start
