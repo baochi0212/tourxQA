@@ -70,7 +70,7 @@ class QAModule(torch.nn.Module):
 #     self.bert_qa = AutoModelForQuestionAnswering.from_pretrained(model_checkpoint).cuda()
     self.bert_model = AutoModel.from_pretrained(model_checkpoint)
     self.bert_qa = AutoModelForQuestionAnswering.from_pretrained('nguyenvulebinh/vi-mrc-large')
-    self.pretrained = args.compare
+    self.pretrained = args.fast
     self.linear = torch.nn.Linear(hidden, 2)
     self.relu = torch.nn.ReLU()
     self.loss_fn = CE_loss_fn
