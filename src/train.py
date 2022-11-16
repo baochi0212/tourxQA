@@ -260,7 +260,7 @@ def evaluate(model, val_dataloader, print_fn=False, crf=False):
     val_accuracy_1 = np.mean(val_accuracy_1)
     val_accuracy_2 = np.mean(val_accuracy_2)
     return val_loss_1, val_loss_2, val_accuracy_1, val_accuracy_2
-def metrics(start, end, l_start, l_end, metrics='acc', test=False):
+def metrics(start, end, l_start, l_end, metrics='acc', test=False, training=True):
   '''
   compare the pred with label ('l')
   '''
@@ -282,8 +282,8 @@ def metrics(start, end, l_start, l_end, metrics='acc', test=False):
             l_start_end  = [(m.item(), n.item()) for m, n in zip(l_start[i], l_end[i])]
             if start_end in l_start_end:
                 count += 1 
-            # else:
-            #     print("MISTAKES", start_end, l_start_end)
+            elif not training:
+                print("MISTAKES", start_end, l_start_end)
         #         if count % 10 == 0:
         #             # print("SAMPLE", start_end, l_start_end)
         # # print("COUNT:", count)
@@ -407,7 +407,7 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
         print("\n")
     print("Training complete!")
 
-def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=False, test=False, pipeline=False):
+def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=False, test=False, pipeline=False, training=True):
     """After the completion of each training epoch, measure the model's performance
     on our validation set.
     """
@@ -447,7 +447,7 @@ def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=Fal
                 #     print("Q and C: ", tokenizer.decode(b_input_ids[0]))
                 #     print("answers:", tokenizer.decode(b_input_ids[0][start[0]:end[0]+1]))
                 # in squad-v2 val is same as train (1-label) but in Vi-squad it's multi-label
-                val_accuracy.append(metrics(start, end, b_start, b_end, metrics='acc', test=True))
+                val_accuracy.append(metrics(start, end, b_start, b_end, metrics='acc', test=True, training=training))
           val_loss =  np.array(val_loss).mean()
           val_accuracy = np.array(val_accuracy).mean()
       else:
