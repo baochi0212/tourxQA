@@ -134,18 +134,20 @@ if __name__ == '__main__':
     if not args.compare:
         tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
         model = QAModule(model_checkpoint=model_checkpoint, device=device, hidden=args.pretrained_input).to(device)
+        model_path = './models/weights/model.pt'
+        if os.path.exists(model_path):
+            model.load_state_dict(torch.load(model_path))
     else:
         print("------------USING THE PRETRAINED-----------")
         tokenizer = AutoTokenizer.from_pretrained(checkpoint)
         model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
-    model_path = './models/weights/model.pt' 
+     
 
     test_df = pd.read_csv(qa_processed + '/dev.csv') if mode == 'test' else pd.read_csv(qa_processed + '/dev.csv')
     test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test', MAX_LENGTH=max_length)
     test_loader = data.DataLoader(test_dataset, batch_size=1)
 
-    if os.path.exists(model_path):
-        model.load_state_dict(torch.load(model_path))
+
     model.eval()
     print(evaluate_QA(model.to(device), test_loader, tokenizer=tokenizer, device=device, test=True, training=False))
 
