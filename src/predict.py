@@ -53,7 +53,7 @@ if __name__ == '__main__':
     checkpoint = 'nguyenvulebinh/vi-mrc-large'
     
     if not args.compare:
-        tokenizer = AutoTokenizer.from_pretrained(checkpoint)
+        tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
         model = QAModule(model_checkpoint=model_checkpoint, device=device, hidden=args.pretrained_input).to(device)
         model_path = './models/weights/model.pt'
         if os.path.exists(model_path):
