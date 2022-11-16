@@ -125,6 +125,7 @@ if __name__ == '__main__':
     batch_size = args.batch_size
     mode = args.predict_mode
     max_length = args.max_length
+    #for comparison with SOTA
     checkpoint = 'nguyenvulebinh/vi-mrc-large'
 
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -133,6 +134,7 @@ if __name__ == '__main__':
     if not args.compare:
         tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
     else:
+        tokenizer = AutoTokenizer.from_pretrained(checkpoint)
         model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
     model_path = './models/weights/model.pt' 
 
