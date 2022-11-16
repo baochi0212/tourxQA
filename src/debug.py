@@ -64,11 +64,10 @@ def metrics(start, end, l_start, l_end, metrics='acc', input_ids=None, tokenizer
             l_start_end  = [(m.item(), n.item()) for m, n in zip(l_start[i], l_end[i])]
             if start_end in l_start_end:
                 count += 1 
-                if count % 10 == 0:
-                    print("TRUE", start_end, l_start_end)
-                    print("CONTEXT and QUESTION", tokenizer.decode(input_ids[i]))
-                    print("ANSWERS", tokenizer.decode(input_ids[i][l_start_end[0][0]:l_start_end[0][1]+1]))
-                    print("PREDS", tokenizer.decode(input_ids[i][start_end[0]:start_end[1]+1]))
+                print("TRUE", start_end, l_start_end)
+                print("CONTEXT and QUESTION", tokenizer.decode(input_ids[i]))
+                print("ANSWERS", tokenizer.decode(input_ids[i][l_start_end[0][0]:l_start_end[0][1]+1]))
+                print("PREDS", tokenizer.decode(input_ids[i][start_end[0]:start_end[1]+1]))
             elif not training:
                 print("MISTAKES", start_end, l_start_end)
                 print("CONTEXT and QUESTION", tokenizer.decode(input_ids[i]))

@@ -93,7 +93,6 @@ if __name__ == '__main__':
         print("------------USING THE PRETRAINED-----------")
         tokenizer = AutoTokenizer.from_pretrained(checkpoint)
         model = AutoModelForQuestionAnswering.from_pretrained(checkpoint).to(device)
-     
 
 
 
