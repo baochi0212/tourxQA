@@ -46,7 +46,7 @@ parser.add_argument('--max_length', default=500, type=int)
 parser.add_argument('--compare', action='store_true', default=False)
 
 
-def predict(model, tokenizer, file='sample_input.txt', out='sample_output.txt', MAX_LENGTH=386):
+def predict(model, tokenizer, device, file='sample_input.txt', out='sample_output.txt', MAX_LENGTH=386):
     question = []
     context = []
     with open(file, 'r') as f:
@@ -61,7 +61,7 @@ def predict(model, tokenizer, file='sample_input.txt', out='sample_output.txt', 
                 truncation="only_second",
                 return_offsets_mapping=True,
                 padding="max_length")
-            outputs = model(input.input_ids, input.attention_mask)
+            outputs = model(input.input_ids.to(device), input.attention_mask.to(device))
 
             start_logits = outputs['start_logits'][0]
             end_logits  = outputs['end_logits'][0]
@@ -92,13 +92,13 @@ if __name__ == '__main__':
     else:
         print("------------USING THE PRETRAINED-----------")
         tokenizer = AutoTokenizer.from_pretrained(checkpoint)
-        model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
+        model = AutoModelForQuestionAnswering.from_pretrained(checkpoint).to(device)
      
 
 
 
     model.eval()
-    predict(model, tokenizer)
+    predict(model, tokenizer, device=device)
 
 
 
