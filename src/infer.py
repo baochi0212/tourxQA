@@ -67,7 +67,8 @@ def predict(model, tokenizer, file='sample_input.txt', out='sample_output.txt', 
             end_logits  = outputs['end_logits'][0]
             start, end = torch.argmax(start_logits, -1).item(), torch.argmax(end_logits, -1).item()
             output_string = tokenizer.decode(input.input_ids[start:end+1])
-            
+            f.write(q)
+            f.write(c)
             f.write(output_string)
         
 
