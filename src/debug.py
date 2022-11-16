@@ -133,7 +133,7 @@ if __name__ == '__main__':
 
     if not args.compare:
         tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
-            model = QAModule(model_checkpoint=model_checkpoint, device=device, hidden=args.pretrained_input).to(device)
+        model = QAModule(model_checkpoint=model_checkpoint, device=device, hidden=args.pretrained_input).to(device)
     else:
         tokenizer = AutoTokenizer.from_pretrained(checkpoint)
         model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
