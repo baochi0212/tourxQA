@@ -12,7 +12,7 @@ import pandas as pd
 data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/data/processed/PhoATIS'
-# tokenizer = AutoTokenizer.from_pretrained("vinai/phobert-base")
+tokenizer = AutoTokenizer.from_pretrained("vinai/phobert-base")
 #QA
 qa_dir = data_dir + '/data/raw/ViSquadv1.1'
 qa_processed = data_dir + '/data/processed/QA'
@@ -96,12 +96,14 @@ def query_stat(files=['train', 'dev', 'test']):
 
 def get_corpus(path):
     for file in glob(path + "/*"):
-        data_dict = dict([(i, []) for i in ['question', 'context', 'start', 'text']])
+
+        data_dict = dict([(i, []) for i in ['title', 'question', 'context', 'start', 'text']])
         data = json.load(open(file, 'rb'))['data']
         for i in range(len(data)):
             #topic i
             for j in range(len(data[i]['paragraphs'])):
                 #para j (with one context and many QAs)
+                title = data[i]['title']
                 sample = data[i]['paragraphs'][j]
                 c = sample['context']
                 for k in range(len(sample['qas'])):
@@ -113,6 +115,7 @@ def get_corpus(path):
                     for item in qa['answers']:
                         text += '@@@' + item['text']
                     #add to dataframe
+                    data_dict['title'].append(title)
                     data_dict['question'].append(q)
                     data_dict['start'].append(a)
                     data_dict['text'].append(text)
