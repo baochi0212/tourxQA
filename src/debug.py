@@ -145,7 +145,7 @@ if __name__ == '__main__':
 
     test_df = pd.read_csv(qa_processed + '/dev.csv') if mode == 'test' else pd.read_csv(qa_processed + '/dev.csv')
     test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test', MAX_LENGTH=max_length)
-    test_loader = data.DataLoader(test_dataset, batch_size=1)
+    test_loader = data.DataLoader(test_dataset, batch_size=32)
 
 
     model.eval()
