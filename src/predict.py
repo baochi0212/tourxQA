@@ -51,6 +51,7 @@ if __name__ == '__main__':
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
     model_checkpoint = args.pretrained_model
     checkpoint = 'nguyenvulebinh/vi-mrc-large'
+    tokenizer_checkpoint = 'xlm-roberta-large'
     
     if not args.compare:
         tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
@@ -60,7 +61,7 @@ if __name__ == '__main__':
             model.load_state_dict(torch.load(model_path))
     else:
         print("------------USING THE PRETRAINED-----------")
-        tokenizer = AutoTokenizer.from_pretrained(checkpoint)
+        tokenizer = AutoTokenizer.from_pretrained(tokenizer_checkpoint)
         model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
 
     test_df = pd.read_csv(qa_processed + '/test.csv') if mode == 'test' else pd.read_csv(qa_processed + '/dev.csv')
