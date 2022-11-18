@@ -30,6 +30,7 @@ parser.add_argument('--pretrained_input', default=768, type=int)
 parser.add_argument('--max_length', default=500, type=int)
 parser.add_argument('--compare', action='store_true', default=False)
 parser.add_argument('--fast', action='store_true', default=False, help='Using fast AutoQA')
+parser.add_argument('--task', choices=['IDSF', 'VI_QUAD', 'SQUAD'], default='VI_QUAD')
 data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/ta/processed/PhoATIS'
@@ -37,6 +38,7 @@ data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/data/processed/PhoATIS'
 qa_processed = data_dir + '/data/processed/QA'
+squad_processed = data_dir + '/data/processed/SQUAD'
 tokenizer_checkpoint = 'NlpHUST/bert-base-vn'
 tokenizer = AutoTokenizer.from_pretrained(tokenizer_checkpoint)
 
@@ -493,12 +495,16 @@ if __name__ == '__main__':
     else:
         tokenizer = PreTrainedTokenizerFast.from_pretrained(model_checkpoint)
     # model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
-    optimizer = transformers.AdamW(model.parameters(), lr=lr)
+    optimizer = transformers.AdamW(model.parameters(), lr=lr, weight_decay=0.01)
     model_path = './models/weights/model.pt'
 
     train_df = pd.read_csv(qa_processed + '/train.csv')
     val_df = pd.read_csv(qa_processed + '/dev.csv')
     test_df = pd.read_csv(qa_processed + '/test.csv')
+    if args.task == 'SQUAD':
+        train_df = pd.read_csv(squad_processed + '/train.csv')
+        val_df = pd.read_csv(squad_processed + '/validation.csv')
+
     train_dataset = QADataset(test_df, tokenizer=tokenizer, mode='train', MAX_LENGTH=max_length)
     val_dataset = QADataset(val_df, tokenizer=tokenizer, mode='test', MAX_LENGTH=max_length)
     test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test', MAX_LENGTH=max_length)
@@ -508,7 +514,7 @@ if __name__ == '__main__':
 
     total_steps = len(train_loader) * epochs
     scheduler = transformers.get_linear_schedule_with_warmup(optimizer,
-                                                num_warmup_steps=0, # Default value
+                                                num_warmup_steps=0.05*total_steps, # Default value
                                                 num_training_steps=total_steps)
 
     train_QA(model.to(device), optimizer, scheduler, train_loader, total_steps, epochs, device=device, val_dataloader=val_loader, evaluation=True, overfit_batch=False)

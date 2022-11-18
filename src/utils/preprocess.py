@@ -8,6 +8,7 @@ from underthesea import word_tokenize
 from transformers import AutoTokenizer
 from glob import glob
 import pandas as pd
+from datasets import load_dataset
 #Intent&SLOT
 data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
@@ -16,6 +17,7 @@ tokenizer = AutoTokenizer.from_pretrained("vinai/phobert-base")
 #QA
 qa_dir = data_dir + '/data/raw/ViSquadv1.1'
 qa_processed = data_dir + '/data/processed/QA'
+squad_processed = data_dir + '/data/processed/SQUAD'
 '''
 - preprocess text
 - query statistics of dataset 
@@ -175,6 +177,30 @@ def string2list(text, type='str'):
 
 
     return text
+
+def get_corpus_squad():
+
+  dataset = load_dataset("squad")
+  for file in ['train', 'validation']:
+    data_dict = dict([(i, []) for i in ['title', 'question', 'context', 'start', 'text']])
+    data = dataset[file]
+    for i in range(len(data)):
+            sample = data[i]
+            c = sample['context']
+            qa = sample['answers']
+            q = sample['question'] 
+            a = [int(item) for item in qa['answer_start']]
+            text = ''
+            for item in qa['text']:
+                text += '@@@' + item
+            #add to dataframe
+            data_dict['title'].append(sample['title'])
+            data_dict['question'].append(q)
+            data_dict['start'].append(a)
+            data_dict['text'].append(text)
+            data_dict['context'].append(c)
+    df = pd.DataFrame.from_dict(data_dict)
+    df.to_csv(squad_processed + f'/content/{file}.csv', index=False)
             
 
 
@@ -186,7 +212,7 @@ def string2list(text, type='str'):
 
 
 if __name__ == '__main__':
-    get_corpus(qa_dir)
+    get_corpus_squad()
     # text = str(['các vùng người Đức', '@', 'các vùng người Đức', '@', '"các vùng người Đức"', '@', 'các vùng người Đức', '@'])
     # # print(text)
     # print(string2list(text))
