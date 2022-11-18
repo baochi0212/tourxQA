@@ -8,7 +8,7 @@ from underthesea import word_tokenize
 from transformers import AutoTokenizer
 from glob import glob
 import pandas as pd
-from datasets import load_dataset
+# from datasets import load_dataset
 #Intent&SLOT
 data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
