@@ -1,0 +1,7 @@
+1. Trainer Module for multi tasking
+- config args: 
+    - task
+    - hyper params + apparatus
+    - methods: train, eval, save/load model, on epochs/iters end procedure
+
+- datasets: train, test, dev 
