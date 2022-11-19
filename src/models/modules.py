@@ -12,7 +12,7 @@ import pandas as pd
 from transformers import AutoModel, AutoTokenizer, RobertaModel
 from dataset.test_dataset import IntentPOSDataset
 import transformers
-from transformers import AutoModelForQuestionAnswering, AutoTokenizer, AdamW, get_linear_schedule_with_warmup, RobertaPreTrainedModel, RobertaModel
+from transformers import AutoModelForQuestionAnswering, AutoTokenizer, AdamW, get_linear_schedule_with_warmup, RobertaPreTrainedModel, RobertaMode, XLMRobertaModel
 from dataset.test_dataset import IntentPOSDataset, QADataset
 from utils.preprocess import get_label
 data_dir = os.environ['dir']
