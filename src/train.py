@@ -371,7 +371,7 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
             '''
 
             # Clip the norm of the gradients to 1.0 to prevent "exploding gradients"
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            # torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
 
             # Update parameters and the learning rate
             optimizer.step()
