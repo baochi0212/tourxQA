@@ -59,7 +59,23 @@ class CRFPOS(nn.Module):
         x = self.embedding(input_ids=input, attention_mask=mask)
         crf_pos = nn.functional.relu(self.pos_head(x['last_hidden_state']))
         return torch.sigmoid(nn.functional.relu(self.intent_head(x['last_hidden_state'].mean(dim=1)))), crf_pos, -self.CRF(crf_pos.permute(1, 0, 2), pos_label.permute(1, 0))
-class QAModule(RobertaPreTrainedModel):
+# class QAModule(RobertaPreTrainedModel):
+#   def __init__(self, config, device, args=None, hidden=768):
+#     super().__init__(config)
+#     def CE_loss_fn(pred, label):
+#     #     print("pred", pred.shape)
+#         loss = torch.nn.CrossEntropyLoss(reduction='none')(pred, label)
+#         loss = torch.where(label != 0, loss, torch.tensor(0, dtype=torch.float).to(device))
+#         return loss.mean()
+#     self.bert_model = RobertaModel(config=config)
+#     self.args = args
+#     # self.bert_qa = AutoModelForQuestionAnswering.from_pretrained('nguyenvulebinh/vi-mrc-large')
+#     self.pretrained = self.args.fast
+#     self.linear = torch.nn.Linear(hidden, 2)
+#     self.relu = torch.nn.ReLU()
+#     self.loss_fn = CE_loss_fn
+#     # self.init_weights()
+class QAModule(nn.Module):
   def __init__(self, config, device, args=None, hidden=768):
     super().__init__(config)
     def CE_loss_fn(pred, label):
@@ -67,7 +83,7 @@ class QAModule(RobertaPreTrainedModel):
         loss = torch.nn.CrossEntropyLoss(reduction='none')(pred, label)
         loss = torch.where(label != 0, loss, torch.tensor(0, dtype=torch.float).to(device))
         return loss.mean()
-    self.bert_model = RobertaModel(config=config)
+    self.bert_model = RobertaModel.from_pretrained("xlm-roberta-base")
     self.args = args
     # self.bert_qa = AutoModelForQuestionAnswering.from_pretrained('nguyenvulebinh/vi-mrc-large')
     self.pretrained = self.args.fast
