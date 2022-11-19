@@ -77,13 +77,14 @@ class CRFPOS(nn.Module):
 #     # self.init_weights()
 class QAModule(nn.Module):
   def __init__(self, config, device, args=None, hidden=768):
-    super().__init__()
+    super().__init__(config)
     def CE_loss_fn(pred, label):
     #     print("pred", pred.shape)
         loss = torch.nn.CrossEntropyLoss(reduction='none')(pred, label)
         loss = torch.where(label != 0, loss, torch.tensor(0, dtype=torch.float).to(device))
         return loss.mean()
-    self.bert_model = AutoModel.from_pretrained("xlm-roberta-base")
+    # self.bert_model = AutoModel.from_pretrained("xlm-roberta-base")
+    self.bert_model = XLMRobertaModel(config)
     self.args = args
     # self.bert_qa = AutoModelForQuestionAnswering.from_pretrained('nguyenvulebinh/vi-mrc-large')
     self.pretrained = self.args.fast
