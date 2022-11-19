@@ -12,7 +12,7 @@ import pandas as pd
 from transformers import AutoModel, AutoTokenizer, RobertaModel
 from dataset.test_dataset import IntentPOSDataset
 import transformers
-from transformers import AutoModelForQuestionAnswering, AutoTokenizer, AdamW, get_linear_schedule_with_warmup, RobertaPreTrainedModel, XLMRobertaModel
+from transformers import AutoModelForQuestionAnswering, AutoTokenizer, AdamW, get_linear_schedule_with_warmup, XLMRobertaPreTrainedModel, XLMRobertaModel
 from dataset.test_dataset import IntentPOSDataset, QADataset
 from utils.preprocess import get_label
 data_dir = os.environ['dir']
@@ -75,7 +75,7 @@ class CRFPOS(nn.Module):
 #     self.relu = torch.nn.ReLU()
 #     self.loss_fn = CE_loss_fn
 #     # self.init_weights()
-class QAModule(RobertaPreTrainedModel):
+class QAModule(XLMRobertaPreTrainedModel):
   def __init__(self, config, device, args=None, hidden=768):
     super().__init__(config)
     def CE_loss_fn(pred, label):
