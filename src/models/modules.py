@@ -75,7 +75,7 @@ class CRFPOS(nn.Module):
 #     self.relu = torch.nn.ReLU()
 #     self.loss_fn = CE_loss_fn
 #     # self.init_weights()
-class QAModule(nn.Module):
+class QAModule(RobertaPreTrainedModel):
   def __init__(self, config, device, args=None, hidden=768):
     super().__init__(config)
     def CE_loss_fn(pred, label):
