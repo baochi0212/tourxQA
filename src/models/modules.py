@@ -77,7 +77,7 @@ class CRFPOS(nn.Module):
 #     # self.init_weights()
 class QAModule(nn.Module):
   def __init__(self, config, device, args=None, hidden=768):
-    super().__init__(config)
+    super().__init__()
     def CE_loss_fn(pred, label):
     #     print("pred", pred.shape)
         loss = torch.nn.CrossEntropyLoss(reduction='none')(pred, label)
