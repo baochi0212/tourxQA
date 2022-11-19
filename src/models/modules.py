@@ -76,7 +76,7 @@ class QAModule(RobertaPreTrainedModel):
     self.linear = torch.nn.Linear(hidden, 2)
     self.relu = torch.nn.ReLU()
     self.loss_fn = CE_loss_fn
-    self.init_weights()
+    # self.init_weights()
    
   def forward(self, input_ids, attention_mask, start=None, end=None):
     if not self.pretrained:
