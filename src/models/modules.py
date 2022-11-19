@@ -68,7 +68,7 @@ class QAModule(RobertaPreTrainedModel):
         loss = torch.where(label != 0, loss, torch.tensor(0, dtype=torch.float).to(device))
         return loss.mean()
 #     self.bert_qa = AutoModelForQuestionAnswering.from_pretrained(model_checkpoint).cuda()
-    self.bert_model = RobertaModel.from_pretrained('xlm-roberta-base')
+    self.bert_model = RobertaModel(config, add_pooling_layer=False)
     self.args = args
     # self.bert_qa = AutoModelForQuestionAnswering.from_pretrained('nguyenvulebinh/vi-mrc-large')
     self.pretrained = self.args.fast
@@ -79,7 +79,7 @@ class QAModule(RobertaPreTrainedModel):
    
   def forward(self, input_ids, attention_mask, start=None, end=None):
     if not self.pretrained:
-        outputs = self.bert_model(input_ids=input_ids, attention_mask=attention_mask)[0]
+        outputs = self.bert_model(input_ids=input_ids, attention_mask=attention_mask)['last_hidden_state']
         logits = self.relu(self.linear(outputs))
         start_logits, end_logits = logits[:, :, 0], logits[:, :, 1]
     else:
