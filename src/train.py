@@ -492,7 +492,7 @@ if __name__ == '__main__':
     
     config = RobertaConfig.from_pretrained(model_checkpoint)
     tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
-    model = QAModule(model_checkpoint=model_checkpoint, device=device, hidden=args.pretrained_input, config=config, args=args).from_pretrained(
+    model = QAModule.from_pretrained(
         model_checkpoint=model_checkpoint,
         config=config,
         args=args,
