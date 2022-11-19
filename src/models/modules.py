@@ -59,9 +59,9 @@ class CRFPOS(nn.Module):
         x = self.embedding(input_ids=input, attention_mask=mask)
         crf_pos = nn.functional.relu(self.pos_head(x['last_hidden_state']))
         return torch.sigmoid(nn.functional.relu(self.intent_head(x['last_hidden_state'].mean(dim=1)))), crf_pos, -self.CRF(crf_pos.permute(1, 0, 2), pos_label.permute(1, 0))
-class QAModule(RobertaPreTrainedModel):
-  def __init__(self, config, device, args=None, hidden=768, out=386):
-    super().__init__(config)
+class QAModule(nn.Module):
+  def __init__(self, device, args=None, hidden=768, out=386):
+    super().__init__()
     def CE_loss_fn(pred, label):
     #     print("pred", pred.shape)
         loss = torch.nn.CrossEntropyLoss(reduction='none')(pred, label)
