@@ -491,12 +491,11 @@ if __name__ == '__main__':
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
     config = RobertaConfig.from_pretrained(model_checkpoint)
     tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
-    model = QAModule.from_pretrained(
-        model_checkpoint,
+    model = QAModule(
         config=config,
         args=args,
         device=device,
-    )
+    ).from_pretrained(model_checkpoint)
 
     optimizer = transformers.AdamW(model.parameters(), lr=lr, weight_decay=0.01)
     model_path = './models/weights/model.pt'
