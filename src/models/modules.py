@@ -68,7 +68,8 @@ class QAModule(RobertaPreTrainedModel):
         loss = torch.where(label != 0, loss, torch.tensor(0, dtype=torch.float).to(device))
         return loss.mean()
 #     self.bert_qa = AutoModelForQuestionAnswering.from_pretrained(model_checkpoint).cuda()
-    self.bert_model = RobertaModel(config, add_pooling_layer=False)
+    # self.bert_model = RobertaModel(config, add_pooling_layer=False)
+    self.bert_model = AutoModel.from_pretrained("xlm-roberta-base")
     self.args = args
     # self.bert_qa = AutoModelForQuestionAnswering.from_pretrained('nguyenvulebinh/vi-mrc-large')
     self.pretrained = self.args.fast
