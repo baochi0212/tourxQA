@@ -12,7 +12,7 @@ import pandas as pd
 from transformers import AutoModel, AutoTokenizer, RobertaModel
 from dataset.test_dataset import IntentPOSDataset
 import transformers
-from transformers import AutoModelForQuestionAnswering, AutoTokenizer, AdamW, get_linear_schedule_with_warmup
+from transformers import AutoModelForQuestionAnswering, AutoTokenizer, AdamW, get_linear_schedule_with_warmup, RobertaPreTrainedModel, RobertaModel
 from dataset.test_dataset import IntentPOSDataset, QADataset
 from utils.preprocess import get_label
 data_dir = os.environ['dir']
@@ -59,25 +59,26 @@ class CRFPOS(nn.Module):
         x = self.embedding(input_ids=input, attention_mask=mask)
         crf_pos = nn.functional.relu(self.pos_head(x['last_hidden_state']))
         return torch.sigmoid(nn.functional.relu(self.intent_head(x['last_hidden_state'].mean(dim=1)))), crf_pos, -self.CRF(crf_pos.permute(1, 0, 2), pos_label.permute(1, 0))
-class QAModule(torch.nn.Module):
-  def __init__(self, model_checkpoint, device, args=None, hidden=768, out=386):
-    super().__init__()
+class QAModule(RobertaPreTrainedModel):
+  def __init__(self, model_checkpoint, device, config, args=None, hidden=768, out=386):
+    super().__init__(config)
     def CE_loss_fn(pred, label):
     #     print("pred", pred.shape)
         loss = torch.nn.CrossEntropyLoss(reduction='none')(pred, label)
         loss = torch.where(label != 0, loss, torch.tensor(0, dtype=torch.float).to(device))
         return loss.mean()
 #     self.bert_qa = AutoModelForQuestionAnswering.from_pretrained(model_checkpoint).cuda()
-    self.bert_model = AutoModel.from_pretrained(model_checkpoint)
-    self.bert_qa = AutoModelForQuestionAnswering.from_pretrained('nguyenvulebinh/vi-mrc-large')
+    self.bert_model = RobertaModel(config, add_pooling_layer=False)
+    # self.bert_qa = AutoModelForQuestionAnswering.from_pretrained('nguyenvulebinh/vi-mrc-large')
     self.pretrained = args.fast
     self.linear = torch.nn.Linear(hidden, 2)
     self.relu = torch.nn.ReLU()
     self.loss_fn = CE_loss_fn
+    self
    
   def forward(self, input_ids, attention_mask, start=None, end=None):
     if not self.pretrained:
-        outputs = self.bert_model(input_ids=input_ids, attention_mask=attention_mask)['last_hidden_state']
+        outputs = self.bert_model(input_ids=input_ids, attention_mask=attention_mask)[0]
         logits = self.relu(self.linear(outputs))
         start_logits, end_logits = logits[:, :, 0], logits[:, :, 1]
     else:

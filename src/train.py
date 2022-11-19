@@ -15,7 +15,7 @@ from torchcrf import CRF
 import pandas as pd 
 
 import transformers
-from transformers import AutoModelForQuestionAnswering, AutoTokenizer, PreTrainedTokenizerFast, AdamW, get_linear_schedule_with_warmup
+from transformers import AutoModelForQuestionAnswering, AutoTokenizer, PreTrainedTokenizerFast, AdamW, get_linear_schedule_with_warmup, RobertaConfig
 from dataset.test_dataset import IntentPOSDataset, QADataset
 from models.modules import IntentPOSModule, CRFPOS, CustomConfig, QAModule
 from utils.preprocess import get_label
@@ -489,15 +489,11 @@ if __name__ == '__main__':
     max_length = args.max_length
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
     
-    model = QAModule(model_checkpoint=model_checkpoint, device=device, hidden=args.pretrained_input, args=args).to(device)
-    if model_checkpoint != 'vinai/phobert-base':
-        tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
-    else:
-        tokenizer = PreTrainedTokenizerFast.from_pretrained(model_checkpoint)
-    # model = AutoModelForQuestionAnswering.from_pretrained(checkpoint)
+    config = RobertaConfig.from_pretrained(model_checkpoint)
+    tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
+    model = QAModule(model_checkpoint=model_checkpoint, device=device, hidden=args.pretrained_input, config=config, args=args).from_pretrained(model_checkpoint)
     optimizer = transformers.AdamW(model.parameters(), lr=lr, weight_decay=0.01)
     model_path = './models/weights/model.pt'
-
     train_df = pd.read_csv(qa_processed + '/train.csv')
     val_df = pd.read_csv(qa_processed + '/dev.csv')
     test_df = pd.read_csv(qa_processed + '/test.csv')
