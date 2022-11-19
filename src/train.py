@@ -489,7 +489,6 @@ if __name__ == '__main__':
     lr = args.learning_rate
     max_length = args.max_length
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
-    
     config = RobertaConfig.from_pretrained(model_checkpoint)
     tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
     model = QAModule(
