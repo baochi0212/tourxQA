@@ -60,7 +60,7 @@ class CRFPOS(nn.Module):
         crf_pos = nn.functional.relu(self.pos_head(x['last_hidden_state']))
         return torch.sigmoid(nn.functional.relu(self.intent_head(x['last_hidden_state'].mean(dim=1)))), crf_pos, -self.CRF(crf_pos.permute(1, 0, 2), pos_label.permute(1, 0))
 class QAModule(RobertaPreTrainedModel):
-  def __init__(self, model_checkpoint, device, config, args=None, hidden=768, out=386):
+  def __init__(self, config, model_checkpoint, device, args=None, hidden=768, out=386):
     super().__init__(config)
     def CE_loss_fn(pred, label):
     #     print("pred", pred.shape)
@@ -74,7 +74,7 @@ class QAModule(RobertaPreTrainedModel):
     self.linear = torch.nn.Linear(hidden, 2)
     self.relu = torch.nn.ReLU()
     self.loss_fn = CE_loss_fn
-    self
+    self.init_weights()
    
   def forward(self, input_ids, attention_mask, start=None, end=None):
     if not self.pretrained:
