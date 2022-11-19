@@ -15,7 +15,7 @@ from torchcrf import CRF
 import pandas as pd 
 
 import transformers
-from transformers import AutoModelForQuestionAnswering, AutoTokenizer, PreTrainedTokenizerFast, AdamW, get_linear_schedule_with_warmup, XLMRobertaConfig
+from transformers import AutoModelForQuestionAnswering, AutoTokenizer, PreTrainedTokenizerFast, AdamW, get_linear_schedule_with_warmup, RobertaConfig
 from dataset.test_dataset import IntentPOSDataset, QADataset
 from models.modules import IntentPOSModule, CRFPOS, CustomConfig, QAModule
 from utils.preprocess import get_label
@@ -489,11 +489,11 @@ if __name__ == '__main__':
     lr = args.learning_rate
     max_length = args.max_length
     device  = 'cuda' if torch.cuda.is_available() else 'cpu'
-    config = XLMRobertaConfig.from_pretrained(model_checkpoint)
+    
+    config = RobertaConfig.from_pretrained(model_checkpoint)
     tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
-    model = QAModule.from_pretrained(
-        model_checkpoint,
-        config=config,
+    model = QAModule(
+        model_checkpoint=model_checkpoint,
         args=args,
         device=device,
     )
