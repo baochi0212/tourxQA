@@ -181,8 +181,21 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
         F1 += max(F1_score)
     return EM/start.shape[0], F1/start.shape[0]
     
-def align_matrix():
-    pass
+def align_tokens(word_lengths, input_ids):
+    # b x w x n
+    batch_size = word_lengths.shape[0]
+    word_size = word_lengths.shape[1]
+    token_size = input_ids.shape[1]
+    align_matrix = torch.zeros(batch_size, word_size, token_size)
+    # align
+
+    for i in range(batch_size):
+        for j in range(word_size):
+            # fill till finishing the word
+            temp, idx  = word_lengths[i, j], 0
+            while temp > 0:
+
+
 
 def char2idx(start, end, context):
     subtext = context[start:end+1]
@@ -215,7 +228,7 @@ def offset2length(offset_map):
     word_lengths.append(length)
             
     return word_lengths
-def QA_metrics(start, end, start_idx, end_idx, input, tokenizer):
+def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
     '''
     EM and F1 score for text output
     start = b x n
@@ -223,8 +236,8 @@ def QA_metrics(start, end, start_idx, end_idx, input, tokenizer):
     EM = 0
     F1 = 0
     for i in range(start.shape[0]):
-        pred = tokenizer.decode(input.input_ids[0][start[i]:end[i]+1])
-        true = tokenizer.decode(input.input_ids[0][start_idx[i]:end_idx[i]+1])
+        pred = tokenizer.decode(input_ids[i][start[i]:end[i]+1])
+        true = tokenizer.decode(input_ids[i][start_idx[i]:end_idx[i]+1])
         if pred == true:
             EM += 1 
         sum = 0
@@ -298,7 +311,7 @@ def get_label(input, text, start, reverse=False, max_length=300, context=None, q
 
 
  
-    return torch.tensor(start_positions, dtype=torch.long), torch.tensor(end_positions, dtype=torch.long)
+    return torch.tensor(start_positions, dtype=torch.long), torch.tensor(end_positions, dtype=torch.long)   
 
 def string2list(text, type='str'):
     '''Convert a list_string to original list''' 
