@@ -171,7 +171,7 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
                 continue
             precision = sum/len(pred.split())
             recall = sum/len(true.split())
-            F1 += 2/(1/precision + 1/recall)
+            F1 = 2/(1/precision + 1/recall)
             F1_score.append(F1)
         F1 += max(F1_score)
     return EM/start.shape[0], F1/start.shape[0]
