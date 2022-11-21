@@ -194,6 +194,7 @@ def align_tokens(word_lengths, input_ids):
             # fill till finishing the word
             temp, idx  = word_lengths[i, j], 0
             while temp > 0:
+                pass
 
 
 
