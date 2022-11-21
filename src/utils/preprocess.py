@@ -174,8 +174,8 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
             if precision == 0 or recall == 0:
                 F1_score.append(0)
                 continue
-            F1 = 2/(1/precision + 1/recall)
-            F1_score.append(F1)
+            
+            F1_score.append(2/(1/precision + 1/recall))
         F1 += max(F1_score)
     return EM/start.shape[0], F1/start.shape[0]
     
