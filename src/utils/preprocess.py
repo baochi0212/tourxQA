@@ -169,7 +169,7 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
             if len(pred.split()) == 0 or len(true.split()) == 0:
                 F1_score.append(int(pred == true))
                 continue
-            precision = sum/len(pred.split()) if len(pred.split()) > 0 else 0
+            precision = sum/len(pred.split())
             recall = sum/len(true.split())
             F1 += 2/(1/precision + 1/recall)
             F1_score.append(F1)
