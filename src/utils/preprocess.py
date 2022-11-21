@@ -227,7 +227,7 @@ def get_label(input, text, start, reverse=False, max_length=300, context=None, q
             while len(word_lengths) < max_length:
                 word_lengths.append(1)
 
-        return torch.tensor(start_positions, dtype=torch.long), torch.tensor(end_positions, dtype=torch.long), torch.tensor(word_lengths, dtype=torch.long)
+            return torch.tensor(start_positions, dtype=torch.long), torch.tensor(end_positions, dtype=torch.long), torch.tensor(word_lengths, dtype=torch.long)
 
  
     return torch.tensor(start_positions, dtype=torch.long), torch.tensor(end_positions, dtype=torch.long)
