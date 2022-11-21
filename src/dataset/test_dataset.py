@@ -67,7 +67,7 @@ class IntentPOSDataset(data.Dataset):
         return len(self.data)
 
 class QADataset(data.Dataset):
-    def __init__(self, df, tokenizer, MAX_LENGTH=222, mode='train', pipeline=False):
+    def __init__(self, df, tokenizer, MAX_LENGTH=222, mode='train', pipeline=False, reverse=False):
         self.df = df
         self.MAX_LENGTH = MAX_LENGTH
         self.mode = mode

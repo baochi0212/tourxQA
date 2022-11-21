@@ -18,7 +18,7 @@ import transformers
 from transformers import AutoModelForQuestionAnswering, AutoTokenizer, PreTrainedTokenizerFast, AdamW, get_linear_schedule_with_warmup, RobertaConfig
 from dataset.test_dataset import IntentPOSDataset, QADataset
 from models.modules import IntentPOSModule, CRFPOS, CustomConfig, QAModule
-from utils.preprocess import get_label
+from utils.preprocess import get_label, QA_metrics
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -402,12 +402,13 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
             # After the completion of each training epoch, measure the model's performance
             # on our validation set.
             # _, train_accuracy = evaluate_QA(model, train_dataloader, device=device)
-            val_loss, val_accuracy = evaluate_QA(model, val_dataloader, device=device)
+            val_loss, val_accuracy, EM_score, F1_score = evaluate_QA(model, val_dataloader, device=device)
 
             # Print performance over the entire training data
             time_elapsed = time.time() - t0_epoch
             # , {train_accuracy:^9.2f}
             print(f"{epoch_i + 1:^7} | {'-':^7} | {avg_train_loss:^12.6f}| {val_loss:^10.6f} | {val_accuracy:^9.2f} | {time_elapsed:^9.2f}")
+            print(f"EM: {EM_score} and F1: {F1_score} ")
             print("-"*70)
         print("\n")
     print("Training complete!")
@@ -415,6 +416,8 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
 def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=False, test=False, pipeline=False, training=True):
     """After the completion of each training epoch, measure the model's performance
     on our validation set.
+    - evaluate by tokens
+    - evaluate by texts
     """
     # Put the model into the evaluation mode. The dropout layers are disabled during
     # the test time.
@@ -423,6 +426,8 @@ def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=Fal
     # Tracking variables
     val_accuracy = []
     val_loss = []
+    EM_score = []
+    F1_score = []
     # For each batch in our validation set...
     count = 0
     with torch.no_grad():
@@ -448,13 +453,14 @@ def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=Fal
                 start_logits = outputs['start_logits']
                 end_logits  = outputs['end_logits']
                 start, end = torch.argmax(start_logits, -1), torch.argmax(end_logits, -1)
-                # if count % 3 == 0:
-                #     print("Q and C: ", tokenizer.decode(b_input_ids[0]))
-                #     print("answers:", tokenizer.decode(b_input_ids[0][start[0]:end[0]+1]))
-                # in squad-v2 val is same as train (1-label) but in Vi-squad it's multi-label
+                #loss, accuracy for tuning
                 val_accuracy.append(metrics(start, end, b_start, b_end, metrics='acc', test=True, training=training))
+                #exact match and F1 for evaluation
+                EM, F1 = QA_metrics(start, end, b_start, b_end, b_input_ids, tokenizer)
           val_loss =  np.array(val_loss).mean()
           val_accuracy = np.array(val_accuracy).mean()
+          EM_score = np.array(EM).mean()
+          F1_score = np.array(F1).mean()
       else:
           for batch in val_dataloader:
                  b_input_ids, b_attn_mask, b_start, b_end, q, c, mapping = batch
@@ -479,7 +485,7 @@ def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=Fal
 
           
 
-    return val_loss, val_accuracy
+    return val_loss, val_accuracy, EM_score, F1_score
 
 if __name__ == '__main__':
     args = parser.parse_args()
