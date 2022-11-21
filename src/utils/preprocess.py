@@ -152,8 +152,8 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
     for i in range(start.shape[0]):
         pred = tokenizer.decode(input_ids[i][start[i]:end[i]+1])
         trues = []
-        for i in range(len(start_idx[i])):
-            trues.append(tokenizer.decode(input_ids[i][start_idx[i]:end_idx[i]+1]))
+        for j in range(len(start_idx[i])):
+            trues.append(tokenizer.decode(input_ids[i][start_idx[i][j]:end_idx[i][j]+1]))
         #exact match
         if pred in trues:
             EM += 1 
