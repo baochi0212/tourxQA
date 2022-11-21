@@ -181,11 +181,11 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
         F1 += max(F1_score)
     return EM/start.shape[0], F1/start.shape[0]
     
-def align_tokens(word_lengths, input_ids):
+def align_tokens(word_lengths, input):
     # b x w x n
     batch_size = word_lengths.shape[0]
     word_size = word_lengths.shape[1]
-    token_size = input_ids.shape[1]
+    token_size = input.input_ids.shape[1]
     align_matrix = torch.zeros(batch_size, word_size, token_size)
     # align
 
@@ -194,7 +194,8 @@ def align_tokens(word_lengths, input_ids):
             # fill till finishing the word
             temp, idx  = word_lengths[i, j], 0
             while temp > 0:
-                pass
+                if input.offset_mapping[i, idx] != (0, 0):
+                    align_matrix[i, j]
 
 
 
@@ -229,27 +230,7 @@ def offset2length(offset_map):
     word_lengths.append(length)
             
     return word_lengths
-def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
-    '''
-    EM and F1 score for text output
-    start = b x n
-    '''
-    EM = 0
-    F1 = 0
-    for i in range(start.shape[0]):
-        pred = tokenizer.decode(input_ids[i][start[i]:end[i]+1])
-        true = tokenizer.decode(input_ids[i][start_idx[i]:end_idx[i]+1])
-        if pred == true:
-            EM += 1 
-        sum = 0
-        text = pred if len(pred.split()) < len(true.split()) else true
-        for i in range(len(text.split())):
-            if pred.split()[i] == true.split()[i]:
-                sum += 1 
-        precision = sum/len(pred.split())
-        recall = sum/len(true.split())
-        F1 += 2/(1/precision + 1/recall)
-    return EM/start.shape[0], F1/start.shape[0]
+
     
 
 
