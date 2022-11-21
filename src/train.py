@@ -459,7 +459,7 @@ def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=Fal
                 EM, F1 = QA_metrics(start, end, b_start, b_end, b_input_ids, tokenizer)
                 EM_score.append(EM)
                 F1_score.append(F1)
-        #   val_loss =  np.array(val_loss).mean()
+          val_loss =  np.array(val_loss).mean()
           val_accuracy = np.array(val_accuracy).mean()
           EM_score = np.array(EM_score).mean()
           F1_score = np.array(F1_score).mean()
