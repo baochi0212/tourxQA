@@ -174,10 +174,6 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
             if precision == 0 or recall == 0:
                 F1_score.append(0)
                 continue
-            if 2/(1/precision + 1/recall) > 0.25:
-                print(sum, len(pred.split()), len(true.split()), precision, recall) 
-                print("PRED", pred)
-                print("TRUE", true)
 
 
             F1_score.append(2/(1/precision + 1/recall))
