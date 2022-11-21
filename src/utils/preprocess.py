@@ -190,12 +190,70 @@ def char2idx(start, end, context):
         if context.split()[i] == subtext.split()[0] and context.split()[i+len(subtext.split())-1] == subtext.split()[-1]:
             return i, i+len(subtext.split()) - 1
     
+def char2idx(start, end, context):
+    subtext = context[start:end+1]
+    subtext2 = context[start:end+2]
+
+    for i in range(len(context.split())):
+        if context.split()[i] == subtext.split()[0] and context.split()[i+len(subtext.split())-1] == subtext.split()[-1]:
+            return i, i+len(subtext.split()) - 1
+        elif context.split()[i] == subtext2.split()[0] and context.split()[i+len(subtext2.split())-1] == subtext2.split()[-1]:
+            return i, i+len(subtext2.split()) - 1 
+def offset2length(offset_map):
+    word_lengths = []
+    length = 1
+    offset_map = [offset_map[i] for i in range(len(offset_map)) if offset_map[i].sum() != 0]
+    for idx in range(1, len(offset_map)):
+        
+
+        if offset_map[idx][0] == offset_map[idx-1][1]:
+            length += 1
+        else:
+            
+            word_lengths.append(length)
+            length = 1
+    word_lengths.append(length)
+            
+    return word_lengths
+def QA_metrics(start, end, start_idx, end_idx, input, tokenizer):
+    '''
+    EM and F1 score for text output
+    start = b x n
+    '''
+    EM = 0
+    F1 = 0
+    for i in range(start.shape[0]):
+        pred = tokenizer.decode(input.input_ids[0][start[i]:end[i]+1])
+        true = tokenizer.decode(input.input_ids[0][start_idx[i]:end_idx[i]+1])
+        if pred == true:
+            EM += 1 
+        sum = 0
+        text = pred if len(pred.split()) < len(true.split()) else true
+        for i in range(len(text.split())):
+            if pred.split()[i] == true.split()[i]:
+                sum += 1 
+        precision = sum/len(pred.split())
+        recall = sum/len(true.split())
+        F1 += 2/(1/precision + 1/recall)
+    return EM/start.shape[0], F1/start.shape[0]
+    
+
+
 def get_label(input, text, start, reverse=False, max_length=300, context=None, question=None):
     '''
     we can make use of original sequence or sub_word sequence (tokenized for labelling)
     - non-reverse: use the mapping to map start and end idx
     - reverse: og start and end idx, and word lengths for mapping, use context for get start and end
     '''
+
+    if reverse:
+        start_positions, end_positions = start, start + len(text) - 1
+        start_positions, end_positions = char2idx(start_positions, end_positions, context)
+        offset_mapping = input.offset_mapping[0]
+        word_lengths = offset2length(offset_mapping)
+        # while len(word_lengths) < max_length:
+        #     word_lengths.append(1)
+        return torch.tensor(start_positions, dtype=torch.long), torch.tensor(end_positions, dtype=torch.long), torch.tensor(word_lengths, dtype=torch.long)
 
         
 
@@ -236,15 +294,8 @@ def get_label(input, text, start, reverse=False, max_length=300, context=None, q
         while idx >= context_start and offset[idx][1] >= end_char:
             idx -= 1
         end_positions = idx + 1
-        if reverse:
-            start_positions, end_positions = char2idx(start_positions, end_positions, question + " " + context)
-            offset_mapping = input.offset_mapping[0]
-            word_lengths = offset2length(offset_mapping)
+    
 
-            while len(word_lengths) < max_length:
-                word_lengths.append(1)
-
-            return torch.tensor(start_positions, dtype=torch.long), torch.tensor(end_positions, dtype=torch.long), torch.tensor(word_lengths, dtype=torch.long)
 
  
     return torch.tensor(start_positions, dtype=torch.long), torch.tensor(end_positions, dtype=torch.long)
