@@ -436,7 +436,6 @@ def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=Fal
           for batch in val_dataloader:
                 # print(batch)
                 # Load batch to GPU
-                print("BATCH", batch)
                 b_input_ids, b_attn_mask, b_start, b_end = tuple(t.to(device) for t in batch)
                 if len(b_start.shape) == 2:
                     b_start_sub, b_end_sub = b_start[:, 0], b_end[:, 0]
@@ -527,6 +526,6 @@ if __name__ == '__main__':
                                                 num_training_steps=total_steps)
 
     # train_QA(model.to(device), optimizer, scheduler, train_loader, total_steps, epochs, device=device, val_dataloader=val_loader, evaluation=True, overfit_batch=False)
-    evaluate_QA(model.to(device), val_loader, tokenizer, test=True)
+    evaluate_QA(model.to(device), val_loader, tokenizer, device=device, test=True)
     model.eval()
     torch.save(model.state_dict(), model_path)
