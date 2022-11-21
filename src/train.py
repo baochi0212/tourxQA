@@ -436,6 +436,7 @@ def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=Fal
           for batch in val_dataloader:
                 # print(batch)
                 # Load batch to GPU
+                print("BATCH", batch)
                 b_input_ids, b_attn_mask, b_start, b_end = tuple(t.to(device) for t in batch)
                 if len(b_start.shape) == 2:
                     b_start_sub, b_end_sub = b_start[:, 0], b_end[:, 0]
