@@ -375,7 +375,7 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
 
             # Update parameters and the learning rate
             optimizer.step()
-            scheduler.step()
+            # scheduler.step()
             run.update(1)
             
 
@@ -516,10 +516,10 @@ if __name__ == '__main__':
         val_df = pd.read_csv(squad_processed + '/validation.csv')
 
     train_dataset = QADataset(pd.concat([train_df, val_df]), tokenizer=tokenizer, mode='train', MAX_LENGTH=max_length)
-    val_dataset = QADataset(val_df, tokenizer=tokenizer, mode='train', MAX_LENGTH=max_length)
+    val_dataset = QADataset(val_df, tokenizer=tokenizer, mode='test', MAX_LENGTH=max_length)
     test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test', MAX_LENGTH=max_length)
     train_loader = data.DataLoader(train_dataset, batch_size=batch_size)
-    val_loader = data.DataLoader(val_dataset, batch_size=batch_size)
+    val_loader = data.DataLoader(test_dataset, batch_size=batch_size)
     test_loader = data.DataLoader(test_dataset, batch_size=batch_size)
 
     total_steps = len(train_loader) * epochs
@@ -527,7 +527,7 @@ if __name__ == '__main__':
                                                 num_warmup_steps=0.05*total_steps, # Default value
                                                 num_training_steps=total_steps)
 
-    train_QA(model.to(device), optimizer, scheduler, train_loader, total_steps, epochs, device=device, val_dataloader=test_loader, evaluation=True, overfit_batch=False)
+    train_QA(model.to(device), optimizer, scheduler, train_loader, total_steps, epochs, device=device, val_dataloader=val_loader, evaluation=True, overfit_batch=False)
     # print(evaluate_QA(model.to(device), val_loader, tokenizer=tokenizer, device=device, test=True))
     model.eval()
     torch.save(model.state_dict(), model_path)
