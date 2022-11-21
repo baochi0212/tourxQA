@@ -525,6 +525,7 @@ if __name__ == '__main__':
                                                 num_warmup_steps=0.05*total_steps, # Default value
                                                 num_training_steps=total_steps)
 
-    train_QA(model.to(device), optimizer, scheduler, train_loader, total_steps, epochs, device=device, val_dataloader=val_loader, evaluation=True, overfit_batch=False)
+    # train_QA(model.to(device), optimizer, scheduler, train_loader, total_steps, epochs, device=device, val_dataloader=val_loader, evaluation=True, overfit_batch=False)
+    evaluate_QA(model.to(device), val_loader, tokenizer, test=True)
     model.eval()
     torch.save(model.state_dict(), model_path)
