@@ -457,10 +457,12 @@ def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=Fal
                 val_accuracy.append(metrics(start, end, b_start, b_end, metrics='acc', test=True, training=training))
                 #exact match and F1 for evaluation
                 EM, F1 = QA_metrics(start, end, b_start, b_end, b_input_ids, tokenizer)
+                EM_score.append(EM)
+                F1_score.append(F1)
           val_loss =  np.array(val_loss).mean()
           val_accuracy = np.array(val_accuracy).mean()
-          EM_score = np.array(EM).mean()
-          F1_score = np.array(F1).mean()
+          EM_score = np.array(EM_score).mean()
+          F1_score = np.array(F1_score).mean()
       else:
           for batch in val_dataloader:
                  b_input_ids, b_attn_mask, b_start, b_end, q, c, mapping = batch
