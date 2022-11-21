@@ -194,8 +194,11 @@ def align_tokens(word_lengths, input):
             # fill till finishing the word
             temp, idx  = word_lengths[i, j], 0
             while temp > 0:
-                if input.offset_mapping[i, idx] != (0, 0):
-                    align_matrix[i, j]
+                if input.offset_mapping[i, idx].sum() != 0:
+                    align_matrix[i, j, idx] = 1
+                    temp -= 1 
+                idx += 1 
+    return align_matrix
 
 
 
