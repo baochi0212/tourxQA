@@ -151,6 +151,7 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
     F1 = 0
     for i in range(start.shape[0]):
         pred = tokenizer.decode(input_ids[i][start[i]:end[i]+1])
+        print(start_idx[i], end_idx[i])
         true = tokenizer.decode(input_ids[i][start_idx[i]:end_idx[i]+1])
         if pred == true:
             EM += 1 
