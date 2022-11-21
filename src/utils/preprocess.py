@@ -176,6 +176,7 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
                 continue
             
             F1_score.append(2/(1/precision + 1/recall))
+        print(F1_score)
         F1 += max(F1_score)
     return EM/start.shape[0], F1/start.shape[0]
     
