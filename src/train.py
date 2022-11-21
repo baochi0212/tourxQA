@@ -459,7 +459,7 @@ def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=Fal
                 EM, F1 = QA_metrics(start, end, b_start, b_end, b_input_ids, tokenizer)
                 EM_score.append(EM)
                 F1_score.append(F1)
-          val_loss =  np.array(val_loss).mean()
+        #   val_loss =  np.array(val_loss).mean()
           val_accuracy = np.array(val_accuracy).mean()
           EM_score = np.array(EM_score).mean()
           F1_score = np.array(F1_score).mean()
@@ -528,6 +528,6 @@ if __name__ == '__main__':
                                                 num_training_steps=total_steps)
 
     # train_QA(model.to(device), optimizer, scheduler, train_loader, total_steps, epochs, device=device, val_dataloader=val_loader, evaluation=True, overfit_batch=False)
-    evaluate_QA(model.to(device), val_loader, tokenizer=tokenizer, device=device, test=False)
+    evaluate_QA(model.to(device), val_loader, tokenizer=tokenizer, device=device, test=True)
     model.eval()
     torch.save(model.state_dict(), model_path)
