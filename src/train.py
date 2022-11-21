@@ -528,6 +528,6 @@ if __name__ == '__main__':
                                                 num_training_steps=total_steps)
 
     # train_QA(model.to(device), optimizer, scheduler, train_loader, total_steps, epochs, device=device, val_dataloader=val_loader, evaluation=True, overfit_batch=False)
-    evaluate_QA(model.to(device), val_loader, tokenizer=tokenizer, device=device, test=True)
+    print(evaluate_QA(model.to(device), val_loader, tokenizer=tokenizer, device=device, test=True))
     model.eval()
     torch.save(model.state_dict(), model_path)
