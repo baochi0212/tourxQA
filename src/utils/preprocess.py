@@ -151,18 +151,26 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
     F1 = 0
     for i in range(start.shape[0]):
         pred = tokenizer.decode(input_ids[i][start[i]:end[i]+1])
-        print(start_idx[i], end_idx[i])
-        true = tokenizer.decode(input_ids[i][start_idx[i]:end_idx[i]+1])
-        if pred == true:
+        trues = []
+        for i in range(len(start_idx[i])):
+            trues.append(tokenizer.decode(input_ids[i][start_idx[i]:end_idx[i]+1]))
+        #exact match
+        if pred in trues:
             EM += 1 
         sum = 0
-        text = pred if len(pred.split()) < len(true.split()) else true
-        for i in range(len(text.split())):
-            if pred.split()[i] == true.split()[i]:
-                sum += 1 
-        precision = sum/len(pred.split())
-        recall = sum/len(true.split())
-        F1 += 2/(1/precision + 1/recall)
+        #F1 score
+        F1_score = []
+        for true in trues:
+            
+            text = pred if len(pred.split()) < len(true.split()) else true
+            for i in range(len(text.split())):
+                if pred.split()[i] == true.split()[i]:
+                    sum += 1 
+            precision = sum/len(pred.split())
+            recall = sum/len(true.split())
+            F1 += 2/(1/precision + 1/recall)
+            F1_score.append(F1)
+        F1 += max(F1_score)
     return EM/start.shape[0], F1/start.shape[0]
     
 def align_matrix():
