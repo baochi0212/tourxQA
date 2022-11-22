@@ -511,12 +511,13 @@ if __name__ == '__main__':
     train_df = pd.read_csv(qa_processed + '/train.csv')
     val_df = pd.read_csv(qa_processed + '/dev.csv')
     test_df = pd.read_csv(qa_processed + '/test.csv')
+    train_df = pd.concat([train_df, val_df])
     if args.task == 'SQUAD':
         train_df = pd.read_csv(squad_processed + '/train.csv')
         val_df = pd.read_csv(squad_processed + '/validation.csv')
 
     train_dataset = QADataset(pd.concat([train_df]), tokenizer=tokenizer, mode='train', MAX_LENGTH=max_length)
-    val_dataset = QADataset(val_df, tokenizer=tokenizer, mode='test', MAX_LENGTH=max_length)
+    val_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test', MAX_LENGTH=max_length)
     test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test', MAX_LENGTH=max_length)
     train_loader = data.DataLoader(train_dataset, batch_size=batch_size)
     val_loader = data.DataLoader(test_dataset, batch_size=batch_size)
