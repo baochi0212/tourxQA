@@ -375,7 +375,7 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
 
             # Update parameters and the learning rate
             optimizer.step()
-            scheduler.step()
+            # scheduler.step()
             run.update(1)
             
 
