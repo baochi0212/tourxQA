@@ -506,7 +506,7 @@ if __name__ == '__main__':
         device=device,
     )
 
-    optimizer = transformers.AdamW(model.parameters(), lr=lr)
+    optimizer = transformers.AdamW(model.parameters(), lr=lr, weight_decay=0.01)
     model_path = './models/weights/model.pt'
     train_df = pd.read_csv(qa_processed + '/train.csv')
     val_df = pd.read_csv(qa_processed + '/dev.csv')
