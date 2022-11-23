@@ -139,7 +139,7 @@ def train(model, optimizer, scheduler, train_dataloader, total_steps, epochs, va
 
             # Update parameters and the learning rate
             optimizer.step()
-            # scheduler.step()
+            scheduler.step()
             run.update(1)
 
 
