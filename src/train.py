@@ -375,7 +375,7 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
 
             # Update parameters and the learning rate
             optimizer.step()
-            # scheduler.step()
+            scheduler.step()
             run.update(1)
             
 
@@ -519,7 +519,7 @@ if __name__ == '__main__':
     train_dataset = QADataset(train_df, tokenizer=tokenizer, mode='train', MAX_LENGTH=max_length)
     val_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test', MAX_LENGTH=max_length)
     test_dataset = QADataset(test_df, tokenizer=tokenizer, mode='test', MAX_LENGTH=max_length)
-    train_loader = data.DataLoader(train_dataset, batch_size=batch_size)
+    train_loader = data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = data.DataLoader(test_dataset, batch_size=batch_size)
     test_loader = data.DataLoader(test_dataset, batch_size=batch_size)
 
