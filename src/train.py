@@ -375,7 +375,7 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
 
             # Update parameters and the learning rate
             optimizer.step()
-            scheduler.step()
+            # scheduler.step()
             run.update(1)
             
 
@@ -506,7 +506,7 @@ if __name__ == '__main__':
         device=device,
     )
 
-    optimizer = transformers.AdamW(model.parameters(), lr=lr, weight_decay=0.01)
+    optimizer = transformers.AdamW(model.parameters(), lr=lr)
     model_path = './models/weights/model.pt'
     train_df = pd.read_csv(qa_processed + '/train.csv')
     val_df = pd.read_csv(qa_processed + '/dev.csv')
