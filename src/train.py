@@ -504,6 +504,7 @@ if __name__ == '__main__':
         model_checkpoint=model_checkpoint,
         args=args,
         device=device,
+        hidden=args.pretrained_input,
     )
 
     optimizer = transformers.AdamW(model.parameters(), lr=lr)
