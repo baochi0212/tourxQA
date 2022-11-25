@@ -332,8 +332,8 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
         #               Training
         # =======================================
         # Print the header of the result table
-        print(f"{'Epoch':^7} | {'Batch':^7} | {'Train Loss':^12} | {'Val Loss':^10} | {'Val Acc':^9} | {'Elapsed':^9}")
-        print("-"*70)
+        # print(f"{'Epoch':^7} | {'Batch':^7} | {'Train Loss':^12} | {'Val Loss':^10} | {'Val Acc':^9} | {'Elapsed':^9}")
+        # print("-"*70)
 
         # Measure the elapsed time of each epoch
         t0_epoch, t0_batch = time.time(), time.time()
@@ -385,7 +385,7 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
                 time_elapsed = time.time() - t0_batch
 
                 # Print training results
-                print(f"{epoch_i + 1:^7} | {step:^7} | {batch_loss / batch_counts:^12.6f}| {'-':^10} | {'-':^9} | {time_elapsed:^9.2f}")
+                # print(f"{epoch_i + 1:^7} | {step:^7} | {batch_loss / batch_counts:^12.6f}| {'-':^10} | {'-':^9} | {time_elapsed:^9.2f}")
 
                 # Reset batch tracking variables
                 batch_loss , batch_counts = 0, 0
@@ -394,10 +394,10 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
         # Calculate the average loss over the entire training data
         avg_train_loss = total_loss/len(train_dataloader)
 
-        print("-"*70)
-        # =======================================
-        #               Evaluation
-        # =======================================
+        # print("-"*70)
+        # # =======================================
+        # #               Evaluation
+        # # =======================================
         if evaluation == True:
             # After the completion of each training epoch, measure the model's performance
             # on our validation set.
@@ -407,10 +407,10 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
             # Print performance over the entire training data
             time_elapsed = time.time() - t0_epoch
             # , {train_accuracy:^9.2f}
-            print(f"{epoch_i + 1:^7} | {'-':^7} | {avg_train_loss:^12.6f}| {val_loss:^10.6f} | {val_accuracy:^9.2f} | {time_elapsed:^9.2f}")
-            print(f"EM: {EM_score} and F1: {F1_score} ")
-            print("-"*70)
-        print("\n")
+            # print(f"{epoch_i + 1:^7} | {'-':^7} | {avg_train_loss:^12.6f}| {val_loss:^10.6f} | {val_accuracy:^9.2f} | {time_elapsed:^9.2f}")
+            print(f"Loss: {val_loss}, EM: {EM_score} and F1: {F1_score} ")
+        #     print("-"*70)
+        # print("\n")
     print("Training complete!")
 
 def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=False, test=False, pipeline=False, training=True):
@@ -512,7 +512,7 @@ if __name__ == '__main__':
     train_df = pd.read_csv(qa_processed + '/train.csv')
     val_df = pd.read_csv(qa_processed + '/dev.csv')
     test_df = pd.read_csv(qa_processed + '/test.csv')
-    # train_df = pd.concat([val_df, train_df], axis=0)
+    train_df = pd.concat([val_df, train_df], axis=0)
     train_df = train_df[:len(train_df)//2]
     if args.task == 'SQUAD':
         train_df = pd.read_csv(squad_processed + '/train.csv')
