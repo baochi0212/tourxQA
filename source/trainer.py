@@ -190,7 +190,9 @@ class Trainer:
                         inputs["token_type_ids"] = batch[2].to(self.device)
                     outputs = self.model(**inputs)
                     tmp_eval_loss, (intent_logits, slot_logits) = outputs[:2]
-                    loss = tmp_eval_loss.mean().item()
+                    eval_loss += tmp_eval_loss.mean().item()
+                nb_eval_steps += 1
+
 
 
                 # Intent prediction
@@ -221,8 +223,7 @@ class Trainer:
                     out_slot_labels_ids = np.append(
                         out_slot_labels_ids, inputs["slot_labels_ids"].detach().cpu().numpy(), axis=0
                     )
-                nb_eval_steps += 1
-                eval_loss += tmp_eval_loss
+
             
 
 
