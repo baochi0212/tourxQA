@@ -7,7 +7,7 @@ from train import Trainer
     
     
     
-class Trainer:
+class IDSFTrainer:
     def __init__(self, args):
         #argument
         self.args = args

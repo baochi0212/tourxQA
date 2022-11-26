@@ -5,7 +5,7 @@ from torchcrf import CRF
 from transformers.models.roberta.modeling_roberta import RobertaPreTrainedModel
 from transformers.models.xlm_roberta.modeling_xlm_roberta import XLMRobertaModel
 
-from modules import IntentClassifier, SlotClassifier
+from .modules import IntentClassifier, SlotClassifier
 
 
 class JointXLMR(RobertaPreTrainedModel):

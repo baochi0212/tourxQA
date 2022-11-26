@@ -7,11 +7,11 @@ import torch
 import torch.nn
 from torch.utils import data
 from transformers import AdamW, get_linear_schedule_with_warmup
-
+from .module import Module
 from utils import MODEL_DICT, get_intent_labels, get_slot_labels, load_tokenizer, compute_metrics
-from data_loader import load_and_cache_examples
-from module import Module
-from main import args
+
+
+
 
 
 
@@ -93,14 +93,14 @@ class ISDFModule(Module):
 
         return {"loss": loss, "intent": intent_label_ids, "slot": slot_label_ids}
 
-if __name__ == "__main__":
-    module = ISDFModule(args)
-    tokenizer = load_tokenizer(args)
-    dataset = load_and_cache_examples(args, tokenizer, mode="train")
-    loader = data.DataLoader(dataset, batch_size=32, shuffle=True)
-    batch = next(iter(loader))
-    print(module.model)
-    print(module.train_step(batch))
+# if __name__ == "__main__":
+#     module = ISDFModule(args)
+#     tokenizer = load_tokenizer(args)
+#     dataset = load_and_cache_examples(args, tokenizer, mode="train")
+#     loader = data.DataLoader(dataset, batch_size=32, shuffle=True)
+#     batch = next(iter(loader))
+#     print(module.model)
+#     print(module.train_step(batch))
 
     
 

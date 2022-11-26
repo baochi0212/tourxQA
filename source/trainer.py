@@ -11,9 +11,12 @@ from early_stopping import EarlyStopping
 
 from transformers import AdamW, get_linear_schedule_with_warmup
 from data_loader import load_and_cache_examples
-from modules import ISDFModule
+from modules.IDSF import *
 from main import args
 
+from main import args
+
+from data_loader import load_and_cache_examples
 logger = logging.getLogger(__name__)
 
 class Trainer:
@@ -22,7 +25,7 @@ class Trainer:
         self.args = args
         #module
         self.module = module
-
+        self.device = args.device
     def configure_optimizer(self, t_total):
         no_decay = ["bias", "LayerNorm.weight"]
         optimizer_grouped_parameters = [
@@ -51,11 +54,11 @@ class Trainer:
         #total_steps
         if self.args.max_steps > 0:
             t_total = self.args.max_steps
-            self.args.num_train_epochs = (
+            self.args.n_epochs = (
                 self.args.max_steps // (len(train_dataloader) // self.args.gradient_accumulation_steps) + 1
             )
         else:
-            t_total = len(train_dataloader) // self.args.gradient_accumulation_steps * self.args.num_train_epochs
+            t_total = len(train_dataloader) // self.args.gradient_accumulation_steps * self.args.n_epochs
         #test the initialized model on validation set
         logger.info("-----------check init---------------")
         results = self.eval(val_dataset, mode="dev")
@@ -68,7 +71,7 @@ class Trainer:
         # Train!
         logger.info("***** Running training *****")
         logger.info("  Num examples = %d", len(train_dataset))
-        logger.info("  Num Epochs = %d", self.args.num_train_epochs)
+        logger.info("  Num Epochs = %d", self.args.n_epochs)
         logger.info("  Total train batch size = %d", self.args.train_batch_size)
         logger.info("  Gradient Accumulation steps = %d", self.args.gradient_accumulation_steps)
         logger.info("  Total optimization steps = %d", t_total)
@@ -79,7 +82,7 @@ class Trainer:
         tr_loss = 0.0
         self.module.model.zero_grad()
 
-        train_iterator = range(int(self.args.num_train_epochs), desc="Epoch")
+        train_iterator = range(int(self.args.n_epochs), desc="Epoch")
         early_stopping = EarlyStopping(patience=self.args.early_stopping, verbose=True)
 
         for _ in train_iterator:

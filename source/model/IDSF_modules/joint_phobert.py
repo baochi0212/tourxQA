@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 from torchcrf import CRF
 from transformers.models.roberta.modeling_roberta import RobertaModel, RobertaPreTrainedModel
-from modules import IntentClassifier, SlotClassifier
+from .modules import IntentClassifier, SlotClassifier
 
 
 class JointPhoBERT(RobertaPreTrainedModel):
