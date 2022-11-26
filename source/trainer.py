@@ -90,8 +90,8 @@ class Trainer:
             print("\nEpoch", _)
 
             for step, batch in enumerate(epoch_iterator):
-                step = self.module.train_step(batch)
-                loss = step['loss']
+                train_step = self.module.train_step(batch)
+                loss = train_step['loss']
 
                 tr_loss += loss.item()
                 if (step + 1) % self.args.gradient_accumulation_steps == 0:
@@ -158,11 +158,11 @@ class Trainer:
   
             batch = tuple(t.to(self.device) for t in batch)
             with torch.no_grad():
-                step = self.module.eval_step(batch)
-                tmp_eval_loss = step["loss"]
-                intent_logits = step["intent"]
-                slot_logits = step["slot"]
-                inputs = step["inputs"]
+                eval_step = self.module.eval_step(batch)
+                tmp_eval_loss = eval_step["loss"]
+                intent_logits = eval_step["intent"]
+                slot_logits = eval_step["slot"]
+                inputs = eval_step["inputs"]
 
 
                 # Intent prediction
