@@ -193,8 +193,8 @@ class Trainer:
                     out_slot_labels_ids = np.append(
                         out_slot_labels_ids, inputs["slot_labels_ids"].detach().cpu().numpy(), axis=0
                     )
-                    nb_eval_steps += 1
-                    eval_loss += tmp_eval_loss.mean().item()
+                nb_eval_steps += 1
+                eval_loss += tmp_eval_loss
             
 
 
