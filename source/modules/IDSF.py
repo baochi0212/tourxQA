@@ -55,7 +55,7 @@ class ISDFModule(Module):
         
         return {"loss": loss}
 
-    def val_step(self, batch):
+    def eval_step(self, batch):
         batch = tuple(t.to(self.device) for t in batch)
         with torch.no_grad():
             inputs = {
