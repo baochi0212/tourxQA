@@ -37,6 +37,7 @@ class ISDFModule(Module):
         self.lr = args.learning_rate
         self.n_epochs = args.n_epochs
         self.device = args.device
+        self.model = self.model.to(args.device)
     
     def train_step(self, batch):
         batch = tuple(t.to(self.device) for t in batch)  # GPU or CPU
