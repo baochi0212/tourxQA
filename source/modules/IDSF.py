@@ -8,7 +8,7 @@ import torch.nn
 from torch.utils import data
 from transformers import AdamW, get_linear_schedule_with_warmup
 
-from utils import MODEL_DICT, get_intent_labels, get_slot_labels, load_tokenizer
+from utils import MODEL_DICT, get_intent_labels, get_slot_labels, load_tokenizer, compute_metrics
 from data_loader import load_and_cache_examples
 from module import Module
 from main import args
