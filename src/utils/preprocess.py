@@ -160,6 +160,7 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
         else:
             print("PREDICTION:", pred)
             print("GROUND TRUTH:", trues)
+            print("CONTEXT:", tokenizer.decode(input_ids[i]))
         #F1 score
         F1_score = []
         for true in trues:
