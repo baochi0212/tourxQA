@@ -207,7 +207,7 @@ class Trainer:
         # Slot result
         if not self.args.use_crf:
             slot_preds = np.argmax(slot_preds, axis=2)
-        slot_label_map = {i: label for i, label in enumerate(self.slot_label_lst)}
+        slot_label_map = {i: label for i, label in enumerate(self.module.slot_label_lst)}
         out_slot_label_list = [[] for _ in range(out_slot_labels_ids.shape[0])]
         slot_preds_list = [[] for _ in range(out_slot_labels_ids.shape[0])]
 
