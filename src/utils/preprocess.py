@@ -158,7 +158,7 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
         if pred in trues:
             EM += 1 
         else:
-            print("PREDICTION":, pred)
+            print("PREDICTION:", pred)
             print("GROUND TRUTH:", trues)
         #F1 score
         F1_score = []
