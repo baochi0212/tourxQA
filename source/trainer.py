@@ -240,10 +240,6 @@ class Trainer:
 
     def load(self):
         pass
-    def configure_optimizer(self):
-        #optimizer, scheduler
-        pass
-
 if __name__ == "__main__":
     module = ISDFModule(args)
     tokenizer = load_tokenizer(args)
