@@ -66,25 +66,21 @@ def set_seed(args):
         torch.cuda.manual_seed_all(args.seed)
 
 #metrics
-def compute_metrics(task="IDSF", **kwargs):
-    if task == "IDSF":
-        intent_preds, intent_labels, slot_preds, slot_labels = kwargs
-        assert len(intent_preds) == len(intent_labels) == len(slot_preds) == len(slot_labels)
-        results = {}
-        intent_result = get_intent_acc(intent_preds, intent_labels)
-        slot_result = get_slot_metrics(slot_preds, slot_labels)
-        sementic_result = get_sentence_frame_acc(intent_preds, intent_labels, slot_preds, slot_labels)
+def compute_metrics(intent_preds, intent_labels, slot_preds, slot_labels):
+    assert len(intent_preds) == len(intent_labels) == len(slot_preds) == len(slot_labels)
+    results = {}
+    intent_result = get_intent_acc(intent_preds, intent_labels)
+    slot_result = get_slot_metrics(slot_preds, slot_labels)
+    sementic_result = get_sentence_frame_acc(intent_preds, intent_labels, slot_preds, slot_labels)
 
-        mean_intent_slot = (intent_result["intent_acc"] + slot_result["slot_f1"]) / 2
+    mean_intent_slot = (intent_result["intent_acc"] + slot_result["slot_f1"]) / 2
 
-        results.update(intent_result)
-        results.update(slot_result)
-        results.update(sementic_result)
-        results["mean_intent_slot"] = mean_intent_slot
+    results.update(intent_result)
+    results.update(slot_result)
+    results.update(sementic_result)
+    results["mean_intent_slot"] = mean_intent_slot
 
-        return results
-    else:
-        pass
+    return results
 
 
 def get_slot_metrics(preds, labels):
