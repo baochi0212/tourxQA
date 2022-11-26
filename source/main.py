@@ -17,7 +17,7 @@ parser.add_argument("--slot_label_file", default="slot_label.txt", type=str, hel
 
 parser.add_argument("--tuning_metric", default="loss", type=str, help="Metrics to tune when training")
 parser.add_argument("--seed", type=int, default=1, help="random seed for initialization")
-parser.add_argument("--train_batch_size", default=32, type=int, help="Batch size for training.")
+parser.add_argument("--train_batch_size", default=64, type=int, help="Batch size for training.")
 parser.add_argument("--eval_batch_size", default=64, type=int, help="Batch size for evaluation.")
 parser.add_argument(
     "--max_seq_len", default=50, type=int, help="The maximum total input sequence length after tokenization."
