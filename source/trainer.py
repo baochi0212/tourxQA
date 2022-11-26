@@ -82,7 +82,7 @@ class Trainer:
         tr_loss = 0.0
         self.module.model.zero_grad()
 
-        train_iterator = range(int(self.args.n_epochs), desc="Epoch")
+        train_iterator = range(int(self.args.n_epochs))
         early_stopping = EarlyStopping(patience=self.args.early_stopping, verbose=True)
 
         for _ in train_iterator:
