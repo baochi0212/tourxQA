@@ -213,7 +213,7 @@ class Trainer:
 
         for i in range(out_slot_labels_ids.shape[0]):
             for j in range(out_slot_labels_ids.shape[1]):
-                if out_slot_labels_ids[i, j] != self.args.pad_token_label_id:
+                if out_slot_labels_ids[i, j] != args.ignore_index:
                     out_slot_label_list[i].append(slot_label_map[out_slot_labels_ids[i][j]])
                     slot_preds_list[i].append(slot_label_map[slot_preds[i][j]])
 
