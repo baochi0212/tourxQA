@@ -170,6 +170,7 @@ class Trainer:
         self.model.eval()
 
         for batch in tqdm(eval_dataloader, desc="Evaluating"):
+            print("CHIDEPTRAI")
   
             batch = tuple(t.to(self.device) for t in batch)
             with torch.no_grad():
