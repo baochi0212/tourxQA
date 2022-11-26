@@ -197,36 +197,7 @@ class Trainer:
                     eval_loss += tmp_eval_loss.mean().item()
             
 
-        eval_loss = eval_loss / nb_eval_steps
-        results = {"loss": eval_loss}
 
-        if intent_preds is None:
-                intent_preds = intent_logits.detach().cpu().numpy()
-                out_intent_label_ids = inputs["intent_label_ids"].detach().cpu().numpy()
-            else:
-                intent_preds = np.append(intent_preds, intent_logits.detach().cpu().numpy(), axis=0)
-                out_intent_label_ids = np.append(
-                    out_intent_label_ids, inputs["intent_label_ids"].detach().cpu().numpy(), axis=0
-                )
-
-            # Slot prediction
-            if slot_preds is None:
-                if self.args.use_crf:
-                    # decode() in `torchcrf` returns list with best index directly
-                    slot_preds = np.array(self.model.crf.decode(slot_logits))
-                else:
-                    slot_preds = slot_logits.detach().cpu().numpy()
-
-                out_slot_labels_ids = inputs["slot_labels_ids"].detach().cpu().numpy()
-            else:
-                if self.args.use_crf:
-                    slot_preds = np.append(slot_preds, np.array(self.model.crf.decode(slot_logits)), axis=0)
-                else:
-                    slot_preds = np.append(slot_preds, slot_logits.detach().cpu().numpy(), axis=0)
-
-                out_slot_labels_ids = np.append(
-                    out_slot_labels_ids, inputs["slot_labels_ids"].detach().cpu().numpy(), axis=0
-                )
         eval_loss = eval_loss / nb_eval_steps
         results = {"loss": eval_loss}
 
