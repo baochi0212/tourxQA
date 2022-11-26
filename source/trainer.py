@@ -107,6 +107,7 @@ class Trainer:
                 loss = outputs[0]
                 if self.args.gradient_accumulation_steps > 1:
                     loss = loss / self.args.gradient_accumulation_steps
+                loss.backward()
 
                 tr_loss += loss.item()
                 if (step + 1) % self.args.gradient_accumulation_steps == 0:
