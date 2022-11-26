@@ -1,1 +1,1 @@
-from IDSF import ISDFModule
+from .IDSF import ISDFModule
