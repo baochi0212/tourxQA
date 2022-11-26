@@ -157,6 +157,9 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
         #exact match
         if pred in trues:
             EM += 1 
+        else:
+            print("PREDICTION":, pred)
+            print("GROUND TRUTH:", trues)
         #F1 score
         F1_score = []
         for true in trues:
@@ -165,7 +168,7 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
             text = pred if len(pred.split()) < len(true.split()) else true
             for i in range(len(text.split())):
                 if pred.split()[i] == true.split()[i]:
-                    sum += 1 
+                    sum += 1
             if len(pred.split()) == 0 or len(true.split()) == 0:
                 F1_score.append(int(pred == true))
                 continue
