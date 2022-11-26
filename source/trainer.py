@@ -104,7 +104,7 @@ class Trainer:
 
                     if self.args.logging_steps > 0 and global_step % self.args.logging_steps == 0:
                         print("\nTuning metrics:", self.args.tuning_metric)
-                        results = self.eval("dev")
+                        results = self.eval(val_dataset, mode="dev")
                         early_stopping(results[self.args.tuning_metric], self.module.model, self.args)
                         if early_stopping.early_stop:
                             print("Early stopping")
