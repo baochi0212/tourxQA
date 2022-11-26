@@ -70,29 +70,9 @@ class ISDFModule(Module):
             outputs = self.model(**inputs)
             tmp_eval_loss, (intent_logits, slot_logits) = outputs[:2]
             loss = tmp_eval_loss.mean().item()
-        # Intent prediction
-        if intent_preds is None:
-            intent_preds = intent_logits.detach().cpu().numpy()
-            intent_label_ids = inputs["intent_label_ids"].detach().cpu().numpy()
-        else:
-            intent_preds = np.append(intent_preds, intent_logits.detach().cpu().numpy(), axis=0)
-            intent_label_ids = inputs["intent_label_ids"].detach().cpu().numpy()
-        # Slot prediction
-        if slot_preds is None:
-            if self.args.use_crf:
-                # decode() in `torchcrf` returns list with best index directly
-                slot_preds = np.array(self.model.crf.decode(slot_logits))
-            else:
-                slot_preds = slot_logits.detach().cpu().numpy()
-            slot_label_ids = inputs["slot_labels_ids"].detach().cpu().numpy()
-        else:
-            if self.args.use_crf:
-                slot_preds = np.append(slot_preds, np.array(self.model.crf.decode(slot_logits)), axis=0)
-            else:
-                slot_preds = np.append(slot_preds, slot_logits.detach().cpu().numpy(), axis=0)
-            slot_label_ids = inputs["slot_labels_ids"].detach().cpu().numpy()
 
-        return {"loss": loss, "intent": intent_label_ids, "slot": slot_label_ids}
+
+        return {"loss": loss, "intent": intent_logits, "slot": slot_logits, "inputs": inputs}
 
 # if __name__ == "__main__":
 #     module = ISDFModule(args)

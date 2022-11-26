@@ -160,12 +160,73 @@ class Trainer:
             with torch.no_grad():
                 step = self.module.eval_step(batch)
                 tmp_eval_loss = step["loss"]
-                out_intent_label_ids = step["intent"]
-                out_slot_labels_ids = step["slot"]
-                nb_eval_steps += 1
-                eval_loss += tmp_eval_loss.mean().item()
+                intent_logits = step["intent"]
+                slot_logits = step["slot"]
+                inputs = step["inputs"]
+
+
+                # Intent prediction
+                if intent_preds is None:
+                    intent_preds = intent_logits.detach().cpu().numpy()
+                    out_intent_label_ids = inputs["intent_label_ids"].detach().cpu().numpy()
+                else:
+                    intent_preds = np.append(intent_preds, intent_logits.detach().cpu().numpy(), axis=0)
+                    out_intent_label_ids = np.append(
+                        out_intent_label_ids, inputs["intent_label_ids"].detach().cpu().numpy(), axis=0
+                    )
+    
+                # Slot prediction
+                if slot_preds is None:
+                    if self.args.use_crf:
+                        # decode() in `torchcrf` returns list with best index directly
+                        slot_preds = np.array(self.model.crf.decode(slot_logits))
+                    else:
+                        slot_preds = slot_logits.detach().cpu().numpy()
+    
+                    out_slot_labels_ids = inputs["slot_labels_ids"].detach().cpu().numpy()
+                else:
+                    if self.args.use_crf:
+                        slot_preds = np.append(slot_preds, np.array(self.model.crf.decode(slot_logits)), axis=0)
+                    else:
+                        slot_preds = np.append(slot_preds, slot_logits.detach().cpu().numpy(), axis=0)
+    
+                    out_slot_labels_ids = np.append(
+                        out_slot_labels_ids, inputs["slot_labels_ids"].detach().cpu().numpy(), axis=0
+                    )
+                    nb_eval_steps += 1
+                    eval_loss += tmp_eval_loss.mean().item()
             
 
+        eval_loss = eval_loss / nb_eval_steps
+        results = {"loss": eval_loss}
+
+        if intent_preds is None:
+                intent_preds = intent_logits.detach().cpu().numpy()
+                out_intent_label_ids = inputs["intent_label_ids"].detach().cpu().numpy()
+            else:
+                intent_preds = np.append(intent_preds, intent_logits.detach().cpu().numpy(), axis=0)
+                out_intent_label_ids = np.append(
+                    out_intent_label_ids, inputs["intent_label_ids"].detach().cpu().numpy(), axis=0
+                )
+
+            # Slot prediction
+            if slot_preds is None:
+                if self.args.use_crf:
+                    # decode() in `torchcrf` returns list with best index directly
+                    slot_preds = np.array(self.model.crf.decode(slot_logits))
+                else:
+                    slot_preds = slot_logits.detach().cpu().numpy()
+
+                out_slot_labels_ids = inputs["slot_labels_ids"].detach().cpu().numpy()
+            else:
+                if self.args.use_crf:
+                    slot_preds = np.append(slot_preds, np.array(self.model.crf.decode(slot_logits)), axis=0)
+                else:
+                    slot_preds = np.append(slot_preds, slot_logits.detach().cpu().numpy(), axis=0)
+
+                out_slot_labels_ids = np.append(
+                    out_slot_labels_ids, inputs["slot_labels_ids"].detach().cpu().numpy(), axis=0
+                )
         eval_loss = eval_loss / nb_eval_steps
         results = {"loss": eval_loss}
 
@@ -192,9 +253,11 @@ class Trainer:
         for key in sorted(results.keys()):
             logger.info("  %s = %s", key, str(results[key]))
         if mode == "test":
+            self.write_evaluation_result("eval_test_results.txt", results)
             print("TEST RESULTS: ", results)
         elif mode == "dev":
-            print("DEV RESULTS: ", results)
+            self.write_evaluation_result("eval_dev_results.txt", results)
+            print("DEV: ", results)
         
         return results
 
