@@ -39,7 +39,7 @@ class ISDFModule(Module):
         self.device = args.device
     
     def train_step(self, batch):
-        batch = tuple(t.to(self.device) for t in batch)  # GPU or CP
+        batch = tuple(t.to(self.device) for t in batch)  # GPU or CPU
         inputs = {
             "input_ids": batch[0],
             "attention_mask": batch[1],
@@ -64,6 +64,7 @@ class ISDFModule(Module):
                 "intent_label_ids": batch[3],
                 "slot_labels_ids": batch[4],
             }
+            print("BUG", inputs['input_ids'].device)
             if "distill" not in self.args.pretrained_model:
                 inputs["token_type_ids"] = batch[2]
             outputs = self.model(**inputs)
