@@ -47,7 +47,7 @@ class ISDFModule(Module):
             "slot_labels_ids": batch[4],
         }
         if "distill" not in self.args.pretrained_model:
-            inputs["token_type_ids"] = batch[2]
+            inputs["token_type_ids"] = batch[2].to(self.device)
         outputs = self.model(**inputs)
         loss = outputs[0]
         if self.args.gradient_accumulation_steps > 1:
@@ -64,9 +64,8 @@ class ISDFModule(Module):
                 "intent_label_ids": batch[3],
                 "slot_labels_ids": batch[4],
             }
-            print("BUG", inputs['input_ids'].device)
             if "distill" not in self.args.pretrained_model:
-                inputs["token_type_ids"] = batch[2]
+                inputs["token_type_ids"] = batch[2].to(self.device)
             outputs = self.model(**inputs)
             tmp_eval_loss, (intent_logits, slot_logits) = outputs[:2]
             loss = tmp_eval_loss.mean().item()
