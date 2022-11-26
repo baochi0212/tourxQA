@@ -1,6 +1,8 @@
 import logging
 import numpy as np
-
+import os
+import sys
+sys.path.append(os.environ['source'])
 import torch
 from torch.utils import data
 
