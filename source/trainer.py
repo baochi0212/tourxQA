@@ -91,8 +91,22 @@ class Trainer:
             print("\nEpoch", _)
 
             for step, batch in enumerate(epoch_iterator):
-                train_step = self.module.train_step(batch)
-                loss = train_step['loss']
+                # train_step = self.module.train_step(batch)
+                # loss = train_step['loss']
+
+                batch = tuple(t.to(self.device) for t in batch)  # GPU or CPU
+                inputs = {
+                    "input_ids": batch[0],
+                    "attention_mask": batch[1],
+                    "intent_label_ids": batch[3],
+                    "slot_labels_ids": batch[4],
+                }
+                if "distill" not in self.args.pretrained_model:
+                    inputs["token_type_ids"] = batch[2].to(self.device)
+                outputs = self.model(**inputs)
+                loss = outputs[0]
+                if self.args.gradient_accumulation_steps > 1:
+                    loss = loss / self.args.gradient_accumulation_steps
 
                 tr_loss += loss.item()
                 if (step + 1) % self.args.gradient_accumulation_steps == 0:
@@ -159,11 +173,24 @@ class Trainer:
   
             batch = tuple(t.to(self.device) for t in batch)
             with torch.no_grad():
-                eval_step = self.module.eval_step(batch)
-                tmp_eval_loss = eval_step["loss"]
-                intent_logits = eval_step["intent"]
-                slot_logits = eval_step["slot"]
-                inputs = eval_step["inputs"]
+                # eval_step = self.module.eval_step(batch)
+                # tmp_eval_loss = eval_step["loss"]
+                # intent_logits = eval_step["intent"]
+                # slot_logits = eval_step["slot"]
+                # inputs = eval_step["inputs"]
+                batch = tuple(t.to(self.device) for t in batch)
+                with torch.no_grad():
+                    inputs = {
+                        "input_ids": batch[0],
+                        "attention_mask": batch[1],
+                        "intent_label_ids": batch[3],
+                        "slot_labels_ids": batch[4],
+                    }
+                    if "distill" not in self.args.pretrained_model:
+                        inputs["token_type_ids"] = batch[2].to(self.device)
+                    outputs = self.model(**inputs)
+                    tmp_eval_loss, (intent_logits, slot_logits) = outputs[:2]
+                    loss = tmp_eval_loss.mean().item()
 
 
                 # Intent prediction
