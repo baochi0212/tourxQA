@@ -1,8 +1,11 @@
+import sys
+import os
+
+sys.path.append(f"{os.environ['source']}/model/IDSF_modules")
 import torch
 import torch.nn as nn
 from torchcrf import CRF
 from transformers.models.roberta.modeling_roberta import RobertaModel, RobertaPreTrainedModel
-
 from modules import IntentClassifier, SlotClassifier
 
 

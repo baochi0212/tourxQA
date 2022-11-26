@@ -5,6 +5,7 @@ import numpy as np
 
 import torch
 import torch.nn
+from torch.utils import data
 from transformers import AdamW, get_linear_schedule_with_warmup
 
 from utils import MODEL_DICT, get_intent_labels, get_slot_labels, load_tokenizer
@@ -23,18 +24,19 @@ class ISDFModule(Module):
        
         if args.pretrained:
             self.config = config.from_pretrained(args.pretrained_model)
-            self.model = self.model_class.from_pretrained(
+            self.model = model.from_pretrained(
                 args.pretrained_model,
                 args=args,
                 intent_label_lst=self.intent_label_lst,
                 slot_label_lst=self.slot_label_lst,
             )
         else:
-            self.model = model
+            self.model = model()
         #define hparams
         self.batch_size = args.batch_size
         self.lr = args.learning_rate
         self.n_epochs = args.n_epochs
+        self.device = args.device
     
     def train_step(self, batch):
         batch = tuple(t.to(self.device) for t in batch)  # GPU or CP
@@ -94,7 +96,11 @@ class ISDFModule(Module):
 if __name__ == "__main__":
     module = ISDFModule(args)
     tokenizer = load_tokenizer(args)
-    data = load_and_cache_examples(args, tokenizer, mode="train")
+    dataset = load_and_cache_examples(args, tokenizer, mode="train")
+    loader = data.DataLoader(dataset, batch_size=32, shuffle=True)
+    batch = next(iter(loader))
+    print(module.model)
+    print(module.train_step(batch))
 
     
 

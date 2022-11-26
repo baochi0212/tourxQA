@@ -4,33 +4,31 @@ import random
 
 import numpy as np
 import torch
-from model import JointPhoBERT, JointXLMR
+from model.IDSF_modules import JointPhoBERT, JointXLMR
 from seqeval.metrics import f1_score, precision_score, recall_score
 from transformers import (
     AutoTokenizer,
-    RobertaConfig,
+    AutoConfig,
     XLMRobertaConfig,
     XLMRobertaTokenizer,
+    AutoModel,
 )
 from collections import Counter
 
 #MAPPING
-TASK_CLASSES = {
-    'IDSF': {"xlm-base": JointXLMR, "xlm-large": JointXLMR, "phobert": JointPhoBERT},
-    'QA': {"xlm-base": QAModule, "xlm-large": QAModule, "phobert": QAModule}
-}
-MODEL_CLASSES = {
-    "xlm-large": (XLMRobertaConfig, XLMRobertaTokenizer),
-    "xlm-base": (XLMRobertaConfig, XLMRobertaTokenizer),
-    "phobert": (RobertaConfig, AutoTokenizer)
+MODEL_DICT = {
+    "xlm-roberta-base": (XLMRobertaConfig, XLMRobertaTokenizer, AutoModel),
+    "xlm-roberta-large": (XLMRobertaConfig, XLMRobertaTokenizer, AutoModel),
+    "vinai/phobert-base": (AutoConfig, AutoTokenizer, JointPhoBERT),
+    "word2vec-lstm": ()
 }
 
-MODEL_PATH_MAP = {
-    "xlm-base": "xlm-roberta-base",
-    "xlm-large": "xlm-roberta-large",
-    "phobert": "vinai/phobert-base",
+# MODEL_PATH_MAP = {
+#     "xlm-base": "xlm-roberta-base",
+#     "xlm-large": "xlm-roberta-large",
+#     "phobert": "vinai/phobert-base",
 
-}
+# }
 
 #IDSF utils
 def get_intent_labels(args):
@@ -49,7 +47,7 @@ def get_slot_labels(args):
 
 #loading and initialize
 def load_tokenizer(args):
-    return MODEL_CLASSES[args.model_type][2].from_pretrained(args.model_name_or_path)
+    return MODEL_DICT[args.pretrained_model][1].from_pretrained(args.pretrained_model)
 
 
 def init_logger():

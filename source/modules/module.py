@@ -19,9 +19,7 @@ class Module:
         pass 
     def test_step(self, test_loader):
         pass
-    def configure_optimizer(self):
-        #optimizer, scheduler
-        pass
+
     def loader(self, dataset, collate=False):
         pass 
     
