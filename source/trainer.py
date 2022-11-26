@@ -25,16 +25,17 @@ class Trainer:
         self.args = args
         #module
         self.module = module
+        self.model = self.module.model
         self.device = args.device
     def configure_optimizer(self, t_total):
         no_decay = ["bias", "LayerNorm.weight"]
         optimizer_grouped_parameters = [
             {
-                "params": [p for n, p in self.module.model.named_parameters() if not any(nd in n for nd in no_decay)],
+                "params": [p for n, p in self.model.named_parameters() if not any(nd in n for nd in no_decay)],
                 "weight_decay": self.args.weight_decay,
             },
             {
-                "params": [p for n, p in self.module.model.named_parameters() if any(nd in n for nd in no_decay)],
+                "params": [p for n, p in self.model.named_parameters() if any(nd in n for nd in no_decay)],
                 "weight_decay": 0.0,
             },
         ]
@@ -80,7 +81,7 @@ class Trainer:
 
         global_step = 0
         tr_loss = 0.0
-        self.module.model.zero_grad()
+        self.model.zero_grad()
 
         train_iterator = range(int(self.args.n_epochs))
         early_stopping = EarlyStopping(patience=self.args.early_stopping, verbose=True)
@@ -95,17 +96,17 @@ class Trainer:
 
                 tr_loss += loss.item()
                 if (step + 1) % self.args.gradient_accumulation_steps == 0:
-                    torch.nn.utils.clip_grad_norm_(self.module.model.parameters(), self.args.max_grad_norm)
+                    torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.args.max_grad_norm)
 
                     self.optimizer.step()
                     self.scheduler.step()  # Update learning rate schedule
-                    self.module.model.zero_grad()
+                    self.model.zero_grad()
                     global_step += 1
 
                     if self.args.logging_steps > 0 and global_step % self.args.logging_steps == 0:
                         print("\nTuning metrics:", self.args.tuning_metric)
                         results = self.eval(val_dataset, mode="dev")
-                        early_stopping(results[self.args.tuning_metric], self.module.model, self.args)
+                        early_stopping(results[self.args.tuning_metric], self.model, self.args)
                         if early_stopping.early_stop:
                             print("Early stopping")
                             break
@@ -139,7 +140,7 @@ class Trainer:
     def eval(self, dataset, mode="dev"):
 
         eval_sampler = data.SequentialSampler(dataset)
-        eval_dataloader = data. DataLoader(dataset, sampler=eval_sampler, batch_size=self.args.eval_batch_size)
+        eval_dataloader = data.DataLoader(dataset, sampler=eval_sampler, batch_size=self.args.eval_batch_size)
 
         # Eval!
         logger.info("***** Running evaluation on %s dataset *****", mode)
@@ -152,7 +153,7 @@ class Trainer:
         out_intent_label_ids = None
         out_slot_labels_ids = None
 
-        self.module.model.eval()
+        self.model.eval()
 
         for batch in tqdm(eval_dataloader, desc="Evaluating"):
   
