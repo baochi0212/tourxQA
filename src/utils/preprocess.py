@@ -162,6 +162,7 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
     start = b x n
     '''
     EM_1 = 0
+    F1_1 = 0
     EM = 0
     F1 = 0
     for i in range(start.shape[0]):
@@ -170,10 +171,16 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
         for j in range(len(start_idx[i])):
             trues.append(tokenizer.decode(input_ids[i][start_idx[i][j]:end_idx[i][j]+1]))
         #exact match
-        if compare_text(pred, trues):
-            EM += 1
         if pred in trues:
+            EM += 1
+            F1 += 1
+            EM_1 += 1 
+            F1_1 += 1 
+            continue
+        if compare_text(pred, trues):
             EM_1 += 1
+            F1_1 += 1 
+
         # else:
         #     print("PREDICTION:", pred)
         #     print("GROUND TRUTH:", trues)
@@ -200,7 +207,9 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
             F1_score.append(2/(1/precision + 1/recall))
         
         F1 += max(F1_score)
-    return EM/start.shape[0], F1/start.shape[0], EM_1/start.shape[0]
+        if not compare_text(pred, trues):
+            F1_1 += max(F1_score)
+    return EM/start.shape[0], F1/start.shape[0], EM_1/start.shape[0], F1_1/start.shape[0]
     
 def align_tokens(word_lengths, input):
     # b x w x n
