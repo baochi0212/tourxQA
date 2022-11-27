@@ -7,10 +7,10 @@ import torch
 import torch.nn
 from torch.utils import data
 from transformers import AdamW, get_linear_schedule_with_warmup
-from .module import Module
+from module import Module
 from utils import MODEL_DICT, get_intent_labels, get_slot_labels, load_tokenizer, compute_metrics
-
-
+from data_loader import load_and_cache_examples
+from main import args
 
 
 
@@ -19,7 +19,7 @@ class ISDFModule(Module):
     def __init__(self, args):
         super().__init__(args)
         #define model
-        config, _, model  = MODEL_DICT[args.pretrained_model]
+        config, _, model  = MODEL_DICT[args.model_type]
         self.intent_label_lst, self.slot_label_lst = get_intent_labels(args), get_slot_labels(args)
        
         if args.pretrained:
@@ -31,7 +31,11 @@ class ISDFModule(Module):
                 slot_label_lst=self.slot_label_lst,
             )
         else:
-            self.model = model()
+           
+            self.config = config.from_pretrained(args.pretrained_model)
+            self.model = model(self.config, args=args,
+                intent_label_lst=self.intent_label_lst,
+                slot_label_lst=self.slot_label_lst,)
         #define hparams
         self.batch_size = args.batch_size
         self.lr = args.learning_rate
@@ -74,14 +78,13 @@ class ISDFModule(Module):
 
         return {"loss": loss, "intent": intent_logits, "slot": slot_logits, "inputs": inputs}
 
-# if __name__ == "__main__":
-#     module = ISDFModule(args)
-#     tokenizer = load_tokenizer(args)
-#     dataset = load_and_cache_examples(args, tokenizer, mode="train")
-#     loader = data.DataLoader(dataset, batch_size=32, shuffle=True)
-#     batch = next(iter(loader))
-#     print(module.model)
-#     print(module.train_step(batch))
+if __name__ == "__main__":
+    module = ISDFModule(args)
+    tokenizer = load_tokenizer(args)
+    dataset = load_and_cache_examples(args, tokenizer, mode="train")
+    loader = data.DataLoader(dataset, batch_size=32, shuffle=True)
+    batch = next(iter(loader))
+    print(module.train_step(batch))
 
     
 
