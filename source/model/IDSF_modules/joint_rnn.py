@@ -5,14 +5,18 @@ from .modules import *
 
 
 class JointLSTM(nn.Module):
-    def __init__(self, args, vocab_size, intent_label_lst, slot_label_lst):
+    def __init__(self, config, args, intent_label_lst, slot_label_lst):
+        super().__init__()
         self.args = args
-        self.lstm = nn.LSTM(args.hidden_size, args.hidden_size, args.rnn_num_layers, batch_first=True)
-        self.intent_classifier = IntentClassifier(args.hidden_size, self.num_intent_labels, args.dropout_rate)
+        self.config = config
+        self.embedding = nn.Embedding(config.vocab_size, config.hidden_size)
+        self.lstm = nn.LSTM(config.hidden_size, config.hidden_size, args.rnn_num_layers, batch_first=True)
+       
         self.num_intent_labels = len(intent_label_lst)
         self.num_slot_labels = len(slot_label_lst)
+        self.intent_classifier = IntentClassifier(config.hidden_size, self.num_intent_labels, args.dropout_rate)
         self.slot_classifier = SlotClassifier(
-            args.hidden_size,
+            config.hidden_size,
             self.num_intent_labels,
             self.num_slot_labels,
             self.args.use_intent_context_concat,
@@ -26,11 +30,14 @@ class JointLSTM(nn.Module):
             self.crf = CRF(num_tags=self.num_slot_labels, batch_first=True)
     
     def forward(self, input_ids, attention_mask, token_type_ids, intent_label_ids, slot_labels_ids):
+        #embedding
+        input_ids = self.embedding(input_ids)
         #initialize the hidden states (b x n_layers x h)
-        h_0 = torch.zeros(self.args.batch_size, self.args.rnn_num_layers, self.args.hidden_size)
-        c_0 = torch.zeros_like(self.args.batch_size, self.args.rnn_num_layers, self.args.hidden_size)
-        sequence_output, (h_n, _) = self.lstm(input_ids, (h_0, c_0))
+        h_0 = torch.zeros((self.args.rnn_num_layers, self.args.batch_size, self.config.hidden_size))
+        c_0 = torch.zeros((self.args.rnn_num_layers, self.args.batch_size, self.config.hidden_size))
 
+        sequence_output, (h_n, _) = self.lstm(input_ids, (h_0, c_0))
+        h_n = h_n.permute(1, 0, 2)
         hidden_state = h_n[:, -1, :]
         intent_logits = self.intent_classifier(hidden_state)
 
@@ -78,7 +85,7 @@ class JointLSTM(nn.Module):
                     slot_loss = slot_loss_fct(slot_logits.view(-1, self.num_slot_labels), slot_labels_ids.view(-1))
             total_loss += (1 - self.args.intent_loss_coef) * slot_loss
 
-        outputs = ((intent_logits, slot_logits),) + outputs[2:]  # add hidden states and attention if they are here
+        outputs = ((intent_logits, slot_logits),) # add hidden states and attention if they are here
 
         outputs = (total_loss,) + outputs
 

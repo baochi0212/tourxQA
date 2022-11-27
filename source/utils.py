@@ -4,7 +4,7 @@ import random
 
 import numpy as np
 import torch
-from model.IDSF_modules import JointPhoBERT, JointXLMR
+from model.IDSF_modules import JointPhoBERT, JointXLMR, JointLSTM
 from seqeval.metrics import f1_score, precision_score, recall_score
 from transformers import (
     AutoTokenizer,
@@ -20,7 +20,7 @@ MODEL_DICT = {
     "xlm-roberta-base": (XLMRobertaConfig, XLMRobertaTokenizer, AutoModel),
     "xlm-roberta-large": (XLMRobertaConfig, XLMRobertaTokenizer, AutoModel),
     "vinai/phobert-base": (AutoConfig, AutoTokenizer, JointPhoBERT),
-    "word2vec-lstm": (None, Word2vec, LSTM)
+    "lstm": (AutoConfig, AutoTokenizer, JointLSTM)
 }
 
 # MODEL_PATH_MAP = {
