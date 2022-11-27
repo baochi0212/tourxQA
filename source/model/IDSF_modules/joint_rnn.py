@@ -33,8 +33,8 @@ class JointLSTM(nn.Module):
         #embedding
         input_ids = self.embedding(input_ids)
         #initialize the hidden states (b x n_layers x h)
-        h_0 = torch.zeros((self.args.rnn_num_layers, self.args.batch_size, self.config.hidden_size))
-        c_0 = torch.zeros((self.args.rnn_num_layers, self.args.batch_size, self.config.hidden_size))
+        h_0 = torch.zeros((self.args.rnn_num_layers, self.args.batch_size, self.config.hidden_size)).to(self.args.device)
+        c_0 = torch.zeros((self.args.rnn_num_layers, self.args.batch_size, self.config.hidden_size)).to(self.args.device)
 
         sequence_output, (h_n, _) = self.lstm(input_ids, (h_0, c_0))
         h_n = h_n.permute(1, 0, 2)
