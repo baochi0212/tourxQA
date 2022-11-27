@@ -402,13 +402,13 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
             # After the completion of each training epoch, measure the model's performance
             # on our validation set.
             # _, train_accuracy = evaluate_QA(model, train_dataloader, device=device)
-            val_loss, val_accuracy, EM_score, F1_score = evaluate_QA(model, val_dataloader, tokenizer=tokenizer, device=device)
+            val_loss, val_accuracy, EM_score, F1_score, EM1_score = evaluate_QA(model, val_dataloader, tokenizer=tokenizer, device=device)
 
             # Print performance over the entire training data
             time_elapsed = time.time() - t0_epoch
             # , {train_accuracy:^9.2f}
             # print(f"{epoch_i + 1:^7} | {'-':^7} | {avg_train_loss:^12.6f}| {val_loss:^10.6f} | {val_accuracy:^9.2f} | {time_elapsed:^9.2f}")
-            print(f"Loss: {val_loss}, EM: {EM_score} and F1: {F1_score} ")
+            print(f"Loss: {val_loss}, EM: {EM_score} and F1: {F1_score} and EM1: {EM1_score}")
         #     print("-"*70)
         # print("\n")
     print("Training complete!")
@@ -427,6 +427,7 @@ def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=Fal
     val_accuracy = []
     val_loss = []
     EM_score = []
+    EM1_score = []
     F1_score = []
     # For each batch in our validation set...
     count = 0
@@ -456,12 +457,15 @@ def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=Fal
                 #loss, accuracy for tuning
                 val_accuracy.append(metrics(start, end, b_start, b_end, metrics='acc', test=True, training=training))
                 #exact match and F1 for evaluation
-                EM, F1 = QA_metrics(start, end, b_start, b_end, b_input_ids, tokenizer)
+                EM, F1, EM_1 = QA_metrics(start, end, b_start, b_end, b_input_ids, tokenizer)
                 EM_score.append(EM)
+                EM1_score.append(EM_1)
+
                 F1_score.append(F1)
           val_loss =  np.array(val_loss).mean()
           val_accuracy = np.array(val_accuracy).mean()
           EM_score = np.array(EM_score).mean()
+          EM1_score = np.array(EM_1_score).mean()
           F1_score = np.array(F1_score).mean()
       else:
           for batch in val_dataloader:
@@ -487,7 +491,7 @@ def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=Fal
 
           
 
-    return val_loss, val_accuracy, EM_score, F1_score
+    return val_loss, val_accuracy, EM_score, F1_score, EM1_score
 
 if __name__ == '__main__':
     args = parser.parse_args()

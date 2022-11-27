@@ -20,7 +20,7 @@ MODEL_DICT = {
     "xlm-roberta-base": (XLMRobertaConfig, XLMRobertaTokenizer, AutoModel),
     "xlm-roberta-large": (XLMRobertaConfig, XLMRobertaTokenizer, AutoModel),
     "vinai/phobert-base": (AutoConfig, AutoTokenizer, JointPhoBERT),
-    "word2vec-lstm": ()
+    "word2vec-lstm": (None, Word2vec, LSTM)
 }
 
 # MODEL_PATH_MAP = {
