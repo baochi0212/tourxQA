@@ -520,7 +520,7 @@ if __name__ == '__main__':
     val_df = pd.read_csv(qa_processed + '/dev.csv')
     test_df = pd.read_csv(qa_processed + '/test.csv')
     train_df = pd.concat([val_df, train_df], axis=0)
-    # train_df = train_df[:len(train_df)//2]
+    train_df = train_df[:128]
     if args.task == 'SQUAD':
         train_df = pd.read_csv(squad_processed + '/train.csv')
         val_df = pd.read_csv(squad_processed + '/validation.csv')

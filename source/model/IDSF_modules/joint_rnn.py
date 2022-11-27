@@ -12,7 +12,7 @@ class JointLSTM(nn.Module):
         self.num_intent_labels = len(intent_label_lst)
         self.num_slot_labels = len(slot_label_lst)
         self.slot_classifier = SlotClassifier(
-            args.hidden_dim,
+            args.hidden_size,
             self.num_intent_labels,
             self.num_slot_labels,
             self.args.use_intent_context_concat,
@@ -25,25 +25,28 @@ class JointLSTM(nn.Module):
         if args.use_crf:
             self.crf = CRF(num_tags=self.num_slot_labels, batch_first=True)
     
-    def forward(self, x, intent_label_ids, slot_labels_ids):
-        #embedding:
-        x = self.embedding(x)
+    def forward(self, input_ids, attention_mask, token_type_ids, intent_label_ids, slot_labels_ids):
         #initialize the hidden states (b x n_layers x h)
-        h_0 = torch.zeros(self.args.batch_size, self.args.rnn_num_layers, self.args.hidden_dim)
-        c_0 = torch.zeros_like(self.args.batch_size, self.args.rnn_num_layers, self.args.hidden_dim)
-        out, (h_n, c_n) = self.lstm(x, (h_0, c_0))
+        h_0 = torch.zeros(self.args.batch_size, self.args.rnn_num_layers, self.args.hidden_size)
+        c_0 = torch.zeros_like(self.args.batch_size, self.args.rnn_num_layers, self.args.hidden_size)
+        sequence_output, (h_n, _) = self.lstm(input_ids, (h_0, c_0))
 
         hidden_state = h_n[:, -1, :]
         intent_logits = self.intent_classifier(hidden_state)
+
+        if not self.args.use_attention_mask:
+            tmp_attention_mask = None
+        else:
+            tmp_attention_mask = attention_mask
 
         if self.args.embedding_type == "hard":
             hard_intent_logits = torch.zeros(intent_logits.shape)
             for i, sample in enumerate(intent_logits):
                 max_idx = torch.argmax(sample)
                 hard_intent_logits[i][max_idx] = 1
-            slot_logits = self.slot_classifier(out, hard_intent_logits)
+            slot_logits = self.slot_classifier(sequence_output, hard_intent_logits, tmp_attention_mask)
         else:
-            slot_logits = self.slot_classifier(out, intent_logits)
+            slot_logits = self.slot_classifier(sequence_output, intent_logits, tmp_attention_mask)
 
         total_loss = 0
         # 1. Intent Softmax
@@ -58,28 +61,28 @@ class JointLSTM(nn.Module):
                 )
             total_loss += self.args.intent_loss_coef * intent_loss
 
-            # 2. Slot Softmax
-            if slot_labels_ids is not None:
-                if self.args.use_crf:
-                    slot_loss = self.crf(slot_logits, slot_labels_ids, mask=attention_mask.byte(), reduction="mean")
-                    slot_loss = -1 * slot_loss  # negative log-likelihood
+        # 2. Slot Softmax
+        if slot_labels_ids is not None:
+            if self.args.use_crf:
+                slot_loss = self.crf(slot_logits, slot_labels_ids, mask=attention_mask.byte(), reduction="mean")
+                slot_loss = -1 * slot_loss  # negative log-likelihood
+            else:
+                slot_loss_fct = nn.CrossEntropyLoss(ignore_index=self.args.ignore_index)
+                # Only keep active parts of the loss
+                if attention_mask is not None:
+                    active_loss = attention_mask.view(-1) == 1
+                    active_logits = slot_logits.view(-1, self.num_slot_labels)[active_loss]
+                    active_labels = slot_labels_ids.view(-1)[active_loss]
+                    slot_loss = slot_loss_fct(active_logits, active_labels)
                 else:
-                    slot_loss_fct = nn.CrossEntropyLoss(ignore_index=self.args.ignore_index)
-                    # Only keep active parts of the loss
-                    if attention_mask is not None:
-                        active_loss = attention_mask.view(-1) == 1
-                        active_logits = slot_logits.view(-1, self.num_slot_labels)[active_loss]
-                        active_labels = slot_labels_ids.view(-1)[active_loss]
-                        slot_loss = slot_loss_fct(active_logits, active_labels)
-                    else:
-                        slot_loss = slot_loss_fct(slot_logits.view(-1, self.num_slot_labels), slot_labels_ids.view(-1))
-                total_loss += (1 - self.args.intent_loss_coef) * slot_loss
+                    slot_loss = slot_loss_fct(slot_logits.view(-1, self.num_slot_labels), slot_labels_ids.view(-1))
+            total_loss += (1 - self.args.intent_loss_coef) * slot_loss
 
-            outputs = ((intent_logits, slot_logits),) + outputs[2:]  # add hidden states and attention if they are here
+        outputs = ((intent_logits, slot_logits),) + outputs[2:]  # add hidden states and attention if they are here
 
-            outputs = (total_loss,) + outputs
+        outputs = (total_loss,) + outputs
 
-            return outputs  # (loss), logits, (hidden_states), (attentions) # Logits is a tuple of intent and slot logits
+        return outputs  # (loss), logits, (hidden_states), (attentions) # Logits is a tuple of intent and slot logits
 
 
 
