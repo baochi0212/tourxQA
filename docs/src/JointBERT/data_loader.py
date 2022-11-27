@@ -243,9 +243,6 @@ def load_and_cache_examples(args, tokenizer, mode):
         logger.info("Saving features into cached file %s", cached_features_file)
         torch.save(features, cached_features_file)
     #check the tokenizer
-    # print("Features nhu cc: ", [f.input_ids for f in features])
-    # print("CCC", tokenizer("tôi muốn bay một chuyến khứ_hồi từ đà_nẵng đến đà_lạt"))
-    # Convert to Tensors and build dataset
     all_input_ids = torch.tensor([f.input_ids for f in features], dtype=torch.long)
     all_attention_mask = torch.tensor([f.attention_mask for f in features], dtype=torch.long)
     all_token_type_ids = torch.tensor([f.token_type_ids for f in features], dtype=torch.long)

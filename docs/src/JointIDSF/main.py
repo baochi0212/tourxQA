@@ -30,7 +30,7 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    # parser.add_argument("--task", default=None, required=True, type=str, help="The name of the task to train")
+    parser.add_argument("--task", default='phobert', required=True, type=str, help="The name of the task to train")
     parser.add_argument("--model_dir", default='./model_dir', required=False, type=str, help="Path to save, load model")
     parser.add_argument("--data_dir", default="./PhoATIS", type=str, help="The input data dir")
     parser.add_argument("--intent_label_file", default="intent_label.txt", type=str, help="Intent Label file")
