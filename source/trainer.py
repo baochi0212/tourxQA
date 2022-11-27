@@ -50,6 +50,8 @@ class Trainer:
     
     def fit(self, train_dataset, val_dataset):
         #loader
+        logger.info("--MODEL CHECKING--")
+        print("MODEL: ", self.model)
         train_sampler = data.RandomSampler(train_dataset)
         train_dataloader = data.DataLoader(train_dataset, sampler=train_sampler, batch_size=self.args.train_batch_size)
         #total_steps
