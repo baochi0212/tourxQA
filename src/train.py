@@ -494,7 +494,7 @@ def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=Fal
 
           
 
-    return val_loss, val_accuracy, EM_score, F1_score, EM1_score
+    return val_loss, val_accuracy, EM_score, F1_score, EM1_score, F11_score
 
 if __name__ == '__main__':
     args = parser.parse_args()
