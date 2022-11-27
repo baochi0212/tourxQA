@@ -142,6 +142,20 @@ def offset2length(offset_map):
             word_lengths.append(length)
             length = 1
     return word_lengths
+def compare_text(pred, trues):
+    '''
+    check if additional non-alpha index exists
+    '''
+    match = False
+    for true in trues:
+        if pred in true:
+            temp = len(true.replace(pred, ''))
+            for i in true.replace(pred, ''):
+                if not i.isalpha():
+                    temp -= 1 
+            match = temp == 0
+    return match       
+
 def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
     '''
     EM and F1 score for text output
@@ -155,7 +169,7 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
         for j in range(len(start_idx[i])):
             trues.append(tokenizer.decode(input_ids[i][start_idx[i][j]:end_idx[i][j]+1]))
         #exact match
-        if pred in trues:
+        if compare_text(pred, trues):
             EM += 1 
         else:
             print("PREDICTION:", pred)
@@ -351,7 +365,13 @@ def get_corpus_squad():
 
 
 if __name__ == '__main__':
-    get_corpus_squad()
+    # get_corpus_squad()
     # text = str(['các vùng người Đức', '@', 'các vùng người Đức', '@', '"các vùng người Đức"', '@', 'các vùng người Đức', '@'])
     # # print(text)
     # print(string2list(text))
+
+
+
+    trues = ['aa#@hom nay vui', 'hom nay vui!!!!b']
+    text = 'hom nay vui'
+    print(compare_text(text, trues))
