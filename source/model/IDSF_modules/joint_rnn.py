@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torchcrf import CRF
 from .modules import *
-from transformers import AutoModel
+
 
 
 class JointLSTM(nn.Module):
@@ -10,9 +10,7 @@ class JointLSTM(nn.Module):
         super().__init__()
         self.args = args
         self.config = config
-        # self.embedding = AutoModel.from_pretrained(args.pretrained_model).embeddings
         self.embedding = nn.Embedding(config.vocab_size, config.hidden_size)
-       
         self.lstm = nn.LSTM(config.hidden_size, config.hidden_size, args.rnn_num_layers, batch_first=True)
        
         self.num_intent_labels = len(intent_label_lst)
@@ -44,11 +42,6 @@ class JointLSTM(nn.Module):
         h_n = h_n.permute(1, 0, 2)
         hidden_state = h_n[:, -1, :]
         intent_logits = self.intent_classifier(hidden_state)
-        # outputs = self.model(
-        #     input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids
-        # ) 
-        # intent_logits = self.intent_classifier(outputs[1])
-        # sequence_output = outputs[0]
 
         if not self.args.use_attention_mask:
             tmp_attention_mask = None
@@ -92,7 +85,7 @@ class JointLSTM(nn.Module):
                     slot_loss = slot_loss_fct(active_logits, active_labels)
                 else:
                     slot_loss = slot_loss_fct(slot_logits.view(-1, self.num_slot_labels), slot_labels_ids.view(-1))
-            total_loss += (1 - self.args.intent_loss_coef) * slot_loss
+            total_loss = (1 - self.args.intent_loss_coef) * slot_loss
 
         outputs = ((intent_logits, slot_logits),) # add hidden states and attention if they are here
 
