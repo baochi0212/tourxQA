@@ -35,8 +35,8 @@ class JointLSTM(nn.Module):
         print("Input: ", input_ids.shape)
         #initialize the hidden states (b x n_layers x h)
         batch_size = self.args.train_batch_size if self.training else self.args.eval_batch_size
-        h_0 = torch.zeros((self.args.rnn_num_layers, self.args.batch_size, self.config.hidden_size)).to(self.args.device)
-        c_0 = torch.zeros((self.args.rnn_num_layers, self.args.batch_size, self.config.hidden_size)).to(self.args.device)
+        h_0 = torch.zeros((self.args.rnn_num_layers, batch_size, self.config.hidden_size)).to(self.args.device)
+        c_0 = torch.zeros((self.args.rnn_num_layers, batch_size, self.config.hidden_size)).to(self.args.device)
 
         sequence_output, (h_n, _) = self.lstm(input_ids, (h_0, c_0))
         h_n = h_n.permute(1, 0, 2)
