@@ -10,7 +10,7 @@ class JointLSTM(nn.Module):
         super().__init__()
         self.args = args
         self.config = config
-        self.model = AutoModel.from_pretrained(args.pretrained_model).embeddings
+        self.model = AutoModel.from_pretrained(args.pretrained_model)
         self.lstm = nn.LSTM(config.hidden_size, config.hidden_size, args.rnn_num_layers, batch_first=True)
        
         self.num_intent_labels = len(intent_label_lst)
