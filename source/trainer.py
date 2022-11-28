@@ -14,8 +14,6 @@ from data_loader import load_and_cache_examples
 from modules.IDSF import *
 from main import args
 
-from main import args
-
 from data_loader import load_and_cache_examples
 logger = logging.getLogger(__name__)
 
@@ -50,10 +48,11 @@ class Trainer:
     
     def fit(self, train_dataset, val_dataset):
         #loader
+        print("BACTH ")
         logger.info("--MODEL CHECKING--")
         print("MODEL: ", self.model)
         train_sampler = data.RandomSampler(train_dataset)
-        train_dataloader = data.DataLoader(train_dataset, sampler=train_sampler, batch_size=self.args.train_batch_size)
+        train_dataloader = data.DataLoader(train_dataset, sampler=train_sampler, batch_size=self.args.batch_size)
         #total_steps
         if self.args.max_steps > 0:
             t_total = self.args.max_steps
