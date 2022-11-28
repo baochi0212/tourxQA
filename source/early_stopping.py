@@ -52,8 +52,8 @@ class EarlyStopping:
                 )
         if args.model_type != 'lstm':
             model.save_pretrained(args.model_dir)
-            torch.save(args, os.path.join(args.model_dir, "training_args.bin"))
-            self.val_loss_min = val_loss
+        torch.save(args, os.path.join(args.model_dir, "training_args.bin"))
+        self.val_loss_min = val_loss
 
         # # Save model checkpoint (Overwrite)
         # if not os.path.exists(self.args.model_dir):
