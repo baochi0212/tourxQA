@@ -142,7 +142,7 @@ class Trainer:
     def eval(self, dataset, mode="dev"):
 
         eval_sampler = data.SequentialSampler(dataset)
-        eval_dataloader = data.DataLoader(dataset, sampler=eval_sampler, batch_size=self.args.eval_batch_size)
+        eval_dataloader = data.DataLoader(dataset, sampler=eval_sampler, batch_size=self.args.batch_size)
 
         # Eval!
         logger.info("***** Running evaluation on %s dataset *****", mode)
