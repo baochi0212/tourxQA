@@ -42,6 +42,9 @@ class Trainer:
         scheduler = get_linear_schedule_with_warmup(
             optimizer, num_warmup_steps=self.args.warmup_steps, num_training_steps=t_total
         )
+        if self.args.model_type == 'lstm':
+            optimizer = torch.optim.Adam(self.model.parameters(), lr=self.args.learning_rate)
+            scheduler = None
         return {'optimizer': optimizer, 'scheduler': scheduler}
         
 
@@ -103,7 +106,8 @@ class Trainer:
                     torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.args.max_grad_norm)
 
                     self.optimizer.step()
-                    self.scheduler.step()  # Update learning rate schedule
+                    if self.scheduler:
+                        self.scheduler.step()  # Update learning rate schedule
                     self.model.zero_grad()
                     global_step += 1
 
