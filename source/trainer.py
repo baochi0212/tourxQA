@@ -107,7 +107,6 @@ class Trainer:
 
                     self.optimizer.step()
                     if self.scheduler:
-                        print("VAI LON")
                         self.scheduler.step()  # Update learning rate schedule
                     self.model.zero_grad()
                     global_step += 1
