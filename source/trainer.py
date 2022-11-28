@@ -52,7 +52,7 @@ class Trainer:
         logger.info("--MODEL CHECKING--")
         print("MODEL: ", self.model)
         train_sampler = data.RandomSampler(train_dataset)
-        train_dataloader = data.DataLoader(train_dataset, sampler=train_sampler, batch_size=self.args.batch_size)
+        train_dataloader = data.DataLoader(train_dataset, sampler=train_sampler, batch_size=self.args.train_batch_size)
         #total_steps
         if self.args.max_steps > 0:
             t_total = self.args.max_steps
@@ -142,7 +142,7 @@ class Trainer:
     def eval(self, dataset, mode="dev"):
 
         eval_sampler = data.SequentialSampler(dataset)
-        eval_dataloader = data.DataLoader(dataset, sampler=eval_sampler, batch_size=self.args.batch_size)
+        eval_dataloader = data.DataLoader(dataset, sampler=eval_sampler, batch_size=self.args.eval_batch_size)
 
         # Eval!
         logger.info("***** Running evaluation on %s dataset *****", mode)

@@ -34,6 +34,7 @@ class JointLSTM(nn.Module):
         input_ids = self.embedding(input_ids)
         print("Input: ", input_ids.shape)
         #initialize the hidden states (b x n_layers x h)
+        batch_size = self.args.train_batch_size if self.training else self.args.eval_batch_size
         h_0 = torch.zeros((self.args.rnn_num_layers, self.args.batch_size, self.config.hidden_size)).to(self.args.device)
         c_0 = torch.zeros((self.args.rnn_num_layers, self.args.batch_size, self.config.hidden_size)).to(self.args.device)
 
