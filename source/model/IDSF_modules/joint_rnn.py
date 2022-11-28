@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from torchcrf import CRF
 from .modules import *
+from transformers import AutoModel
 
 
 class JointLSTM(nn.Module):
@@ -9,7 +10,7 @@ class JointLSTM(nn.Module):
         super().__init__()
         self.args = args
         self.config = config
-        self.embedding = nn.Embedding(config.vocab_size, config.hidden_size)
+        self.embedding = AutoModel.from_pretrained(args.pretrained_model).embeddings
         self.lstm = nn.LSTM(config.hidden_size, config.hidden_size, args.rnn_num_layers, batch_first=True)
        
         self.num_intent_labels = len(intent_label_lst)
