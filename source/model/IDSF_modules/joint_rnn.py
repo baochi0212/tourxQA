@@ -4,7 +4,6 @@ from torchcrf import CRF
 from .modules import *
 
 
-
 class JointLSTM(nn.Module):
     def __init__(self, config, args, intent_label_lst, slot_label_lst):
         super().__init__()
@@ -33,6 +32,7 @@ class JointLSTM(nn.Module):
     def forward(self, input_ids, attention_mask, token_type_ids, intent_label_ids, slot_labels_ids):
         #embedding
         input_ids = self.embedding(input_ids)
+
         #initialize the hidden states (b x n_layers x h)
         batch_size = self.args.train_batch_size if self.training else self.args.eval_batch_size
         h_0 = torch.zeros((self.args.rnn_num_layers, batch_size, self.config.hidden_size)).to(self.args.device)
@@ -85,7 +85,7 @@ class JointLSTM(nn.Module):
                     slot_loss = slot_loss_fct(active_logits, active_labels)
                 else:
                     slot_loss = slot_loss_fct(slot_logits.view(-1, self.num_slot_labels), slot_labels_ids.view(-1))
-            total_loss = (1 - self.args.intent_loss_coef) * slot_loss
+            total_loss += (1 - self.args.intent_loss_coef) * slot_loss
 
         outputs = ((intent_logits, slot_logits),) # add hidden states and attention if they are here
 
