@@ -47,7 +47,7 @@ def get_slot_labels(args):
 
 #loading and initialize
 def load_tokenizer(args):
-    return AutoTokenizer.from_pretrained(args.pretrained_model)
+    return AutoTokenizer.from_pretrained("vinai/phobert-base")
 
 
 def init_logger():
