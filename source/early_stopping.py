@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 import torch
+from transformers import 
 
 
 class EarlyStopping:
@@ -49,9 +50,10 @@ class EarlyStopping:
                 print(
                     f"{args.tuning_metric} increased ({self.val_loss_min:.6f} --> {val_loss:.6f}).  Saving model ..."
                 )
-        model.save_pretrained(args.model_dir)
-        torch.save(args, os.path.join(args.model_dir, "training_args.bin"))
-        self.val_loss_min = val_loss
+        if args.model_type != 'lstm':
+            model.save_pretrained(args.model_dir)
+            torch.save(args, os.path.join(args.model_dir, "training_args.bin"))
+            self.val_loss_min = val_loss
 
         # # Save model checkpoint (Overwrite)
         # if not os.path.exists(self.args.model_dir):
