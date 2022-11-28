@@ -9,7 +9,7 @@ from torch.utils import data
 from tqdm.auto import tqdm
 from early_stopping import EarlyStopping
 
-from transformers import AdamW, get_linear_schedule_with_warmup
+from transformers import AdamW, get_linear_schedule_with_warmup, AutoTokenizer
 from data_loader import load_and_cache_examples
 from modules.IDSF import *
 from main import args
@@ -254,7 +254,7 @@ class Trainer:
         pass
 if __name__ == "__main__":
     module = ISDFModule(args)
-    tokenizer = load_tokenizer(args)
+    tokenizer = AutoTokenizer.from_pretrained(args.pretrained_model)
     train_dataset = load_and_cache_examples(args, tokenizer, mode="train")
     val_dataset = load_and_cache_examples(args, tokenizer, mode="dev")
     trainer = Trainer(args, module)
