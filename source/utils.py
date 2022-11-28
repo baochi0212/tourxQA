@@ -47,7 +47,7 @@ def get_slot_labels(args):
 
 #loading and initialize
 def load_tokenizer(args):
-    return MODEL_DICT[args.model_type][1].from_pretrained(args.pretrained_model)
+    return AutoTokenizer.from_pretrained(args.pretrained_model)
 
 
 def init_logger():
