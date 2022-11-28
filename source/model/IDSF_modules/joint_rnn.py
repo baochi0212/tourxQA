@@ -32,7 +32,7 @@ class JointLSTM(nn.Module):
     def forward(self, input_ids, attention_mask, token_type_ids, intent_label_ids, slot_labels_ids):
         #embedding
         input_ids = self.embedding(input_ids)
-        print("Input: ", input_ids.shape)
+        print("Model: ", self.training)
         #initialize the hidden states (b x n_layers x h)
         batch_size = self.args.train_batch_size if self.training else self.args.eval_batch_size
         h_0 = torch.zeros((self.args.rnn_num_layers, batch_size, self.config.hidden_size)).to(self.args.device)
