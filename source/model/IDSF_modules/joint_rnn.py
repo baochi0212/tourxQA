@@ -10,7 +10,8 @@ class JointLSTM(nn.Module):
         super().__init__()
         self.args = args
         self.config = config
-        self.model = AutoModel.from_pretrained(args.pretrained_model)
+        self.model = AutoModel.from_pretrained(args.pretrained_model).embeddings
+       
         self.lstm = nn.LSTM(config.hidden_size, config.hidden_size, args.rnn_num_layers, batch_first=True)
        
         self.num_intent_labels = len(intent_label_lst)
@@ -32,21 +33,21 @@ class JointLSTM(nn.Module):
     
     def forward(self, input_ids, attention_mask, token_type_ids, intent_label_ids, slot_labels_ids):
         #embedding
-        # input_ids = self.embedding(input_ids)
+        input_ids = self.embedding(input_ids)
         #initialize the hidden states (b x n_layers x h)
         batch_size = self.args.train_batch_size if self.training else self.args.eval_batch_size
-        # h_0 = torch.zeros((self.args.rnn_num_layers, batch_size, self.config.hidden_size)).to(self.args.device)
-        # c_0 = torch.zeros((self.args.rnn_num_layers, batch_size, self.config.hidden_size)).to(self.args.device)
+        h_0 = torch.zeros((self.args.rnn_num_layers, batch_size, self.config.hidden_size)).to(self.args.device)
+        c_0 = torch.zeros((self.args.rnn_num_layers, batch_size, self.config.hidden_size)).to(self.args.device)
 
-        # sequence_output, (h_n, _) = self.lstm(input_ids, (h_0, c_0))
-        # h_n = h_n.permute(1, 0, 2)
-        # hidden_state = h_n[:, -1, :]
-        # intent_logits = self.intent_classifier(hidden_state)
-        outputs = self.model(
-            input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids
-        ) 
-        intent_logits = self.intent_classifier(outputs[1])
-        sequence_output = outputs[0]
+        sequence_output, (h_n, _) = self.lstm(input_ids, (h_0, c_0))
+        h_n = h_n.permute(1, 0, 2)
+        hidden_state = h_n[:, -1, :]
+        intent_logits = self.intent_classifier(hidden_state)
+        # outputs = self.model(
+        #     input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids
+        # ) 
+        # intent_logits = self.intent_classifier(outputs[1])
+        # sequence_output = outputs[0]
 
         if not self.args.use_attention_mask:
             tmp_attention_mask = None

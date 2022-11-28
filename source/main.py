@@ -6,7 +6,7 @@ working_dir = os.environ['source']
 data_dir = os.environ['dir'] + '/data/raw' 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--rnn_num_layers', default=9, type=int)
+parser.add_argument('--rnn_num_layers', default=3, type=int)
 parser.add_argument('--model_type', default='vinai/phobert-base', type=str)
 parser.add_argument('--device', default='cpu', type=str)
 parser.add_argument('--task', default='phoATIS', type=str)
