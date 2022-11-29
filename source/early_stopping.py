@@ -52,7 +52,7 @@ class EarlyStopping:
                 )
         if "bert" in args.model_type:
             model.save_pretrained(args.model_dir)
-        torch.save(args, os.path.join(args.model_dir, "training_args.bin"))
+        torch.save(args, os.path.join(args.idsf_model_dir, "training_args.bin"))
         self.val_loss_min = val_loss
 
         # # Save model checkpoint (Overwrite)
