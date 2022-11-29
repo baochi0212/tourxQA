@@ -20,7 +20,7 @@ raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/ta/processed/PhoATIS'
 qa_processed = data_dir + '/data/processed/QA'
 
-class QAModule(torch.nn.Module):
+class QARoberta(nn.Module):
     def __init__(self, model_checkpoint, device, args=None, hidden=768, out=386):
         super().__init__()
         def CE_loss_fn(pred, label):
