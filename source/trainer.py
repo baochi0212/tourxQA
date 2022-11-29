@@ -258,7 +258,7 @@ class Trainer:
         
 if __name__ == "__main__":
     module = ISDFModule(args)
-    tokenizer = AutoTokenizer.from_pretrained(args.pretrained_model)
+    tokenizer = load_tokenizer(args)
     train_dataset = load_and_cache_examples(args, tokenizer, mode="train")
     val_dataset = load_and_cache_examples(args, tokenizer, mode="dev")
     
