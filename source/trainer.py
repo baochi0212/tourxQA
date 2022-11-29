@@ -248,11 +248,13 @@ class Trainer:
         self.eval(test_dataset, mode="test")
 
     def save(self):
-        with open(self.args.idsf_model_dir + f"/{self.args.model_type}/{self.args.n_epochs}/{self.args.learning_rate}.pt"):
-            torch.save(self.model.state_dict(), self.args.idsf_model_dir + f"/{self.args.model_type}/{self.args.n_epochs}/{self.args.learning_rate}.pt")
+        save_dir = self.args.idsf_model_dir + f"/{self.args.model_type}/{self.args.n_epochs}/{self.args.learning_rate}.pt"
+        os.system(f"touch {save_dir}")
+        torch.save(self.model.state_dict(), save_dir)
 
     def load(self):
-        self.model.load_state_dict(torch.load(self.args.idsf_model_dir + f"/{self.args.model_type}/{self.args.n_epochs}/{self.args.learning_rate}.pt"))
+        load_dir = self.args.idsf_model_dir + f"/{self.args.model_type}/{self.args.n_epochs}/{self.args.learning_rate}.pt"
+        self.model.load_state_dict(torch.load(load_dir))
         
 if __name__ == "__main__":
     module = ISDFModule(args)
