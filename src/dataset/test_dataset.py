@@ -116,7 +116,7 @@ class QADataset(data.Dataset):
 
             if self.pipeline:
                 return input['input_ids'][0], input['attention_mask'][0], start, end, q, c, input['offset_mapping'][0]
-        return input['input_ids'][0], input['attention_mask'][0], start, end
+        return input['input_ids'][0], input['attention_mask'][0], input['token_type_ids'][0], start, end
     def __len__(self):
         return len(self.df)
 

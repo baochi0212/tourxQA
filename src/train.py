@@ -354,12 +354,12 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
             '''
             if overfit_batch:
                 batch = fixed_batch
-            b_input_ids, b_attn_mask, b_end, b_start = tuple(t.to(device) for t in batch)
+            b_input_ids, b_attn_mask, b_token_type_ids, b_end, b_start = tuple(t.to(device) for t in batch)
             # Zero out any previously calculated gradients
             optimizer.zero_grad()
             # print(b_input_ids.shape, b_attn_mask.shape)
             # Perform a forward pass. This will return logits.
-            loss, _ = model(b_input_ids, b_attn_mask, b_end, b_start)
+            loss, _ = model(b_input_ids, b_attn_mask, b_token_type_ids, b_end, b_start)
             
             batch_loss += loss.item()
             total_loss += loss.item()
@@ -438,18 +438,18 @@ def evaluate_QA(model, val_dataloader, device, tokenizer=tokenizer, print_fn=Fal
           for batch in val_dataloader:
                 # print(batch)
                 # Load batch to GPU
-                b_input_ids, b_attn_mask, b_start, b_end = tuple(t.to(device) for t in batch)
+                b_input_ids, b_attn_mask, b_token_type_ids, b_start, b_end = tuple(t.to(device) for t in batch)
                 if len(b_start.shape) == 2:
                     b_start_sub, b_end_sub = b_start[:, 0], b_end[:, 0]
                 else:
                     b_start_sub, b_end_sub = b_start, b_end
                 if not test:
-                    loss, outputs  = model(b_input_ids, b_attn_mask, b_start_sub, b_end_sub)
+                    loss, outputs  = model(b_input_ids, b_attn_mask, b_token_type_ids, b_start_sub, b_end_sub)
                     val_loss.append(loss.item())
                     count += 1 
                 else:
 
-                    outputs = model(b_input_ids, b_attn_mask)
+                    outputs = model(b_input_ids, b_attn_mask, b_token_type_ids)
                     #double check
                     count += 1
                 start_logits = outputs['start_logits']

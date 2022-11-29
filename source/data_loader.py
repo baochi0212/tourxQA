@@ -5,10 +5,65 @@ import logging
 
 import torch
 from torch.utils.data import TensorDataset
+from torch.utils import data
 
-from utils import get_intent_labels, get_slot_labels
+from utils import get_intent_labels, get_slot_labels, get_label
 
 logger = logging.getLogger(__name__)
+
+class QADataset(data.Dataset):
+    def __init__(self, df, tokenizer, MAX_LENGTH=222, mode='train', pipeline=False, reverse=False):
+        self.df = df
+        self.MAX_LENGTH = MAX_LENGTH
+        self.mode = mode
+        self.tokenizer = tokenizer
+        self.pipeline = pipeline
+        self.max_answer_length = 4 
+
+    def __getitem__(self, idx):
+        '''
+        TEST SET: more answer options and will compare with the PIPELINE api
+        '''
+        item = self.df.iloc[idx]
+        q, c, answer_start, text = item['question'], item['context'], string2list(item['start'], type='int'), string2list(item['text'])
+        # print(len(answer_start), len(text))
+        # if len(text) > 4:
+        #     print(text)
+        input = self.tokenizer(q.strip(), c, return_tensors='pt',
+            max_length=self.MAX_LENGTH,
+            truncation="only_second",
+            return_offsets_mapping=True,
+            padding="max_length",)
+        if self.mode != 'test':
+            if len(text) == 0:
+                start, end = torch.tensor(0, dtype=torch.long), torch.tensor(0, dtype=torch.long)
+            else:
+                start, end = get_label(input, text[0], answer_start[0])
+                if start > self.MAX_LENGTH or self.MAX_LENGTH < end: 
+                    start, end = torch.tensor(0, dtype=torch.long), torch.tensor(0, dtype=torch.long)
+
+        else:
+            if len(text) == 0:
+                start_list, end_list = [0], [0]
+            else:
+                start_list, end_list = [], []
+                for i in range(len(text)):
+                    start, end = get_label(input, text[i], answer_start[i])
+                    if start > self.MAX_LENGTH or self.MAX_LENGTH < end: 
+                        start, end = torch.tensor(0, dtype=torch.long), torch.tensor(0, dtype=torch.long)
+                    start_list.append(start.item())
+                    end_list.append(end.item())
+            # max length of test answers
+            while len(start_list) < self.max_answer_length:
+                start_list.append(-1)
+                end_list.append(-1)
+            start, end = torch.tensor(start_list), torch.tensor(end_list)
+
+            if self.pipeline:
+                return input['input_ids'][0], input['attention_mask'][0], start, end, q, c, input['offset_mapping'][0]
+        return input['input_ids'][0], input['attention_mask'][0], start, end
+    def __len__(self):
+        return len(self.df)
 
 
 class InputExample(object):

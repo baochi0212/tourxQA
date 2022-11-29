@@ -21,15 +21,15 @@ processed_dir = data_dir + '/ta/processed/PhoATIS'
 qa_processed = data_dir + '/data/processed/QA'
 
 class QARoberta(nn.Module):
-    def __init__(self, model_checkpoint, device, args=None, hidden=768, out=386):
+    def __init__(self, config, args):
         super().__init__()
         def CE_loss_fn(pred, label):
             loss = torch.nn.CrossEntropyLoss(reduction='none')(pred, label)
-            loss = torch.where(label != 0, loss , torch.tensor(0, dtype=torch.float).to(device))
+            loss = torch.where(label != 0, loss , torch.tensor(0, dtype=torch.float).to(args.device))
             return loss.mean()
-        self.bert_model = AutoModel.from_pretrained(model_checkpoint)
+        self.bert_model = AutoModel.from_pretrained(args.pretrained_model)
         self.pretrained = args.fast
-        self.linear = torch.nn.Linear(hidden, 2)
+        self.linear = torch.nn.Linear(config.hidden_size, 2)
         self.relu = torch.nn.ReLU()
         self.loss_fn = CE_loss_fn
     
