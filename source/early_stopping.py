@@ -50,7 +50,7 @@ class EarlyStopping:
                 print(
                     f"{args.tuning_metric} increased ({self.val_loss_min:.6f} --> {val_loss:.6f}).  Saving model ..."
                 )
-        if args.model_type != 'lstm':
+        if "bert" in args.model_type:
             model.save_pretrained(args.model_dir)
         torch.save(args, os.path.join(args.model_dir, "training_args.bin"))
         self.val_loss_min = val_loss
