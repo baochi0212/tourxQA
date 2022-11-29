@@ -136,7 +136,7 @@ class Trainer:
 
 
     def write_evaluation_result(self, out_file, results):
-        out_file = self.args.model_dir + "/" + out_file
+        out_file = self.args.idsf_log_dir + "/" + out_file
         w = open(out_file, "w", encoding="utf-8")
         w.write("***** Eval results *****\n")
         for key in sorted(results.keys()):
