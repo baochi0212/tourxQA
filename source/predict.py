@@ -28,7 +28,7 @@ def load_model(args, device):
 
     try:
         load_dir = args.idsf_model_dir + f"/{args.model_type}_{int(args.n_epochs)}_{args.learning_rate}.pt"
-        config, _, model = MODEL_DICT[args.model_type][2]
+        config, _, model = MODEL_DICT[args.model_type]
         model = model(config, args=args, intent_label_lst=get_intent_labels(args), slot_label_lst=get_slot_labels(args))
         model.load_state_dict(
 
