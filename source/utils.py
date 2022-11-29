@@ -88,10 +88,10 @@ def get_slot_metrics(preds, labels):
     assert len(preds) == len(labels)
 
     slot_result = []
-    for preds, labels in zip(preds, labels):
-        assert len(preds) == len(labels)
+    for pred, label in zip(preds, labels):
+        assert len(pred) == len(label)
         one_sent_result = True
-        for p, l in zip(preds, labels):
+        for p, l in zip(pred, label):
             if p != l:
                 one_sent_result = False
                 break
