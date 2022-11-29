@@ -19,7 +19,7 @@ from collections import Counter
 MODEL_DICT = {
     "xlm-roberta-base": (XLMRobertaConfig, XLMRobertaTokenizer, AutoModel),
     "xlm-roberta-large": (XLMRobertaConfig, XLMRobertaTokenizer, AutoModel),
-    "vinai/phobert-base": (AutoConfig, AutoTokenizer, JointPhoBERT),
+    "phobert": (AutoConfig, AutoTokenizer, JointPhoBERT),
     "lstm": (AutoConfig, AutoTokenizer, JointLSTM),
     "gru": (AutoConfig, AutoTokenizer, JointGRU),
 }
