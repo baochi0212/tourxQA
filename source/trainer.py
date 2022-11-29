@@ -42,7 +42,7 @@ class Trainer:
         scheduler = get_linear_schedule_with_warmup(
             optimizer, num_warmup_steps=self.args.warmup_steps, num_training_steps=t_total
         )
-        if "bert" not in self.model_type:
+        if "bert" not in self.args.model_type:
             optimizer = torch.optim.Adam(self.model.parameters(), lr=self.args.learning_rate)
             scheduler = None
         return {'optimizer': optimizer, 'scheduler': scheduler}
