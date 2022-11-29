@@ -28,7 +28,7 @@ def load_model(args, device):
 
     try:
         load_dir = args.idsf_model_dir + f"/{args.model_type}_{int(args.n_epochs)}_{args.learning_rate}.pt"
-        model = MODEL_DICT[args.model_type][1].load_state_dict(
+        model = MODEL_DICT[args.model_type][2].load_state_dict(
 
             torch.load(load_dir)
         )
