@@ -100,16 +100,7 @@ class JointLSTM(nn.Module):
 
         return outputs  # (loss), logits, (hidden_states), (attentions) # Logits is a tuple of intent and slot logits
 
-
-
-import torch
-import torch.nn as nn
-from torchcrf import CRF
-from .modules import *
-from transformers import AutoModel
-
-
-class JointLSTM(nn.Module):
+class JointGRU(nn.Module):
     def __init__(self, config, args, intent_label_lst, slot_label_lst):
         super().__init__()
         self.args = args
@@ -117,7 +108,7 @@ class JointLSTM(nn.Module):
         # self.embedding = AutoModel.from_pretrained(args.pretrained_model).embeddings
         self.embedding = nn.Embedding(config.vocab_size, config.hidden_size)
        
-        self.lstm = nn.LSTM(config.hidden_size, config.hidden_size, args.rnn_num_layers, batch_first=True)
+        self.gru = nn.GRU(config.hidden_size, config.hidden_size, args.rnn_num_layers, batch_first=True)
        
         self.num_intent_labels = len(intent_label_lst)
         self.num_slot_labels = len(slot_label_lst)
@@ -142,9 +133,8 @@ class JointLSTM(nn.Module):
         #initialize the hidden states (b x n_layers x h)
         batch_size = self.args.train_batch_size if self.training else self.args.eval_batch_size
         h_0 = torch.zeros((self.args.rnn_num_layers, batch_size, self.config.hidden_size)).to(self.args.device)
-        c_0 = torch.zeros((self.args.rnn_num_layers, batch_size, self.config.hidden_size)).to(self.args.device)
 
-        sequence_output, (h_n, _) = self.lstm(input_ids, (h_0, c_0))
+        sequence_output, h_n = self.gru(input_ids, h_0)
         h_n = h_n.permute(1, 0, 2)
         hidden_state = h_n[:, -1, :]
         intent_logits = self.intent_classifier(hidden_state)
@@ -203,6 +193,9 @@ class JointLSTM(nn.Module):
         outputs = (total_loss,) + outputs
 
         return outputs  # (loss), logits, (hidden_states), (attentions) # Logits is a tuple of intent and slot logits
+
+
+
 
 
 

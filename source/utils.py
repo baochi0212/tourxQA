@@ -4,7 +4,7 @@ import random
 
 import numpy as np
 import torch
-from model.IDSF_modules import JointPhoBERT, JointXLMR, JointLSTM
+from model.IDSF_modules import JointPhoBERT, JointXLMR, JointLSTM, JointGRU
 from seqeval.metrics import f1_score, precision_score, recall_score
 from transformers import (
     AutoTokenizer,
@@ -21,6 +21,7 @@ MODEL_DICT = {
     "xlm-roberta-large": (XLMRobertaConfig, XLMRobertaTokenizer, AutoModel),
     "vinai/phobert-base": (AutoConfig, AutoTokenizer, JointPhoBERT),
     "lstm": (AutoConfig, AutoTokenizer, JointLSTM)
+    "gru": (AutoConfig, AutoTokenizer, JointGRU)
 }
 
 # MODEL_PATH_MAP = {
@@ -47,7 +48,7 @@ def get_slot_labels(args):
 
 #loading and initialize
 def load_tokenizer(args):
-    return AutoTokenizer.from_pretrained("vinai/phobert-base")
+    return  
 
 
 def init_logger():
