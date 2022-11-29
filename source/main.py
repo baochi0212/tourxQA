@@ -6,6 +6,9 @@ working_dir = os.environ['source']
 data_dir = os.environ['dir'] + '/data/raw' 
 
 parser = argparse.ArgumentParser()
+parser.add_argument('--output_file', default='sample_output.txt', type=str)
+parser.add_argument('--input_file', default='sample_input.txt', type=str)
+parser.add_argument('--predict_task', default="test dataset", type=str)
 parser.add_argument('--rnn_num_layers', default=3, type=int)
 parser.add_argument('--model_type', default='vinai/phobert-base', type=str)
 parser.add_argument('--device', default='cpu', type=str)

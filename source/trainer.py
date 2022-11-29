@@ -247,6 +247,7 @@ class Trainer:
         self.load()
         self.eval(test_dataset, mode="test")
 
+
     def save(self):
         save_dir = self.args.idsf_model_dir + f"/{self.args.model_type}_{int(self.args.n_epochs)}_{self.args.learning_rate}.pt"
         # os.system(f"touch {save_dir}")
