@@ -86,7 +86,19 @@ def compute_metrics(intent_preds, intent_labels, slot_preds, slot_labels):
 
 def get_slot_metrics(preds, labels):
     assert len(preds) == len(labels)
+
+    slot_result = []
+    for preds, labels in zip(preds, labels):
+        assert len(preds) == len(labels)
+        one_sent_result = True
+        for p, l in zip(preds, labels):
+            if p != l:
+                one_sent_result = False
+                break
+        slot_result.append(one_sent_result)
+    slot_result = np.array(slot_result)
     return {
+        "slot_accuracy": slot_result.mean(),
         "slot_precision": precision_score(labels, preds),
         "slot_recall": recall_score(labels, preds),
         "slot_f1": f1_score(labels, preds),
