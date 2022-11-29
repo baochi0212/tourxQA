@@ -256,6 +256,8 @@ if __name__ == "__main__":
     tokenizer = AutoTokenizer.from_pretrained(args.pretrained_model)
     train_dataset = load_and_cache_examples(args, tokenizer, mode="train")
     val_dataset = load_and_cache_examples(args, tokenizer, mode="dev")
+    test_dataset = load_and_cache_examples(args, tokenizer, mode="test")
     trainer = Trainer(args, module)
     trainer.fit(train_dataset, val_dataset)
+    trainer.eval(test_dataset, mode="test")
     
