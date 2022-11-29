@@ -248,17 +248,17 @@ class Trainer:
         self.eval(test_dataset, mode="test")
 
     def save(self):
-        torch.save(self.model.state_dict(), self.args.idsf_model_dir + f"{self.args.model_type}/{self.args.n_epochs}/{self.args.learning_rate}")
+        torch.save(self.model.state_dict(), self.args.idsf_model_dir + f"/{self.args.model_type}/{self.args.n_epochs}/{self.args.learning_rate}.pt")
 
     def load(self):
-        self.model.load_state_dict(torch.load(self.args.idsf_model_dir + f"{self.args.model_type}/{self.args.n_epochs}/{self.args.learning_rate}"))
+        self.model.load_state_dict(torch.load(self.args.idsf_model_dir + f"/{self.args.model_type}/{self.args.n_epochs}/{self.args.learning_rate}.pt"))
         
 if __name__ == "__main__":
     module = ISDFModule(args)
     tokenizer = AutoTokenizer.from_pretrained(args.pretrained_model)
     train_dataset = load_and_cache_examples(args, tokenizer, mode="train")
     val_dataset = load_and_cache_examples(args, tokenizer, mode="dev")
-    test_dataset = load_and_cache_examples(args, tokenizer, mode="test")
+    
     trainer = Trainer(args, module)
     trainer.fit(train_dataset, val_dataset)
     
