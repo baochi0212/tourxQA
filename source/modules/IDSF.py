@@ -69,7 +69,7 @@ class ISDFModule(Module):
                 "intent_label_ids": batch[3],
                 "slot_labels_ids": batch[4],
             }
-            if "distill" not in self.args.pretrained_model:
+            if "bert" not in self.model_type:
                 inputs["token_type_ids"] = batch[2].to(self.device)
             outputs = self.model(**inputs)
             tmp_eval_loss, (intent_logits, slot_logits) = outputs[:2]
