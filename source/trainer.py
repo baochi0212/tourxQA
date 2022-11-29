@@ -244,13 +244,15 @@ class Trainer:
         return results
 
     def predict(self):
-        pass
+        self.load()
+        self.eval(test_dataset, mode="test")
 
     def save(self):
-        pass
+        torch.save(self.model.state_dict(), self.args.idsf_model_dir)
 
     def load(self):
-        pass
+        self.model.load_state_dict(torch.load(self.args.idsf_model_dir))
+        
 if __name__ == "__main__":
     module = ISDFModule(args)
     tokenizer = AutoTokenizer.from_pretrained(args.pretrained_model)
@@ -259,5 +261,5 @@ if __name__ == "__main__":
     test_dataset = load_and_cache_examples(args, tokenizer, mode="test")
     trainer = Trainer(args, module)
     trainer.fit(train_dataset, val_dataset)
-    trainer.eval(test_dataset, mode="test")
+    
     
