@@ -126,11 +126,11 @@ class Trainer_IDSF:
                         self.save()
 
                 if 0 < self.args.max_steps < global_step:
-                    epoch_iterator.close()
+                    # epoch_iterator.close()
                     break
 
             if 0 < self.args.max_steps < global_step or early_stopping.early_stop:
-                train_iterator.close()
+                # train_iterator.close()
                 break
 
 
