@@ -23,7 +23,7 @@ class QAModule(Module):
        
         self.config = config.from_pretrained(args.pretrained_model)
         self.model = model(
-            config,
+            self.config,
             args=args,
         )
         #define hparams
