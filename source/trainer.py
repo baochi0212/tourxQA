@@ -27,7 +27,7 @@ class Trainer_IDSF:
         self.module = module
         self.model = self.module.model
         self.device = args.device
-        self.log_dir = args.idsf_log_dir if args.task == "idsf" else args.qa_log_dir
+        self.log_dir = args.idsf_log_dir if args.module_role == "idsf" else args.qa_log_dir
     def configure_optimizer(self, t_total):
         no_decay = ["bias", "LayerNorm.weight"]
         optimizer_grouped_parameters = [
@@ -336,7 +336,7 @@ class Trainer_QA(Trainer_IDSF):
 if __name__ == "__main__":
     tokenizer = load_tokenizer(args)
 
-    if args.task == "IDSF":
+    if args.module_role == "IDSF":
     
         module = IDSFModule(args)
     
