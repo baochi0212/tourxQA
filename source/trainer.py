@@ -342,7 +342,7 @@ if __name__ == "__main__":
     module = QAModule(args)
     tokenizer = load_tokenizer(args)
     train_dataset = QADataset(args, tokenizer, mode="train")
-    val_dataset = QADataset(args, tokenizer, mode="dev")
+    val_dataset = QADataset(args, tokenizer, mode="train")
 
     trainer = Trainer_IDSF(args, module)
     trainer.fit(train_dataset, val_dataset)
