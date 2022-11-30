@@ -9,7 +9,7 @@ qa_data_dir = os.environ['dir'] + '/data/processed/QA'
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--qa_max_length', default=386, type=int)
-parser.add_argument('--qa_log_idr', default='./model_dir/qa_weights')
+parser.add_argument('--qa_log_dir', default='./model_dir/qa_weights')
 
 parser.add_argument('--qa_data_dir', default=qa_data_dir, type=str)
 parser.add_argument('--output_file', default='sample_output.txt', type=str)
