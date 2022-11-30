@@ -350,7 +350,7 @@ if __name__ == "__main__":
         train_dataset = QADataset(args, tokenizer, mode="train")
         val_dataset = QADataset(args, tokenizer, mode="dev")
         module = QAModule(args)
-        trainer = trainer_QA(args, module)
+        trainer = Trainer_QA(args, module)
     
     trainer.fit(train_dataset, val_dataset)
     
