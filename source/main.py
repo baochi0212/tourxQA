@@ -23,7 +23,7 @@ parser.add_argument('--level', default='word-level', type=str)
 parser.add_argument('--batch_size', type=int, default=64)
 parser.add_argument('--idsf_log_dir', default='./model_dir/idsf_weights')
 parser.add_argument("--idsf_model_dir", default='./model_dir/idsf_weights', required=False, type=str, help="Path to save, load model")
-parser.add_argument("--idsf_data_dir", default=idsf_data_dir+'/PhoATIS', type=str, help="The input data dir")
+parser.add_argument("--idsf_data_dir", default=idsf_data_dir+'/phoATIS', type=str, help="The input data dir")
 parser.add_argument("--intent_label_file", default="intent_label.txt", type=str, help="Intent Label file")
 parser.add_argument("--slot_label_file", default="slot_label.txt", type=str, help="Slot Label file")
 
