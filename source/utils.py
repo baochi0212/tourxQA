@@ -177,6 +177,19 @@ def to_graph_format(files):
                     f2.write(line)
 
 #QA utils
+def compare_text(pred, trues):
+    '''
+    check if additional non-alpha index exists
+    '''
+    match = False
+    for true in trues:
+        if pred in true:
+            temp = len(true.replace(pred, ''))
+            for i in true.replace(pred, ''):
+                if not i.isalpha():
+                    temp -= 1 
+            match = temp == 0
+    return match 
 
 
 def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):

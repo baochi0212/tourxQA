@@ -35,8 +35,7 @@ class QARoberta(nn.Module):
         logits = self.relu(self.linear(outputs))
         start_logits, end_logits = logits[:, :, 0], logits[:, :, 1]
         if start is not None:
-          print("BUG", start.shape, logits.shape)
-          loss = self.loss_fn(start_logits, start) + self.loss_fn(end_logits, end)  
-          return loss, (start_logits, end_logits)
+            loss = self.loss_fn(start_logits, start) + self.loss_fn(end_logits, end)  
+            return loss, (start_logits, end_logits)
         else:
-          return (start_logits, end_logits)
+            return (start_logits, end_logits)
