@@ -221,7 +221,7 @@ if __name__ == "__main__":
         init_logger()
         predict(args)
     if args.predict_task == "test dataset":
-        module = ISDFModule(args)
+        module = IDSFModule(args)
         tokenizer = load_tokenizer(args)
         test_dataset = load_and_cache_examples(args, tokenizer, mode="test")
         trainer = Trainer_IDSF(args, module)
