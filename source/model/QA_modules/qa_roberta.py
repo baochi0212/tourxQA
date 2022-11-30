@@ -25,7 +25,7 @@ class QARoberta(nn.Module):
             loss = torch.where(label != 0, loss , torch.tensor(0, dtype=torch.float).to(args.device))
             return loss.mean()
         self.bert_model = AutoModel.from_pretrained(args.pretrained_model)
-        self.pretrained = args.fast
+        self.pretrained = args.pretrained
         self.linear = torch.nn.Linear(config.hidden_size, 2)
         self.relu = torch.nn.ReLU()
         self.loss_fn = CE_loss_fn
