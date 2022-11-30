@@ -48,6 +48,7 @@ class QAModule(Module):
         loss, (start_logits, end_logits) = outputs
         if self.args.gradient_accumulation_steps > 1:
             loss = loss / self.args.gradient_accumulation_steps
+        print("LOSS", loss)
         
         return {"loss": loss, "start": start_logits, "end": end_logits}
 
