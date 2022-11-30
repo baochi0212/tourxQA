@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.append(os.environ['source'])
 import numpy as np
-
+from copy import deepcopy
 import torch
 import torch.nn
 from torch.utils import data
@@ -62,8 +62,13 @@ class QAModule(Module):
                 "start": batch[3],
                 "end": batch[4],
             }
+            #inputs for calculating validation loss
+            loss_inputs = deepcopy(inputs)
+            loss_inputs['start'] = loss_inputs['start'][:, 0]
+            loss_inputs['end'] = loss_inputs['end'][:, 0]
 
-            outputs = self.model(**inputs)
+
+            outputs = self.model(**loss_inputs)
             tmp_eval_loss, (start_logits, end_logits) = outputs
             loss = tmp_eval_loss.mean().item()
 
