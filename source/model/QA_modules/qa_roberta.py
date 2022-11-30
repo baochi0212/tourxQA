@@ -10,11 +10,8 @@ from torchcrf import CRF
 import pandas as pd
 
 from transformers import AutoModel, AutoTokenizer, RobertaModel
-from dataset.test_dataset import IntentPOSDataset
 import transformers
 from transformers import AutoModelForQuestionAnswering, AutoTokenizer, AdamW, get_linear_schedule_with_warmup
-from dataset.test_dataset import IntentPOSDataset, QADataset
-from utils.preprocess import get_label
 data_dir = os.environ['dir']
 raw_dir = data_dir + '/data/raw/PhoATIS'
 processed_dir = data_dir + '/ta/processed/PhoATIS'
@@ -44,6 +41,6 @@ class QARoberta(nn.Module):
 
         if start is not None:
           loss = self.loss_fn(start_logits, start) + self.loss_fn(end_logits, end)  
-          return loss, {'start_logits':  start_logits, 'end_logits': end_logits}
+          return loss, (start_logits, end_logits)
         else:
-          return {'start_logits':  start_logits, 'end_logits': end_logits}
+          return (start_logits, end_logits)

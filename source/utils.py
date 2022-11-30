@@ -5,6 +5,7 @@ import random
 import numpy as np
 import torch
 from model.IDSF_modules import JointPhoBERT, JointXLMR, JointLSTM, JointGRU
+from model.QA_modules import QARoberta
 from seqeval.metrics import f1_score, precision_score, recall_score
 from transformers import (
     AutoTokenizer,
@@ -23,6 +24,13 @@ MODEL_DICT = {
     "lstm": (AutoConfig, AutoTokenizer, JointLSTM),
     "gru": (AutoConfig, AutoTokenizer, JointGRU),
 }
+QA_DICT = {
+    "xlm-roberta-base": (AutoConfig, AutoTokenizer, QARoberta),
+    "xlm-roberta-large": (XLMRobertaConfig, XLMRobertaTokenizer, AutoModel),
+    "phobert": (AutoConfig, AutoTokenizer, JointPhoBERT),
+    "lstm": (AutoConfig, AutoTokenizer, JointLSTM),
+    "gru": (AutoConfig, AutoTokenizer, JointGRU),
+}
 
 # MODEL_PATH_MAP = {
 #     "xlm-base": "xlm-roberta-base",
@@ -35,14 +43,14 @@ MODEL_DICT = {
 def get_intent_labels(args):
     return [
         label.strip()
-        for label in open(os.path.join(args.data_dir, args.token_level, args.intent_label_file), "r", encoding="utf-8")
+        for label in open(os.path.join(args.idsf_data_dir, args.token_level, args.intent_label_file), "r", encoding="utf-8")
     ]
 
 
 def get_slot_labels(args):
     return [
         label.strip()
-        for label in open(os.path.join(args.data_dir, args.token_level, args.slot_label_file), "r", encoding="utf-8")
+        for label in open(os.path.join(args.idsf_data_dir, args.token_level, args.slot_label_file), "r", encoding="utf-8")
     ]
 
 

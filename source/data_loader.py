@@ -2,22 +2,23 @@ import os
 import copy
 import json
 import logging
+import pandas as pd
 
 import torch
 from torch.utils.data import TensorDataset
 from torch.utils import data
 
-from utils import get_intent_labels, get_slot_labels, get_label
+
+from utils import get_intent_labels, get_slot_labels, get_label, string2list
 
 logger = logging.getLogger(__name__)
 
 class QADataset(data.Dataset):
-    def __init__(self, df, tokenizer, MAX_LENGTH=222, mode='train', pipeline=False, reverse=False):
-        self.df = df
-        self.MAX_LENGTH = MAX_LENGTH
+    def __init__(self, args, tokenizer, mode='train'):
+        self.df = args.qa_data_dir + f'/{mode}.csv'
+        self.MAX_LENGTH = args.qa_max_length
         self.mode = mode
         self.tokenizer = tokenizer
-        self.pipeline = pipeline
         self.max_answer_length = 4 
 
     def __getitem__(self, idx):
@@ -33,7 +34,8 @@ class QADataset(data.Dataset):
             max_length=self.MAX_LENGTH,
             truncation="only_second",
             return_offsets_mapping=True,
-            padding="max_length",)
+            padding="max_length",
+            return_token_type_ids=True,)
         if self.mode != 'test':
             if len(text) == 0:
                 start, end = torch.tensor(0, dtype=torch.long), torch.tensor(0, dtype=torch.long)
@@ -59,9 +61,7 @@ class QADataset(data.Dataset):
                 end_list.append(-1)
             start, end = torch.tensor(start_list), torch.tensor(end_list)
 
-            if self.pipeline:
-                return input['input_ids'][0], input['attention_mask'][0], start, end, q, c, input['offset_mapping'][0]
-        return input['input_ids'][0], input['attention_mask'][0], start, end
+        return input['input_ids'][0], input['attention_mask'][0], input['token_type_ids'][0], start, end
     def __len__(self):
         return len(self.df)
 
@@ -161,8 +161,8 @@ class JointProcessor(object):
         Args:
             mode: train, dev, test
         """
-        #data_dir and corresponding level (word-level for example)
-        data_path = os.path.join(self.args.data_dir, self.args.level, mode)
+        #idsf_data_dir and corresponding level (word-level for example)
+        data_path = os.path.join(self.args.idsf_data_dir, self.args.level, mode)
         logger.info("LOOKING AT {}".format(data_path))
         return self._create_examples(texts=self._read_file(os.path.join(data_path, self.input_text_file)),
                                      intents=self._read_file(os.path.join(data_path, self.intent_label_file)),
@@ -268,7 +268,7 @@ def load_and_cache_examples(args, tokenizer, mode):
 
     # Load data features from cache or dataset file
     cached_features_file = os.path.join(
-        args.data_dir,
+        args.idsf_data_dir,
         'cached_{}_{}_{}_{}'.format(
             mode,
             args.task,
@@ -282,7 +282,7 @@ def load_and_cache_examples(args, tokenizer, mode):
         features = torch.load(cached_features_file)
     else:
         # Load data features from dataset file
-        logger.info("Creating features from dataset file at %s", args.data_dir)
+        logger.info("Creating features from dataset file at %s", args.idsf_data_dir)
         if mode == "train":
             examples = processor.get_examples("train")
         elif mode == "dev":

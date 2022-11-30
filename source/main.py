@@ -3,21 +3,25 @@ import os
 import sys
 
 working_dir = os.environ['source']
-data_dir = os.environ['dir'] + '/data/processed/IDSF' 
+idsf_data_dir = os.environ['dir'] + '/data/processed/IDSF' 
+qa_data_dir = os.environ['dir'] + '/data/processed/QA'
 
 parser = argparse.ArgumentParser()
+
+parser.add_argument('--qa_max_length', default=386, type=int)
+parser.add_argument('--qa_data_dir', default=qa_data_dir, type=str)
 parser.add_argument('--output_file', default='sample_output.txt', type=str)
 parser.add_argument('--input_file', default='sample_input.txt', type=str)
 parser.add_argument('--predict_task', default="test dataset", type=str)
 parser.add_argument('--rnn_num_layers', default=3, type=int)
-parser.add_argument('--model_type', default='vinai/phobert-base', type=str)
+parser.add_argument('--model_type', default='phobert', type=str)
 parser.add_argument('--device', default='cpu', type=str)
 parser.add_argument('--task', default='phoATIS', type=str)
 parser.add_argument('--level', default='word-level', type=str)
 parser.add_argument('--batch_size', type=int, default=64)
 parser.add_argument('--idsf_log_dir', default='./model_dir/idsf_weights')
 parser.add_argument("--idsf_model_dir", default='./model_dir/idsf_weights', required=False, type=str, help="Path to save, load model")
-parser.add_argument("--data_dir", default=data_dir+'/PhoATIS', type=str, help="The input data dir")
+parser.add_argument("--idsf_data_dir", default=idsf_data_dir+'/PhoATIS', type=str, help="The input data dir")
 parser.add_argument("--intent_label_file", default="intent_label.txt", type=str, help="Intent Label file")
 parser.add_argument("--slot_label_file", default="slot_label.txt", type=str, help="Slot Label file")
 
