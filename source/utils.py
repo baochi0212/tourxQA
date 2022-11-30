@@ -44,14 +44,14 @@ QA_DICT = {
 def get_intent_labels(args):
     return [
         label.strip()
-        for label in open(os.path.join(args.idsf_data_dir, args.token_level, args.intent_label_file), "r", encoding="utf-8")
+        for label in open(os.path.join(args.idsf_data_dir, args.intent_label_file), "r", encoding="utf-8")
     ]
 
 
 def get_slot_labels(args):
     return [
         label.strip()
-        for label in open(os.path.join(args.idsf_data_dir, args.token_level, args.slot_label_file), "r", encoding="utf-8")
+        for label in open(os.path.join(args.idsf_data_dir, args.slot_label_file), "r", encoding="utf-8")
     ]
 
 

@@ -27,6 +27,7 @@ class Trainer_IDSF:
         self.module = module
         self.model = self.module.model
         self.device = args.device
+        self.log_dir = args.idsf_log_dir if args.task == "idsf" else args.qa_log_dir
     def configure_optimizer(self, t_total):
         no_decay = ["bias", "LayerNorm.weight"]
         optimizer_grouped_parameters = [
@@ -138,7 +139,7 @@ class Trainer_IDSF:
 
 
     def write_evaluation_result(self, out_file, results):
-        out_file = self.args.idsf_log_dir + "/" + out_file
+        out_file = self.log_dir + "/" + out_file
         w = open(out_file, "w", encoding="utf-8")
         w.write("***** Eval results *****\n")
         for key in sorted(results.keys()):
@@ -262,6 +263,16 @@ class Trainer_IDSF:
 class Trainer_QA(Trainer_IDSF):
     def __init__(self, args, module):
         super().__init__(args, module)
+
+    def write_evaluation_result(self, out_file, results):
+        out_file = self.args.qa_log_dir + "/" + out_file
+        w = open(out_file, "w", encoding="utf-8")
+        w.write("***** Eval results *****\n")
+        for key in sorted(results.keys()):
+            to_write = " {key} = {value}".format(key=key, value=str(results[key]))
+            w.write(to_write)
+            w.write("\n")
+        w.close()
 
     def eval(self, dataset, mode="dev"):
         eval_sampler = data.SequentialSampler(dataset)
