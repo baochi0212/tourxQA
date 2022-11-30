@@ -2,7 +2,7 @@
 # ./run_jointBERT-CRF_PhoBERTencoder.sh
 #Train JointIDSF
 export lr=5e-5
-export c=0.15
+export c=0.5
 export e=50
 export s=333
 echo "${lr}"

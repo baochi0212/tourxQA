@@ -355,7 +355,6 @@ def train_QA(model, optimizer, scheduler, train_dataloader, total_steps, epochs,
             if overfit_batch:
                 batch = fixed_batch
             b_input_ids, b_attn_mask, b_token_type_ids, b_end, b_start = tuple(t.to(device) for t in batch)
-            print("INPUT shape", b_input_ids.shape, b_token_type_ids.shape)
             # Zero out any previously calculated gradients
             optimizer.zero_grad()
             # print(b_input_ids.shape, b_attn_mask.shape)
