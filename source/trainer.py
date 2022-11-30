@@ -344,6 +344,6 @@ if __name__ == "__main__":
     train_dataset = QADataset(args, tokenizer, mode="train")
     val_dataset = QADataset(args, tokenizer, mode="train")
 
-    trainer = Trainer_IDSF(args, module)
+    trainer = Trainer_QA(args, module)
     trainer.fit(train_dataset, val_dataset)
     
