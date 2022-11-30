@@ -11,8 +11,8 @@ from early_stopping import EarlyStopping
 
 from transformers import AdamW, get_linear_schedule_with_warmup, AutoTokenizer
 from data_loader import load_and_cache_examples
-from modules.IDSF import *
-from modules.QA import *
+from modules.IDSF import IDSFModule
+from modules.QA import QAModule
 from utils import *
 from main import args
 
