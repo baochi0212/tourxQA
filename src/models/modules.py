@@ -99,7 +99,7 @@ class QAModule(nn.Module):
         logits = self.relu(self.linear(outputs))
         start_logits, end_logits = logits[:, :, 0], logits[:, :, 1]
     else:
-        outputs = self.bert_qa(input_ids=input_ids, attention_mask=attention_mask)
+        outputs = self.bert_qa(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
         start_logits, end_logits = outputs['start_logits'], outputs['end_logits']
         
     if start is not None:
