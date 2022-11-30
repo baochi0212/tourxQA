@@ -39,15 +39,17 @@ class QAModule(Module):
         inputs = {
             "input_ids": batch[0],
             "attention_mask": batch[1],
+            "token_type_ids": batch[2],
         }
         if "distill" not in self.args.pretrained_model:
             inputs["token_type_ids"] = batch[2].to(self.device)
         outputs = self.model(**inputs)
         loss = outputs[0]
+        start_logits, end_logits = outputs[1], outputs[2]
         if self.args.gradient_accumulation_steps > 1:
             loss = loss / self.args.gradient_accumulation_steps
         
-        return {"loss": loss}
+        return {"loss": loss, "start": start_logits, "end": end_logits}
 
     def eval_step(self, batch):
         batch = tuple(t.to(self.device) for t in batch)
@@ -55,17 +57,15 @@ class QAModule(Module):
             inputs = {
                 "input_ids": batch[0],
                 "attention_mask": batch[1],
-                "intent_label_ids": batch[3],
-                "slot_labels_ids": batch[4],
+                "token_type_ids": batch[2],
             }
-            if "distill" not in self.args.model_type:
-                inputs["token_type_ids"] = batch[2].to(self.device)
             outputs = self.model(**inputs)
             tmp_eval_loss, (intent_logits, slot_logits) = outputs[:2]
             loss = tmp_eval_loss.mean().item()
+            start_logits, end_logits = outputs[1], outputs[2]
 
 
-        return {"loss": loss, "intent": intent_logits, "slot": slot_logits, "inputs": inputs}
+        return {"loss": loss, "start": start_logits, "end": end_logits}
 
 if __name__ == "__main__":
     module = ISDFModule(args)

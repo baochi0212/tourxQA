@@ -88,7 +88,8 @@ class QADataset(data.Dataset):
             max_length=self.MAX_LENGTH,
             truncation="only_second",
             return_offsets_mapping=True,
-            padding="max_length",)
+            padding="max_length",
+            return_token_type_ids=True,)
         if self.mode != 'test':
             if len(text) == 0:
                 start, end = torch.tensor(0, dtype=torch.long), torch.tensor(0, dtype=torch.long)
