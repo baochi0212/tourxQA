@@ -162,7 +162,7 @@ class JointProcessor(object):
             mode: train, dev, test
         """
         #idsf_data_dir and corresponding level (word-level for example)
-        data_path = os.path.join(self.args.idsf_data_dir, self.args.level, mode)
+        data_path = os.path.join(self.args.idsf_data_dir, mode)
         logger.info("LOOKING AT {}".format(data_path))
         return self._create_examples(texts=self._read_file(os.path.join(data_path, self.input_text_file)),
                                      intents=self._read_file(os.path.join(data_path, self.intent_label_file)),
