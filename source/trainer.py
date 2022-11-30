@@ -305,6 +305,7 @@ class Trainer_QA(Trainer_IDSF):
             #loss, accuracy for tuning
             eval_loss.append(tmp_eval_loss)
             #exact match and F1 for evaluation
+            print("start", b_start.shape)
             EM, F1, EM_1, F1_1 = QA_metrics(start, end, b_start, b_end, b_input_ids, tokenizer)
             EM_score.append(EM)
             EM1_score.append(EM_1)
