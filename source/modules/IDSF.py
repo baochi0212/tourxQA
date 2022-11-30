@@ -15,7 +15,7 @@ from utils import MODEL_DICT, get_intent_labels, get_slot_labels, load_tokenizer
 
 
 
-class ISDFModule(Module):
+class IDSFModule(Module):
     def __init__(self, args):
         super().__init__(args)
         #define model
@@ -79,7 +79,7 @@ class ISDFModule(Module):
         return {"loss": loss, "intent": intent_logits, "slot": slot_logits, "inputs": inputs}
 
 if __name__ == "__main__":
-    module = ISDFModule(args)
+    module = IDSFModule(args)
     tokenizer = load_tokenizer(args)
     dataset = load_and_cache_examples(args, tokenizer, mode="train")
     loader = data.DataLoader(dataset, batch_size=32, shuffle=True)
