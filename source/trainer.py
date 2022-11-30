@@ -328,23 +328,29 @@ class Trainer_QA(Trainer_IDSF):
             print("TEST RESULTS: ", results)
         elif mode == "dev":
             self.write_evaluation_result("eval_dev_results.txt", results)
-            print("DEV: ", results)
+            print("DEV RESULTS: ", results)
         
         return results
 
         
 if __name__ == "__main__":
-    # module = IDSFModule(args)
-    # tokenizer = load_tokenizer(args)
-    # train_dataset = load_and_cache_examples(args, tokenizer, mode="train")
-    # val_dataset = load_and_cache_examples(args, tokenizer, mode="dev")
-    
-
-    module = QAModule(args)
     tokenizer = load_tokenizer(args)
-    train_dataset = QADataset(args, tokenizer, mode="train")
-    val_dataset = QADataset(args, tokenizer, mode="dev")
 
-    trainer = Trainer_QA(args, module)
+    if args.task == "IDSF":
+    
+        module = IDSFModule(args)
+    
+        train_dataset = load_and_cache_examples(args, tokenizer, mode="train")
+        val_dataset = load_and_cache_examples(args, tokenizer, mode="dev")
+        module = IDSFModule(args)
+        trainer = Trainer_IDSF(args, module)
+    
+    else:
+    
+        train_dataset = QADataset(args, tokenizer, mode="train")
+        val_dataset = QADataset(args, tokenizer, mode="dev")
+        module = QAModule(args)
+        trainer = trainer_QA(args, module)
+    
     trainer.fit(train_dataset, val_dataset)
     
