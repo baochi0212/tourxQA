@@ -289,7 +289,7 @@ class Trainer_QA(Trainer_IDSF):
 
         for batch in tqdm(eval_dataloader, desc="Evaluating"):
             
-            batch = tuple(batch[i].to(self.device) if i < 4 else batc[i][:, 0].to(self.device) for i  in range(len(batch)))
+            batch = tuple(batch[i].to(self.device) if i < 4 else batch[i][:, 0].to(self.device) for i  in range(len(batch)))
             eval_step = self.module.eval_step(batch)
             tmp_eval_loss = eval_step["loss"]
             start_logits = eval_step["start"]
