@@ -283,6 +283,7 @@ class Trainer_QA(Trainer_IDSF):
         logger.info("  Num examples = %d", len(dataset))
         logger.info("  Batch size = %d", self.args.eval_batch_size)
         eval_loss, EM_score, EM1_score, F11_score, F1_score = [], [], [], [], []
+        nb_eval_steps = 0 
 
         self.model.eval()
 
