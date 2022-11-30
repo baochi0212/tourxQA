@@ -294,7 +294,7 @@ class Trainer_QA(Trainer_IDSF):
             start_logits = eval_step["start"]
             end_logits = eval_step["end"]
             inputs = eval_step["inputs"]
-            b_input_ids, b_start, b_end = inputs[0], inputs[4], inputs[5]
+            b_input_ids, b_start, b_end = inputs['input_ids'], inputs['start'], inputs['end']
            
             nb_eval_steps += 1
 
