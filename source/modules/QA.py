@@ -7,10 +7,10 @@ import torch
 import torch.nn
 from torch.utils import data
 from transformers import AdamW, get_linear_schedule_with_warmup
-from .module import Module
-from utils import MODEL_DICT, get_intent_labels, get_slot_labels, load_tokenizer, compute_metrics
+from module import Module
+from utils import QA_DICT, get_intent_labels, get_slot_labels, load_tokenizer, compute_metrics
 from data_loader import load_and_cache_examples, QADataset
-# from main import args
+from main import args
 
 
 
@@ -19,8 +19,7 @@ class QAModule(Module):
     def __init__(self, args):
         super().__init__(args)
         #define model
-        config, _, model  = MODEL_DICT[args.model_type]
-        self.intent_label_lst, self.slot_label_lst = get_intent_labels(args), get_slot_labels(args)
+        config, _, model  = QA_DICT[args.model_type]
        
         self.config = config.from_pretrained(args.pretrained_model)
         self.model = model(
@@ -40,12 +39,13 @@ class QAModule(Module):
             "input_ids": batch[0],
             "attention_mask": batch[1],
             "token_type_ids": batch[2],
+            "start": batch[3],
+            "end": batch[4],
         }
-        if "distill" not in self.args.pretrained_model:
-            inputs["token_type_ids"] = batch[2].to(self.device)
+        # if "distill" not in self.args.pretrained_model:
+        #     inputs["token_type_ids"] = batch[2].to(self.device)
         outputs = self.model(**inputs)
-        loss = outputs[0]
-        start_logits, end_logits = outputs[1], outputs[2]
+        loss, (start_logits, end_logits) = outputs
         if self.args.gradient_accumulation_steps > 1:
             loss = loss / self.args.gradient_accumulation_steps
         
@@ -58,19 +58,21 @@ class QAModule(Module):
                 "input_ids": batch[0],
                 "attention_mask": batch[1],
                 "token_type_ids": batch[2],
+                "start": batch[3],
+                "end": batch[4],
             }
+
             outputs = self.model(**inputs)
-            tmp_eval_loss, (intent_logits, slot_logits) = outputs[:2]
+            tmp_eval_loss, (start_logits, end_logits) = outputs
             loss = tmp_eval_loss.mean().item()
-            start_logits, end_logits = outputs[1], outputs[2]
 
 
         return {"loss": loss, "start": start_logits, "end": end_logits}
 
 if __name__ == "__main__":
-    module = ISDFModule(args)
+    module = QAModule(args)
     tokenizer = load_tokenizer(args)
-    dataset = load_and_cache_examples(args, tokenizer, mode="train")
+    dataset = QADataset(args, tokenizer)
     loader = data.DataLoader(dataset, batch_size=32, shuffle=True)
     batch = next(iter(loader))
     print(module.train_step(batch))
