@@ -93,9 +93,9 @@ class QAModule(nn.Module):
     self.loss_fn = CE_loss_fn
     # self.init_weights()
    
-  def forward(self, input_ids, attention_mask, start=None, end=None):
+  def forward(self, input_ids, attention_mask, token_type_ids, start=None, end=None):
     if not self.pretrained:
-        outputs = self.bert_model(input_ids=input_ids, attention_mask=attention_mask)['last_hidden_state']
+        outputs = self.bert_model(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)['last_hidden_state']
         logits = self.relu(self.linear(outputs))
         start_logits, end_logits = logits[:, :, 0], logits[:, :, 1]
     else:
