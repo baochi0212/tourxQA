@@ -94,7 +94,7 @@ class Trainer_IDSF:
         train_iterator = range(int(self.args.n_epochs))
         early_stopping = EarlyStopping(patience=self.args.early_stopping, verbose=True)
 
-        for _ in train_iterator:
+        for _ in tqdm(train_iterator):
             epoch_iterator = tqdm(train_dataloader, desc="Iteration", position=0, leave=True)
             print("\nEpoch", _)
 
