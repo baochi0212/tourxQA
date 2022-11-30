@@ -1,6 +1,6 @@
 export lr=5e-5
 export c=0.5
-export e=50
+export e=30
 export s=333
 echo "${lr}"
 export MODEL_DIR=JointIDSF_PhoBERTencoder
