@@ -177,6 +177,62 @@ def to_graph_format(files):
                     f2.write(line)
 
 #QA utils
+
+
+def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
+    '''
+    EM and F1 score for text output
+    start = b x n
+    '''
+    EM_1 = 0
+    F1_1 = 0
+    EM = 0
+    F1 = 0
+    for i in range(start.shape[0]):
+        pred = tokenizer.decode(input_ids[i][start[i]:end[i]+1])
+        trues = []
+        for j in range(len(start_idx[i])):
+            trues.append(tokenizer.decode(input_ids[i][start_idx[i][j]:end_idx[i][j]+1]))
+        #exact match
+        if pred in trues:
+            EM += 1
+            F1 += 1
+            EM_1 += 1 
+            F1_1 += 1 
+            continue
+        if compare_text(pred, trues):
+            EM_1 += 1
+            F1_1 += 1 
+
+        # else:
+        #     print("PREDICTION:", pred)
+        #     print("GROUND TRUTH:", trues)
+        #     print("CONTEXT:", tokenizer.decode(input_ids[i]))
+        #F1 score
+        F1_score = []
+        for true in trues:
+            sum = 0
+            
+            text = pred if len(pred.split()) < len(true.split()) else true
+            for i in range(len(text.split())):
+                if pred.split()[i] == true.split()[i]:
+                    sum += 1
+            if len(pred.split()) == 0 or len(true.split()) == 0:
+                F1_score.append(int(pred == true))
+                continue
+            precision = sum/len(pred.split())
+            recall = sum/len(true.split())
+            if precision == 0 or recall == 0:
+                F1_score.append(0)
+                continue
+
+
+            F1_score.append(2/(1/precision + 1/recall))
+        
+        F1 += max(F1_score)
+        if not compare_text(pred, trues):
+            F1_1 += max(F1_score)
+    return EM/start.shape[0], F1/start.shape[0], EM_1/start.shape[0], F1_1/start.shape[0]
 def get_corpus(path):
     for file in glob(path + "/*"):
 

@@ -12,12 +12,14 @@ from early_stopping import EarlyStopping
 from transformers import AdamW, get_linear_schedule_with_warmup, AutoTokenizer
 from data_loader import load_and_cache_examples
 from modules.IDSF import *
+from modules.QA import *
+from utils import *
 from main import args
 
-from data_loader import load_and_cache_examples
+from data_loader import load_and_cache_examples, QADataset
 logger = logging.getLogger(__name__)
 
-class Trainer:
+class Trainer_IDSF:
     def __init__(self, args, module):
         #argument
         self.args = args
@@ -256,14 +258,81 @@ class Trainer:
     def load(self):
         load_dir = self.args.idsf_model_dir + f"/{self.args.model_type}_{int(self.args.n_epochs)}_{self.args.learning_rate}.pt"
         self.model.load_state_dict(torch.load(load_dir))
+
+class Trainer_QA(Trainer_IDSF):
+    def __init__(self, args, module):
+        super().__init__(args, module)
+
+    def eval(self, dataset, mode="dev"):
+        eval_sampler = data.SequentialSampler(dataset)
+        eval_dataloader = data.DataLoader(dataset, sampler=eval_sampler, batch_size=self.args.eval_batch_size)
+
+        # Eval!
+        logger.info("***** Running evaluation on %s dataset *****", mode)
+        logger.info("  Num examples = %d", len(dataset))
+        logger.info("  Batch size = %d", self.args.eval_batch_size)
+        eval_loss, EM_score, EM1_score, F11_score, F1_score = []*5
+
+        self.model.eval()
+
+        for batch in tqdm(eval_dataloader, desc="Evaluating"):
+  
+            batch = tuple(t.to(self.device) for t in batch)
+            eval_step = self.module.eval_step(batch)
+            tmp_eval_loss = eval_step["loss"]
+            start_logits = eval_step["start"]
+            end_logits = eval_step["end"]
+            inputs = eval_step["inputs"]
+            b_input_ids, b_start, b_end = inputs[0], inputs[4], inputs[5]
+           
+            nb_eval_steps += 1
+
+
+
+            start, end = torch.argmax(start_logits, -1), torch.argmax(end_logits, -1)
+            #loss, accuracy for tuning
+            eval_loss.append(tmp_eval_loss)
+            #exact match and F1 for evaluation
+            EM, F1, EM_1, F1_1 = QA_metrics(start, end, b_start, b_end, b_input_ids, tokenizer)
+            EM_score.append(EM)
+            EM1_score.append(EM_1)
+            F11_score.append(F1_1)
+            F1_score.append(F1)
+        eval_loss =  np.array(eval_loss).mean()
+        EM_score = np.array(EM_score).mean()
+        EM1_score = np.array(EM1_score).mean()
+        F1_score = np.array(F1_score).mean()
+        F11_score = np.array(F11_score).mean()
+            
+
+
+        eval_loss = eval_loss / nb_eval_steps
+        results = {"loss": eval_loss, "EM_score": EM_score, "EM1_score": EM1_score, "F11_score": F11_score, "F1_score": F1_score}
+        logger.info("***** Eval results *****")
+        for key in sorted(results.keys()):
+            logger.info("  %s = %s", key, str(results[key]))
+        if mode == "test":
+            self.write_evaluation_result("eval_test_results.txt", results)
+            print("TEST RESULTS: ", results)
+        elif mode == "dev":
+            self.write_evaluation_result("eval_dev_results.txt", results)
+            print("DEV: ", results)
+        
+        return results
+
         
 if __name__ == "__main__":
-    module = ISDFModule(args)
+    # module = IDSFModule(args)
+    # tokenizer = load_tokenizer(args)
+    # train_dataset = load_and_cache_examples(args, tokenizer, mode="train")
+    # val_dataset = load_and_cache_examples(args, tokenizer, mode="dev")
+    
+
+    module = QAModule(args)
     tokenizer = load_tokenizer(args)
-    train_dataset = load_and_cache_examples(args, tokenizer, mode="train")
-    val_dataset = load_and_cache_examples(args, tokenizer, mode="dev")
-    
-    trainer = Trainer(args, module)
+    train_dataset = QADataset(args, tokenizer, mode="train")
+    val_dataset = QADataset(args, tokenizer, mode="dev")
+
+    trainer = Trainer_IDSF(args, module)
     trainer.fit(train_dataset, val_dataset)
-    
     

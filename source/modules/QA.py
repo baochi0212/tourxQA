@@ -68,7 +68,7 @@ class QAModule(Module):
             loss = tmp_eval_loss.mean().item()
 
 
-        return {"loss": loss, "start": start_logits, "end": end_logits}
+        return {"loss": loss, "start": start_logits, "end": end_logits, "inputs": inputs}
 
 if __name__ == "__main__":
     module = QAModule(args)

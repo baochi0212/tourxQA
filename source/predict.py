@@ -8,7 +8,7 @@ import torch
 from torch.utils.data import DataLoader, SequentialSampler, TensorDataset
 from tqdm import tqdm
 from utils import MODEL_DICT, get_intent_labels, get_slot_labels, init_logger, load_tokenizer
-
+from trainer import Trainer_IDSF, Trainer_QA
 
 logger = logging.getLogger(__name__)
 
@@ -224,7 +224,7 @@ if __name__ == "__main__":
         module = ISDFModule(args)
         tokenizer = load_tokenizer(args)
         test_dataset = load_and_cache_examples(args, tokenizer, mode="test")
-        trainer = Trainer(args, module)
+        trainer = Trainer_IDSF(args, module)
         trainer.predict(test_dataset)
 
 
