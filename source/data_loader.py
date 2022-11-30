@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class QADataset(data.Dataset):
     def __init__(self, args, tokenizer, mode='train'):
-        self.df = args.qa_data_dir + f'/{mode}.csv'
+        self.df = pd.read_csv(args.qa_data_dir + f'/{mode}.csv')
         self.MAX_LENGTH = args.qa_max_length
         self.mode = mode
         self.tokenizer = tokenizer
