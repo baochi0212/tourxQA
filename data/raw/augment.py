@@ -1,12 +1,14 @@
 data_dir = "PhoATIS/word-level"
 def add_new_label(slot_label=["B-num_person", "I-num_person"], intent_label=[]):
-    intent_write = open(data_dir + f"/intent_label.txt", "r")
-    slot_write = open(data_dir + f"/slot_label.txt", "r")
-    print(slot_write.readlines())
-    # for slot in slot_label:
-    #     slot_write.write(slot)
-    # for intent in intent_label:
-    #     intent_write.write(intent)
+    with open(data_dir + f"/slot_label.txt", "a") as f:
+        f.write('\n')
+        for line in slot_label:
+            f.write(line + '\n')
+
+    with open(data_dir + f"/intent_label.txt", "a") as f:
+        f.write('\n')
+        for line in intent_label:
+            f.write(line + '\n')
 
 
 

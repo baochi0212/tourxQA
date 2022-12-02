@@ -27,7 +27,7 @@ MODEL_DICT = {
 }
 QA_DICT = {
     "xlm-roberta-base": (AutoConfig, AutoTokenizer, QARoberta),
-    "xlm-roberta-large": (XLMRobertaConfig, XLMRobertaTokenizer, AutoModel),
+    "xlm-roberta-large": (XLMRobertaConfig, XLMRobertaTokenizer, QARoberta),
     "phobert": (AutoConfig, AutoTokenizer, JointPhoBERT),
     "lstm": (AutoConfig, AutoTokenizer, JointLSTM),
     "gru": (AutoConfig, AutoTokenizer, JointGRU),
