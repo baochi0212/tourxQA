@@ -31,7 +31,7 @@ def add_new_data(intents=['airfare', 'flight'], num_samples=100):
 
         if labels[i] in intents:
             return True
-    def generate(words={'beginning': [['cho', 'cho nhóm'], 'O'], 'numbers': [[random.randint(0, 100)], 'B-num_person'], 'humans': [['người', 'người lớn', 'trẻ em'], 'I-num_person']}):
+    def generate(words={'beginning': [['cho', 'cho nhóm'], 'O'], 'numbers': [[random.randint(0, 100) for i in range(100)], 'B-num_person'], 'humans': [['người', 'người lớn', 'trẻ em'], 'I-num_person']}):
         word = ''
         out = ''
         for key in words.keys():
