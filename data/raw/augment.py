@@ -4,18 +4,16 @@ from underthesea import word_tokenize
 
 
 dataset = ['train', 'dev']
-data_dir = "/home/xps/educate/code/hust/XQA/data/raw/phoATIS"
+data_dir = "/home/xps/educate/code/hust/XQA/data/raw/phoATIS_plus"
 def add_new_label(slot_label=["B-num_person", "I-num_person"], intent_label=[]):
     with open(data_dir + f"/slot_label.txt", "a") as f:
         temp_slot = [line.strip() for line in open(data_dir + f"/slot_label.txt", "r").readlines()]
-        f.write('\n')
         for slot in slot_label:
             if slot not in temp_slot:
                 f.write(slot + '\n')
 
     with open(data_dir + f"/intent_label.txt", "a") as f:
         temp_intent = [line.strip() for line in open(data_dir + f"/intent_label.txt", "r").readlines()] 
-        f.write('\n')
         for intent in intent_label:
             if intent not in temp_intent:
                 f.write(intent + '\n')
