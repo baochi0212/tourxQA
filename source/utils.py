@@ -19,11 +19,11 @@ from collections import Counter
 
 #MAPPING
 MODEL_DICT = {
-    "xlm-roberta-base": (XLMRobertaConfig, XLMRobertaTokenizer, AutoModel),
-    "xlm-roberta-large": (XLMRobertaConfig, XLMRobertaTokenizer, AutoModel),
+    "xlm-roberta-base": (XLMRobertaConfig, XLMRobertaTokenizer, QARoberta),
+    "xlm-roberta-large": (XLMRobertaConfig, XLMRobertaTokenizer, QARoberta),
     "phobert": (AutoConfig, AutoTokenizer, JointPhoBERT),
     "lstm": (AutoConfig, AutoTokenizer, JointLSTM),
-    "gru": (AutoConfig, AutoTokenizer, JointGRU),
+    "gru": (AutoConfig, AutoTokenizer, JointGRU)
 }
 QA_DICT = {
     "xlm-roberta-base": (AutoConfig, AutoTokenizer, QARoberta),
