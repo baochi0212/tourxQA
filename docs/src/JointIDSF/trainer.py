@@ -284,6 +284,7 @@ class Trainer(object):
         torch.save(self.args, os.path.join(self.args.model_dir, 'training_args.bin'))
         logger.info("Saving model checkpoint to %s", self.args.model_dir)
 
+
     def load_model(self):
         # Check whether model exists
         if not os.path.exists(self.args.model_dir):

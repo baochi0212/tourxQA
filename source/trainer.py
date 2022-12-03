@@ -28,6 +28,8 @@ class Trainer_IDSF:
         self.model = self.module.model
         self.device = args.device
         self.log_dir = args.idsf_log_dir if args.module_role == "idsf" else args.qa_log_dir
+    def seed(self):
+        pass
     def configure_optimizer(self, t_total):
         no_decay = ["bias", "LayerNorm.weight"]
         optimizer_grouped_parameters = [
@@ -54,9 +56,13 @@ class Trainer_IDSF:
     
     def fit(self, train_dataset, val_dataset):
         #loader
-        print("BACTH ")
         logger.info("--MODEL CHECKING--")
         print("MODEL: ", self.model)
+        if self.args.from_pretrained_weights:
+            logger.info("TRAIN FROM PRETRAINED WEIGHTS")
+            self.load(self.args.from_pretrained_weights)
+        else:
+            logger.info("TRAIN FROM SCRATCH")
         
         train_sampler = data.RandomSampler(train_dataset)
         train_dataloader = data.DataLoader(train_dataset, sampler=train_sampler, batch_size=self.args.train_batch_size, drop_last=True)
@@ -256,8 +262,8 @@ class Trainer_IDSF:
         # os.system(f"touch {save_dir}")
         torch.save(self.model.state_dict(), save_dir)
 
-    def load(self):
-        load_dir = self.args.idsf_model_dir + f"/{self.args.model_type}_{int(self.args.n_epochs)}_{self.args.learning_rate}.pt"
+    def load(self, path=None):
+        load_dir = self.args.idsf_model_dir + f"/{self.args.model_type}_{int(self.args.n_epochs)}_{self.args.learning_rate}.pt" if not path else path
         self.model.load_state_dict(torch.load(load_dir))
 
 class Trainer_QA(Trainer_IDSF):
