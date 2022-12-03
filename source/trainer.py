@@ -340,7 +340,7 @@ class Trainer_QA(Trainer_IDSF):
         
 if __name__ == "__main__":
     tokenizer = load_tokenizer(args)
-    set_seed()
+    set_seed(args)
 
     if args.module_role == "IDSF":
     
