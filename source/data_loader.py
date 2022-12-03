@@ -174,7 +174,7 @@ processors = {
     "atis": JointProcessor,
     "snips": JointProcessor,
     "phoATIS": JointProcessor,
-    "phoATIS-s": JointProcessor
+    "PhoATIS_plus": JointProcessor,
 }
 
 

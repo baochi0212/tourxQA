@@ -77,7 +77,6 @@ class Trainer_IDSF:
         #test the initialized model on validation set
         logger.info("-----------check init---------------")
         results = self.eval(val_dataset, mode="dev")
-        print(results)
         # Prepare optimizer and schedule (linear warmup and decay)
         optim = self.configure_optimizer(t_total)
         self.optimizer, self.scheduler = optim['optimizer'], optim['scheduler']
@@ -341,6 +340,7 @@ class Trainer_QA(Trainer_IDSF):
         
 if __name__ == "__main__":
     tokenizer = load_tokenizer(args)
+    set_seed(333)
 
     if args.module_role == "IDSF":
     
