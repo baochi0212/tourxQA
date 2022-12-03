@@ -4,7 +4,7 @@ from underthesea import word_tokenize
 
 
 dataset = ['train', 'dev']
-data_dir = "/home/xps/educate/code/hust/XQA/data/raw/PhoATIS/word-level"
+data_dir = "/home/xps/educate/code/hust/XQA/data/raw/phoATIS"
 def add_new_label(slot_label=["B-num_person", "I-num_person"], intent_label=[]):
     with open(data_dir + f"/slot_label.txt", "a") as f:
         temp_slot = [line.strip() for line in open(data_dir + f"/slot_label.txt", "r").readlines()]
@@ -52,23 +52,20 @@ def add_new_data(intents=['airfare', 'flight'], num_samples=100):
         
         with open(path_in, 'a') as f_in:
             with open(path_out, 'a') as f_out:
-                while num_samples > 0:
-                    for i in range(len(labels)):
-                        if condition(i):
-
-                            if outs[-1] != 'O':
-                                word, out = generate()
-                                
-                                f_in.write(' '.join(ins[i]) + ' ' + word + '\n')
-                                f_out.write(' '.join(outs[i]) +  ' ' + out + '\n')
-
-                                num_samples -= 1 
-
-                            if outs[-1] == 'O' and outs[-2] != 'O':
-                                word, out = generate()
-                                f_in.write(' '.join(ins[i][:-1]) + ' ' + word + ' '  + ins[i][-1] + '\n')
-                                f_out.write(' '.join(outs[i][:-1]) + ' ' + out + ' ' +  outs[i][-1] + '\n')
-                                num_samples -= 1 
+                
+                for i in range(len(labels)):
+                    if condition(i) and num_samples > 0:
+                        if outs[-1] != 'O':
+                            word, out = generate()
+                            
+                            f_in.write(' '.join(ins[i]) + ' ' + word + '\n')
+                            f_out.write(' '.join(outs[i]) +  ' ' + out + '\n')
+                            num_samples -= 1 
+                        if outs[-1] == 'O' and outs[-2] != 'O':
+                            word, out = generate()
+                            f_in.write(' '.join(ins[i][:-1]) + ' ' + word + ' '  + ins[i][-1] + '\n')
+                            f_out.write(' '.join(outs[i][:-1]) + ' ' + out + ' ' +  outs[i][-1] + '\n')
+                            num_samples -= 1 
                 num_samples = 100
                         
 

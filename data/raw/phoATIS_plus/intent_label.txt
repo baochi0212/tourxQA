@@ -24,22 +24,3 @@ meal
 quantity
 restriction
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
