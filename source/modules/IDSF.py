@@ -71,6 +71,7 @@ class IDSFModule(Module):
             }
             if "distill" not in self.args.model_type:
                 inputs["token_type_ids"] = batch[2].to(self.device)
+            print(inputs.keys())
             outputs = self.model(**inputs)
             tmp_eval_loss, (intent_logits, slot_logits) = outputs[:2]
             loss = tmp_eval_loss.mean().item()
