@@ -217,14 +217,17 @@ def predict(args):
 
 
 if __name__ == "__main__":
-    if args.predict_task == "test example":
-        init_logger()
-        predict(args)
-    if args.predict_task == "test dataset":
-        module = IDSFModule(args)
-        tokenizer = load_tokenizer(args)
-        test_dataset = load_and_cache_examples(args, tokenizer, mode="test")
-        trainer = Trainer_IDSF(args, module)
-        trainer.predict(test_dataset)
+    if args.module_role == 'IDSF':
+        if args.predict_task == "test example":
+            init_logger()
+            predict(args)
+        if args.predict_task == "test dataset":
+            module = IDSFModule(args)
+            tokenizer = load_tokenizer(args)
+            test_dataset = load_and_cache_examples(args, tokenizer, mode="test")
+            trainer = Trainer_IDSF(args, module)
+            trainer.predict(test_dataset)
+    else:
+        pass
 
 
