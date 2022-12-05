@@ -23,7 +23,7 @@ MODEL_DICT = {
     "phobert": (AutoConfig, AutoTokenizer, JointPhoBERT),
     "lstm": (AutoConfig, AutoTokenizer, JointLSTM),
     "gru": (AutoConfig, AutoTokenizer, JointGRU), 
-    "distill-bert": (DistilBertConfig, AutoTokenizer, JointDistilBERT),
+    "distill-bert": (DistilBertConfig, AutoTokenizer, JointDistillBERT),
 }
 QA_DICT = {
     "xlm-roberta-base": (AutoConfig, AutoTokenizer, QARoberta),
