@@ -5,7 +5,7 @@ sys.path.append(f"{os.environ['source']}/model/IDSF_modules")
 import torch
 import torch.nn as nn
 from torchcrf import CRF
-from transformers.models.roberta.modeling_roberta import DistilBertModel, DistilBertConfig, DistilBertPreTrainedModel
+from transformers import DistilBertModel, DistilBertConfig, DistilBertPreTrainedModel
 from .modules import IntentClassifier, SlotClassifier
 
 
