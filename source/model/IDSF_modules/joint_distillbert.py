@@ -33,9 +33,9 @@ class JointDistillBERT(DistilBertPreTrainedModel):
         if args.use_crf:
             self.crf = CRF(num_tags=self.num_slot_labels, batch_first=True)
 
-    def forward(self, input_ids, attention_mask, token_type_ids, intent_label_ids, slot_labels_ids):
+    def forward(self, input_ids, attention_mask, intent_label_ids, slot_labels_ids):
         outputs = self.roberta(
-            input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids
+            input_ids, attention_mask=attention_mask
         )  # sequence_output, pooled_output, (hidden_states), (attentions)
         sequence_output = outputs[0]
         pooled_output = outputs[1]  # [CLS]
