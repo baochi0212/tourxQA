@@ -5,7 +5,7 @@ import re
 
 import numpy as np
 import torch
-from model.IDSF_modules import JointPhoBERT, JointXLMR, JointLSTM, JointGRU
+from model.IDSF_modules import JointPhoBERT, JointXLMR, JointLSTM, JointGRU, JointDistilBERT
 from model.QA_modules import QARoberta
 from seqeval.metrics import f1_score, precision_score, recall_score
 from transformers import (
@@ -14,16 +14,16 @@ from transformers import (
     XLMRobertaConfig,
     XLMRobertaTokenizer,
     AutoModel,
+    DistilBertConfig
 )
 from collections import Counter
 
 #MAPPING
 MODEL_DICT = {
-    "xlm-roberta-base": (XLMRobertaConfig, XLMRobertaTokenizer, QARoberta),
-    "xlm-roberta-large": (XLMRobertaConfig, XLMRobertaTokenizer, QARoberta),
     "phobert": (AutoConfig, AutoTokenizer, JointPhoBERT),
     "lstm": (AutoConfig, AutoTokenizer, JointLSTM),
-    "gru": (AutoConfig, AutoTokenizer, JointGRU)
+    "gru": (AutoConfig, AutoTokenizer, JointGRU), 
+    "distill-bert": (DistilBertConfig, AutoTokenizer, JointDistilBERT),
 }
 QA_DICT = {
     "xlm-roberta-base": (AutoConfig, AutoTokenizer, QARoberta),
