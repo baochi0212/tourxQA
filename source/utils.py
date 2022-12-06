@@ -228,7 +228,7 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
             
             text = pred if len(pred.split()) < len(true.split()) else true
             for i in range(len(text.split())):
-                if pred.split()[i] == true.split()[i]:
+                if pred.split()[i] in true.split():
                     sum += 1
             if len(pred.split()) == 0 or len(true.split()) == 0:
                 F1_score.append(int(pred == true))
