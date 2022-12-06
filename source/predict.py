@@ -226,7 +226,7 @@ if __name__ == "__main__":
             tokenizer = load_tokenizer(args)
             test_dataset = load_and_cache_examples(args, tokenizer, mode="test")
             trainer = Trainer_IDSF(args, module)
-            trainer.eval(test_dataset, mode="test")
+            trainer.predict(test_dataset)
     else:
         pass
 
