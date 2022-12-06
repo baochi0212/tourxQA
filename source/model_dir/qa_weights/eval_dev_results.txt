@@ -1,0 +1,160 @@
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.0
+ EM_score = 0.0
+ F11_score = 0.03379879790920708
+ F1_score = 0.03379879790920708
+ loss = 0.1655182761174661
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.4107238247863248
+ EM_score = 0.4033453525641026
+ F11_score = 0.5886171816903278
+ F1_score = 0.5872859040802673
+ loss = 0.05026207487156362
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.5504473824786325
+ EM_score = 0.543502938034188
+ F11_score = 0.707885525879903
+ F1_score = 0.7059498068561703
+ loss = 0.04077511333664994
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.5739182692307693
+ EM_score = 0.5682759081196581
+ F11_score = 0.7227292445777985
+ F1_score = 0.720321048028977
+ loss = 0.038921564633463634
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.5960536858974359
+ EM_score = 0.5912793803418803
+ F11_score = 0.7420898601733583
+ F1_score = 0.7405994071054451
+ loss = 0.03748905794396076
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.615985576923077
+ EM_score = 0.6103432158119658
+ F11_score = 0.7581973330576327
+ F1_score = 0.7574088929994915
+ loss = 0.039987777463263936
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.6151175213675214
+ EM_score = 0.6107772435897436
+ F11_score = 0.7633947964514547
+ F1_score = 0.7626581797899911
+ loss = 0.03771171392298039
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.6161858974358974
+ EM_score = 0.6101095085470085
+ F11_score = 0.7617369816602632
+ F1_score = 0.7603564567717559
+ loss = 0.045425010109205306
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.6214276175213675
+ EM_score = 0.6162192841880342
+ F11_score = 0.7632781350887272
+ F1_score = 0.7619957490610118
+ loss = 0.0429434727785396
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.6158186431623931
+ EM_score = 0.6136485042735043
+ F11_score = 0.7627206288213867
+ F1_score = 0.7618836128281207
+ loss = 0.04302388891853668
+***** Eval results with Model: xlm-roberta-large *****
+***** Pretrained: True,  *****
+***** learning_rate: 3e-06 *****
+ EM1_score = 0.021267361111111112
+ EM_score = 0.0
+ F11_score = 0.021267361111111112
+ F1_score = 0.0
+ loss = 0.16596537736462957
+***** Eval results with Model: xlm-roberta-large *****
+***** Pretrained: True,  *****
+***** learning_rate: 3e-06 *****
+ EM1_score = 0.4226428952991453
+ EM_score = 0.4122262286324786
+ F11_score = 0.621904519781023
+ F1_score = 0.6191625151209897
+ loss = 0.050651743456169414
+***** Eval results with Model: xlm-roberta-large *****
+***** Pretrained: True,  *****
+***** learning_rate: 3e-06 *****
+ EM1_score = 0.6409588675213675
+ EM_score = 0.6318442841880342
+ F11_score = 0.7929009578130018
+ F1_score = 0.7912433891865462
+ loss = 0.03621291830261916
+***** Eval results with Model: xlm-roberta-large *****
+***** Pretrained: True,  *****
+***** learning_rate: 3e-06 *****
+ EM1_score = 0.6719751602564102
+ EM_score = 0.6650307158119658
+ F11_score = 0.8243873436809026
+ F1_score = 0.8231957311201632
+ loss = 0.032414332745067866
+***** Eval results with Model: xlm-roberta-large *****
+***** Pretrained: True,  *****
+***** learning_rate: 3e-06 *****
+ EM1_score = 0.6904046474358974
+ EM_score = 0.6851963141025641
+ F11_score = 0.834591307104875
+ F1_score = 0.8338145570898435
+ loss = 0.029516742576235606
+***** Eval results with Model: xlm-roberta-large *****
+***** Pretrained: True,  *****
+***** learning_rate: 3e-06 *****
+ EM1_score = 0.6912727029914529
+ EM_score = 0.6873664529914529
+ F11_score = 0.8388824468444249
+ F1_score = 0.8382769123326403
+ loss = 0.03254987866284303
+***** Eval results with Model: xlm-roberta-large *****
+***** Pretrained: True,  *****
+***** learning_rate: 3e-06 *****
+ EM1_score = 0.7003872863247863
+ EM_score = 0.6951789529914529
+ F11_score = 0.8366621681781792
+ F1_score = 0.8358079921417114
+ loss = 0.032025458187692694
+***** Eval results with Model: xlm-roberta-large *****
+***** Pretrained: True,  *****
+***** learning_rate: 3e-06 *****
+ EM1_score = 0.7053285256410257
+ EM_score = 0.7005542200854701
+ F11_score = 0.8448700501626537
+ F1_score = 0.8441044953085571
+ loss = 0.0320205069894408
+***** Eval results with Model: xlm-roberta-large *****
+***** Pretrained: True,  *****
+***** learning_rate: 3e-06 *****
+ EM1_score = 0.6891025641025641
+ EM_score = 0.6838942307692307
+ F11_score = 0.8335019812311444
+ F1_score = 0.8326706145851684
+ loss = 0.034580192080250496
+***** Eval results with Model: xlm-roberta-large *****
+***** Pretrained: True,  *****
+***** learning_rate: 3e-06 *****
+ EM1_score = 0.706229967948718
+ EM_score = 0.7005876068376069
+ F11_score = 0.847269517247179
+ F1_score = 0.8462869990901817
+ loss = 0.03248594846162531
