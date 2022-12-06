@@ -145,7 +145,7 @@ class Trainer_IDSF:
 
     def write_evaluation_result(self, out_file, results):
         out_file = self.log_dir + "/" + out_file
-        w = open(out_file, "w", encoding="utf-8")
+        w = open(out_file, "a", encoding="utf-8")
         w.write("***** Eval results *****\n")
         for key in sorted(results.keys()):
             to_write = " {key} = {value}".format(key=key, value=str(results[key]))
@@ -271,8 +271,10 @@ class Trainer_QA(Trainer_IDSF):
 
     def write_evaluation_result(self, out_file, results):
         out_file = self.args.qa_log_dir + "/" + out_file
-        w = open(out_file, "w", encoding="utf-8")
-        w.write("***** Eval results *****\n")
+        w = open(out_file, "a", encoding="utf-8")
+        w.write(f"***** Eval results with Model: {args.model_type} *****\n")
+        w.write(f"***** Pretrained: {args.pretrained},  *****\n")
+        w.write(f"***** learning_rate: {args.learning_rate} *****\n")
         for key in sorted(results.keys()):
             to_write = " {key} = {value}".format(key=key, value=str(results[key]))
             w.write(to_write)
