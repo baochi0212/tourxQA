@@ -27,7 +27,7 @@ class Trainer_IDSF:
         self.module = module
         self.model = self.module.model
         self.device = args.device
-        self.log_dir = args.idsf_log_dir if args.module_role == "idsf" else args.qa_log_dir
+        self.log_dir = args.idsf_log_dir if args.module_role == "IDSF" else args.qa_log_dir
     def seed(self):
         pass
     def configure_optimizer(self, t_total):
@@ -85,7 +85,7 @@ class Trainer_IDSF:
         # Train!
         logger.info("***** Running training *****")
         logger.info("  Num examples = %d", len(train_dataset))
-        logger.info("  Num Epochs = %d", self.args.n_epochs)
+        logger.info("  Num Epoc`hs = %d", self.args.n_epochs)
         logger.info("  Total train batch size = %d", self.args.train_batch_size)
         logger.info("  Gradient Accumulation steps = %d", self.args.gradient_accumulation_steps)
         logger.info("  Total optimization steps = %d", t_total)
@@ -336,6 +336,8 @@ class Trainer_QA(Trainer_IDSF):
             print("DEV RESULTS: ", results)
         
         return results
+
+    
 
         
 if __name__ == "__main__":
