@@ -50,18 +50,10 @@ class EarlyStopping:
                 print(
                     f"{args.tuning_metric} increased ({self.val_loss_min:.6f} --> {val_loss:.6f}).  Saving model ..."
                 )
+        #saving model
         log_dir = args.idsf_log_dir if args.module_role == "idsf" else args.qa_log_dir
         save_dir = log_dir + f"/{args.model_type}_{int(args.n_epochs)}_{args.learning_rate}.pt"
         torch.save(model.state_dict(), save_dir)
+        #saving args
         torch.save(args, os.path.join(args.idsf_model_dir, "training_args.bin"))
         self.val_loss_min = val_loss
-
-        # # Save model checkpoint (Overwrite)
-        # if not os.path.exists(self.args.model_dir):
-        #     os.makedirs(self.args.model_dir)
-        # model_to_save = self.model.module if hasattr(self.model, 'module') else self.model
-        # model_to_save.save_pretrained(self.args.model_dir)
-
-        # # Save training arguments together with the trained model
-        # torch.save(self.args, os.path.join(self.args.model_dir, 'training_args.bin'))
-        # logger.info("Saving model checkpoint to %s", self.args.model_dir)
