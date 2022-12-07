@@ -158,3 +158,19 @@
  F11_score = 0.847269517247179
  F1_score = 0.8462869990901817
  loss = 0.03248594846162531
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.0
+ EM_score = 0.0
+ F11_score = 0.04135376488464905
+ F1_score = 0.04135376488464905
+ loss = 0.16910963272561833
+***** Eval results with Model: xlm-roberta-large *****
+***** Pretrained: True,  *****
+***** learning_rate: 3e-06 *****
+ EM1_score = 0.019196428571428573
+ EM_score = 0.0
+ F11_score = 0.019196428571428573
+ F1_score = 0.0
+ loss = 0.1694385256086077
