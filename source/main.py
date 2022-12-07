@@ -79,7 +79,7 @@ parser.add_argument(
 parser.add_argument(
     "--early_stopping",
     type=int,
-    default=5,
+    default=3,
     help="Number of unincreased validation step to wait for early stopping",
 )
 parser.add_argument("--gpu_id", type=int, default=0, help="Select gpu id")
