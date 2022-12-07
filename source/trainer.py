@@ -131,7 +131,7 @@ class Trainer_IDSF:
                         self.save()
 
                 if 0 < self.args.max_steps < global_step:
-                    # epoch_iterator.close()
+                    # epoch_iterator.close()p
                     break
 
             if 0 < self.args.max_steps < global_step or early_stopping.early_stop:
@@ -360,8 +360,8 @@ if __name__ == "__main__":
     
     else:
     
-        train_dataset = QADataset(args, tokenizer, mode="train")
-        val_dataset = QADataset(args, tokenizer, mode="dev")
+        train_dataset = QADataset(args, tokenizer, mode="concat")
+        val_dataset = QADataset(args, tokenizer, mode="test")
         module = QAModule(args)
         trainer = Trainer_QA(args, module)
     
