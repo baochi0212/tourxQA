@@ -36,7 +36,7 @@ class QADataset(data.Dataset):
             return_offsets_mapping=True,
             padding="max_length",
             return_token_type_ids=True,)
-        if self.mode == 'train':
+        if self.mode in ['train', 'concat']:
             if len(text) == 0:
                 start, end = torch.tensor(0, dtype=torch.long), torch.tensor(0, dtype=torch.long)
             else:
