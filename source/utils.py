@@ -193,6 +193,24 @@ def compare_text(pred, trues):
 
 
 def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
+    def compute_f1(prediction, truth):
+        pred_tokens = prediction.split()
+        truth_tokens = truth.split()
+        
+        # if either the prediction or the truth is no-answer then f1 = 1 if they agree, 0 otherwise
+        if len(pred_tokens) == 0 or len(truth_tokens) == 0:
+            return int(pred_tokens == truth_tokens)
+        
+        common_tokens = set(pred_tokens) & set(truth_tokens)
+        
+        # if there are no common tokens then f1 = 0
+        if len(common_tokens) == 0:
+            return 0
+        
+        prec = len(common_tokens) / len(pred_tokens)
+        rec = len(common_tokens) / len(truth_tokens)
+        
+        return 2 * (prec * rec) / (prec + rec)
     '''
     EM and F1 score for text output
     start = b x n
@@ -224,23 +242,24 @@ def QA_metrics(start, end, start_idx, end_idx, input_ids, tokenizer):
         #F1 score
         F1_score = []
         for true in trues:
-            sum = 0
+            F1_score.append(compute_f1(pred, true))
+            # sum = 0
             
-            text = pred if len(pred.split()) < len(true.split()) else true
-            for i in range(len(text.split())):
-                if pred.split()[i] in true.split():
-                    sum += 1
-            if len(pred.split()) == 0 or len(true.split()) == 0:
-                F1_score.append(int(pred == true))
-                continue
-            precision = sum/len(pred.split())
-            recall = sum/len(true.split())
-            if precision == 0 or recall == 0:
-                F1_score.append(0)
-                continue
+            # text = pred if len(pred.split()) < len(true.split()) else true
+            # for i in range(len(text.split())):
+            #     if pred.split()[i] in true.split():
+            #         sum += 1
+            # if len(pred.split()) == 0 or len(true.split()) == 0:
+            #     F1_score.append(int(pred == true))
+            #     continue
+            # precision = sum/len(pred.split())
+            # recall = sum/len(true.split())
+            # if precision == 0 or recall == 0:
+            #     F1_score.append(0)
+            #     continue
 
 
-            F1_score.append(2/(1/precision + 1/recall))
+            # F1_score.append(2/(1/precision + 1/recall))
         
         F1 += max(F1_score)
         if not compare_text(pred, trues):
