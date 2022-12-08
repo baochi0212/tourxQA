@@ -318,3 +318,75 @@
  F11_score = 0.8222702403249689
  F1_score = 0.8208964985435672
  loss = 0.038214158035662714
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.0
+ EM_score = 0.0
+ F11_score = 0.12144954729666999
+ F1_score = 0.12144954729666999
+ loss = 0.16910963272561833
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.43794642857142857
+ EM_score = 0.4303571428571429
+ F11_score = 0.6153051170463625
+ F1_score = 0.6123993293159328
+ loss = 0.05249316210649452
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.5513392857142857
+ EM_score = 0.5450892857142857
+ F11_score = 0.7233386625304279
+ F1_score = 0.7217729428056385
+ loss = 0.0449627051548082
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.590625
+ EM_score = 0.5870535714285714
+ F11_score = 0.7602609701864713
+ F1_score = 0.7589389972685162
+ loss = 0.03942448434781055
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.5830357142857143
+ EM_score = 0.5803571428571429
+ F11_score = 0.7608231537247082
+ F1_score = 0.7603980358888761
+ loss = 0.03985902221835389
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.596875
+ EM_score = 0.5946428571428571
+ F11_score = 0.7656483072223133
+ F1_score = 0.7648991060266834
+ loss = 0.03870342620173279
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.5995535714285715
+ EM_score = 0.5950892857142858
+ F11_score = 0.7693594166872926
+ F1_score = 0.7672567108222511
+ loss = 0.04074713470376268
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.6120535714285714
+ EM_score = 0.6071428571428571
+ F11_score = 0.7767729805687775
+ F1_score = 0.7745135076508224
+ loss = 0.04125279748318147
+***** Eval results with Model: xlm-roberta-base *****
+***** Pretrained: True,  *****
+***** learning_rate: 5e-05 *****
+ EM1_score = 0.590625
+ EM_score = 0.5883928571428572
+ F11_score = 0.7698700188149888
+ F1_score = 0.7692429935116244
+ loss = 0.045398807562127406
