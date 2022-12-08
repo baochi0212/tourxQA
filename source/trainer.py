@@ -28,6 +28,8 @@ class Trainer_IDSF:
         self.model = self.module.model
         self.device = args.device
         self.log_dir = args.idsf_log_dir if args.module_role == "IDSF" else args.qa_log_dir
+        if not os.path.exists(self.log_dir):
+            os.system(f"mkdir {self.log_dir}")
     def seed(self):
         pass
     def configure_optimizer(self, t_total):
@@ -144,8 +146,7 @@ class Trainer_IDSF:
 
 
     def write_evaluation_result(self, out_file, results):
-        if not os.path.exists(self.log_dir):
-            os.system(f"mkdir {self.log_dir}")
+   
         out_file = self.log_dir + "/" + out_file
         w = open(out_file, "a", encoding="utf-8")
         w.write("***** Eval results *****\n")
