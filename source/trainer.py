@@ -144,6 +144,8 @@ class Trainer_IDSF:
 
 
     def write_evaluation_result(self, out_file, results):
+        if not os.path.exists(self.log_dir):
+            os.system(f"mkdir {self.log_dir}")
         out_file = self.log_dir + "/" + out_file
         w = open(out_file, "a", encoding="utf-8")
         w.write("***** Eval results *****\n")
