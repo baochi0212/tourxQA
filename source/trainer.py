@@ -281,6 +281,7 @@ class Trainer_QA(Trainer_IDSF):
         w.write(f"***** Eval results with Model: {args.model_type} *****\n")
         w.write(f"***** Pretrained: {args.pretrained},  *****\n")
         w.write(f"***** learning_rate: {args.learning_rate} *****\n")
+        w.write(f"***** freeze: {args.freeze} ****\n")
         for key in sorted(results.keys()):
             to_write = " {key} = {value}".format(key=key, value=str(results[key]))
             w.write(to_write)
