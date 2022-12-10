@@ -363,7 +363,7 @@ if __name__ == "__main__":
         trainer = Trainer_IDSF(args, module)
     
     else:
-    
+        print("FREEZE WEIGHTS ???", args.freeze)
         train_dataset = QADataset(args, tokenizer, mode="concat")
         val_dataset = QADataset(args, tokenizer, mode="test")
         module = QAModule(args)
