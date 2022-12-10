@@ -25,7 +25,7 @@ class QARoberta(nn.Module):
             loss = torch.where(label != 0, loss , torch.tensor(0, dtype=torch.float).to(args.device))
             return loss.mean()
         self.bert_model = AutoModel.from_pretrained(args.pretrained_model)
-        if args.freeze :
+        if args.freeze:
             for param in self.bert_model.parameters():
                 param.requires_grad_(False)
         self.pretrained = args.pretrained

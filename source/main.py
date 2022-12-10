@@ -28,7 +28,7 @@ parser.add_argument("--idsf_model_dir", default='./model_dir/idsf_weights', requ
 parser.add_argument("--idsf_data_dir", default=idsf_data_dir+'/phoATIS_plus', type=str, help="The input data dir")
 parser.add_argument("--intent_label_file", default="intent_label.txt", type=str, help="Intent Label file")
 parser.add_argument("--slot_label_file", default="slot_label.txt", type=str, help="Slot Label file")
-parser.add_argument("--freeze", type=bool, default=False)
+parser.add_argument("--freeze", type=int, default=0)
 parser.add_argument("--tuning_metric", default="loss", type=str, help="Metrics to tune when training")
 parser.add_argument("--seed", type=int, default=1, help="random seed for initialization")
 parser.add_argument("--train_batch_size", default=64, type=int, help="Batch size for training.")
