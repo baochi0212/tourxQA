@@ -28,7 +28,7 @@ class QARoberta(nn.Module):
         if args.freeze:
             print("Not retrained the model")
             for param in self.bert_model.parameters():
-                param.requires_grad_(False)
+                param.requires_grad = False
         self.pretrained = args.pretrained
         self.linear = torch.nn.Linear(config.hidden_size, 2)
         self.relu = torch.nn.ReLU()
