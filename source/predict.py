@@ -29,7 +29,7 @@ def load_model(args, device):
         raise Exception("Model doesn't exists! Train first!")
 
     try:
-        load_dir = locals()[f"args.{task}_model_dir"] + f"/{args.model_type}_{int(args.n_epochs)}_{args.learning_rate}.pt"
+        load_dir = path + f"/{args.model_type}_{int(args.n_epochs)}_{args.learning_rate}.pt"
         config, _, model = MODEL_DICT[args.model_type] if task == 'idsf' else QA_DICT[args.model_type]
         config = config.from_pretrained(args.pretrained_model)
         if task == 'idsf':
