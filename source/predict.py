@@ -247,9 +247,9 @@ def predict_QA(args):
         
     
             inputs = {
-                "input_ids": input[0],
-                "attention_mask": input[1],
-                "token_type_ids": input[2],
+                "input_ids": input.input_ids,
+                "attention_mask": input.attention_mask,
+                "token_type_ids": input.token_type_ids,
             }
             #inputs for calculating validation loss
             outputs = model(**inputs)
