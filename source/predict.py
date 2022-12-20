@@ -222,9 +222,8 @@ def predict_IDSF(args):
 
 def predict_QA(args):
     with torch.no_grad():
-        model = load_model(args)
-        model = model.to(args.device)
-        model.eval()
+        #model
+        model = load_model(args, args.device``)
 
 
         tokenizer = load_tokenizer(args)
