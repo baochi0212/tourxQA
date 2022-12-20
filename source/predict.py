@@ -254,6 +254,7 @@ def predict_QA(args):
             #inputs for calculating validation loss
             outputs = model(**inputs)
             start, end = outputs
+            print("PREDICTION", start, end)
             pred = tokenizer.decode(inputs["input_ids"][start:end+1])
             with open(args.output_file, 'a') as f:
                 f.write(pred + '\n')
