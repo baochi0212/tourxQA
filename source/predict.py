@@ -55,7 +55,10 @@ def read_input_file(args):
         for line in f:
             line = line.strip()
             words = line.split()
-            lines.append(words)
+            if args.module_role == 'IDSF':
+                lines.append(words)
+            else:
+                lines.append(line)
 
     return lines
 
