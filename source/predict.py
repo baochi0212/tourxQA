@@ -242,6 +242,7 @@ def predict_QA(args):
                 return_offsets_mapping=True,
                 padding="max_length",
                 return_token_type_ids=True,)[0]
+            print(input)
 
         
     
