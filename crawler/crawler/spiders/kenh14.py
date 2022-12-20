@@ -4,8 +4,12 @@ from crawler.items import ChatbotItem
 from crawler.utils import parse_json, parse_csv
 import os
 import pandas as pd
+import argparse
+parser = argparse.ArgumentParser()
+working_dir = os.environ['dir']
+database_dir = f"{working_dir}/deploy/database"
 
-test_path = os.environ['test_path']
+
 
 lua_script = """
         function main(splash)
@@ -38,24 +42,17 @@ lua_script = """
 class TestSpider(scrapy.Spider):
     name = 'test'
     def start_requests(self):
-
-        url  = 'https://kenh14.vn/sport.chn/js'
-        yield SplashRequest(
-            url, 
-            callback=self.parse, 
-            endpoint='execute', 
-            args={'wait': 2, 'lua_source': lua_script}
-            )
+        urls = [url.strip() for url in open(f"{database_dir}/test/urls.txt", 'r').readlines()]
+        for url in urls:
+            yield SplashRequest(
+                url, 
+                callback=self.parse_article, 
+                args={'wait': 2, 'lua_source': lua_script}
+                )
     def parse_article(self, response):
-        meta = response.meta['splash']['args']['meta']
         content = ' '.join([i if ('class' and '/r' and 'id' not in i) else '' for i in response.css("p").getall()][:-2])
-        
-        # item = ChatbotItem(meta=meta)
-        # item.setValue()
         item = ChatbotItem()
-        item['title'] = ' '.join([i for i in meta['title_raw'].split('-')][:-1])
         item['content'] = content
-        item['title_raw'] = meta['title_raw']
         yield item
         
     def parse(self, response):

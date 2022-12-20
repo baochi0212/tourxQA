@@ -30,13 +30,9 @@ class CustomItem(scrapy.Item):
         self._values[key] = value
 
 class ChatbotItem(scrapy.Item):
-    title = scrapy.Field()
     content = scrapy.Field()
-    meta = scrapy.Field()
-    title_raw = scrapy.Field()
     def preprocess(self):
         self['content'] = self['content'].lower()
-        del self['meta']
 
 if __name__ == "__main__":
     item = ChatbotItem(meta = {'title': 3, 'content': 4}, content='HOA')

@@ -26,6 +26,7 @@ class QARoberta(nn.Module):
             return loss.mean()
         self.bert_model = AutoModel.from_pretrained(args.pretrained_model)
         if args.freeze:
+            print("Not retrained the model")
             for param in self.bert_model.parameters():
                 param.requires_grad_(False)
         self.pretrained = args.pretrained
