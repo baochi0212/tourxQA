@@ -23,14 +23,19 @@ def get_args(pred_config):
 
 def load_model(args, device):
     # Check whether model exists
-    if not os.path.exists(args.idsf_model_dir):
+    path = args.idsf_model_dir if args.module_role == "IDSF" else args.qa_model_dir
+    task = 'idsf' if args.model_type == "IDSF" else 'qa'
+    if not os.path.exists(path):
         raise Exception("Model doesn't exists! Train first!")
 
     try:
-        load_dir = args.idsf_model_dir + f"/{args.model_type}_{int(args.n_epochs)}_{args.learning_rate}.pt"
-        config, _, model = MODEL_DICT[args.model_type]
+        load_dir = locals()[f"args.{task}_model_dir"] + f"/{args.model_type}_{int(args.n_epochs)}_{args.learning_rate}.pt"
+        config, _, model = MODEL_DICT[args.model_type] if task == 'idsf' else QA_DICT[args.model_type]
         config = config.from_pretrained(args.pretrained_model)
-        model = model(config, args=args, intent_label_lst=get_intent_labels(args), slot_label_lst=get_slot_labels(args))
+        if task == 'idsf':
+            model = model(config, args=args, intent_label_lst=get_intent_labels(args), slot_label_lst=get_slot_labels(args))
+        else:
+            model = model(config, args=args)
         model.load_state_dict(
 
             torch.load(load_dir)
@@ -131,7 +136,7 @@ def convert_input_file_to_tensor_dataset(
     return dataset
 
 
-def predict(args):
+def predict_IDSF(args):
     # load model and args
     device = args.device
     model = load_model(args, device)
@@ -215,12 +220,49 @@ def predict(args):
 
     logger.info("Prediction Done!")
 
+def predict_QA(args):
+    with torch.no_grad():
+        model = load_model(args)
+        model = model.to(args.device)
+        model.eval()
+
+
+        tokenizer = load_tokenizer(args)
+        #lines format: <Q @@ C>  
+        lines = read_input_file(args)
+        inputs = []
+        
+        for line in lines:
+            q, c = line.split("@@")
+            input = tokenizer(q.strip(), c.strip(), return_tensors='pt',
+                max_length=args.qa_max_length,
+                truncation="only_second",
+                return_offsets_mapping=True,
+                padding="max_length",
+                return_token_type_ids=True,)
+
+        
+    
+            inputs = {
+                "input_ids": input[0],
+                "attention_mask": input[1],
+                "token_type_ids": input[2],
+            }
+            #inputs for calculating validation loss
+            outputs = model(**inputs)
+            start, end = outputs
+            pred = tokenizer.decode(inputs["input_ids"][start:end+1])
+            with open(args.output_file, 'a') as f:
+                f.write(pred + '\n')
+
+        logger.info("Prediction done")
+
 
 if __name__ == "__main__":
     if args.module_role == 'IDSF':
         if args.predict_task == "test example":
             init_logger()
-            predict(args)
+            predict_IDSF(args)
         if args.predict_task == "test dataset":
             module = IDSFModule(args)
             tokenizer = load_tokenizer(args)
@@ -228,6 +270,9 @@ if __name__ == "__main__":
             trainer = Trainer_IDSF(args, module)
             trainer.predict(test_dataset)
     else:
-        pass
+        init_logger()
+        predict_QA(args)
+        
+        
 
 

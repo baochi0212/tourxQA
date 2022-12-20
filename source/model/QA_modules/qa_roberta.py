@@ -39,7 +39,9 @@ class QARoberta(nn.Module):
         logits = self.relu(self.linear(outputs))
         start_logits, end_logits = logits[:, :, 0], logits[:, :, 1]
         if start is not None:
+            #return loss and logits for training and evaluation
             loss = self.loss_fn(start_logits, start) + self.loss_fn(end_logits, end)  
             return loss, (start_logits, end_logits)
         else:
-            return (start_logits, end_logits)
+            #return the index for prediction
+            return torch.argmax(start_logits, -1), torch.argmax(end_logits, -1)
