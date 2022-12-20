@@ -232,7 +232,6 @@ def predict_QA(args):
         tokenizer = load_tokenizer(args)
         #lines format: <Q @@ C>  
         lines = read_input_file(args)
-        inputs = []
         
         for line in lines:
             q, c = line.split("@@")
