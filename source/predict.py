@@ -254,6 +254,7 @@ def predict_QA(args):
             outputs = model(**inputs)
             start, end = outputs
             print("PREDICTION", start, end)
+            print("????", inputs["input_ids"])
             print("FULL", tokenizer.decode(inputs["input_ids"]))
             pred = ' '.join(tokenizer.decode(inputs["input_ids"][start:end+1]))
             print("PRED", pred)
