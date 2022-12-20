@@ -241,7 +241,7 @@ def predict_QA(args):
                 truncation="only_second",
                 return_offsets_mapping=True,
                 padding="max_length",
-                return_token_type_ids=True,)[0]
+                return_token_type_ids=True,)
             print(input)
 
         
