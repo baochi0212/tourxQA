@@ -242,7 +242,6 @@ def predict_QA(args):
                 return_offsets_mapping=True,
                 padding="max_length",
                 return_token_type_ids=True,)
-            print(input)
 
         
     
@@ -251,6 +250,7 @@ def predict_QA(args):
                 "attention_mask": input.attention_mask,
                 "token_type_ids": input.token_type_ids,
             }
+            inputs = dict([(key, value.to(args.device)) for key, value in inputs.items()])
             #inputs for calculating validation loss
             outputs = model(**inputs)
             start, end = outputs
