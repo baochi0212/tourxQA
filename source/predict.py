@@ -266,8 +266,8 @@ def predict_QA(args):
                 with open(args.output_file, 'a') as f:
                     f.write(pred + '\n')
             else:
-                #return prediction
-                return pred
+                with open(args.text_question_log_dir, 'w') as f:
+                    f.write("<{}> -> {}\n".format(intent_label_lst[intent_pred], line.strip()))
         logger.info("Prediction done")
 
 
@@ -276,7 +276,7 @@ if __name__ == "__main__":
     we can both test and test dataset/ sample_input file .txt/ directly input to console !!!
     '''
     if args.text_question:
-        print(predict_IDSF(args))
+        predict_IDSF(args)
         # predict_QA(args)
     elif args.module_role == 'IDSF':
         if args.predict_task == "test example":

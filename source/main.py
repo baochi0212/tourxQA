@@ -3,6 +3,7 @@ import os
 import sys
 
 working_dir = os.environ['source']
+data_dir = os.environ['dir']
 idsf_data_dir = os.environ['dir'] + '/data/processed/IDSF' 
 qa_data_dir = os.environ['dir'] + '/data/processed/QA'
 
@@ -10,7 +11,7 @@ qa_data_dir = os.environ['dir'] + '/data/processed/QA'
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--text_question', type=str, default=None)
-parser.add_argument('--text_question_log_dir', type=str, default=f'{working_dir}/deploy/api/log.txt')
+parser.add_argument('--text_question_log_dir', type=str, default=f'{data_dir}/deploy/api/log.txt')
 parser.add_argument('--module_role', default='QA')
 parser.add_argument('--from_pretrained_weights', default=None, type=str)
 parser.add_argument('--qa_max_length', default=386, type=int)
