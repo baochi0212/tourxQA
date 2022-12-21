@@ -274,7 +274,10 @@ if __name__ == "__main__":
     '''
     we can both test and test dataset/ sample_input file .txt/ directly input to console !!!
     '''
-    if args.module_role == 'IDSF':
+    if args.text_question:
+        predict_IDSF(args)
+        # predict_QA(args)
+    elif args.module_role == 'IDSF':
         if args.predict_task == "test example":
             init_logger()
             predict_IDSF(args)
@@ -284,9 +287,7 @@ if __name__ == "__main__":
             test_dataset = load_and_cache_examples(args, tokenizer, mode="test")
             trainer = Trainer_IDSF(args, module)
             trainer.predict(test_dataset)
-    elif args.text_question:
-        predict_IDSF(args)
-        # predict_QA(args)
+  
     else:
         init_logger()
         predict_QA(args)
