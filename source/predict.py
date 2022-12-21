@@ -285,11 +285,12 @@ if __name__ == "__main__":
             trainer = Trainer_IDSF(args, module)
             trainer.predict(test_dataset)
     elif args.text_question:
+        predict_IDSF(args)
+        # predict_QA(args)
+    else:
         init_logger()
         predict_QA(args)
-    else:
-        predict_IDSF(args)
-        predict_QA(args)
+    
         
         
 
