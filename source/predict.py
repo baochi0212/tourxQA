@@ -24,7 +24,7 @@ def get_args(pred_config):
 def load_model(args, device):
     # Check whether model exists
     path = args.idsf_model_dir if args.module_role == "IDSF" else args.qa_model_dir
-    task = 'idsf' if args.model_type == "IDSF" else 'qa'
+    task = 'idsf' if args.module_role == "IDSF" else 'qa'
     if not os.path.exists(path):
         raise Exception("Model doesn't exists! Train first!")
 
