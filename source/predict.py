@@ -223,7 +223,8 @@ def predict_IDSF(args):
                 f.write("<{}> -> {}\n".format(intent_label_lst[intent_pred], line.strip()))
             else: 
                 #return the label and slot filling for question
-                return intent_label_lst[intent_pred], line.strip()
+                with open(args.text_question_log_dir, 'w') as f:
+                    f.write("<{}> -> {}\n".format(intent_label_lst[intent_pred], line.strip()))
 
     logger.info("Prediction Done!")
 
