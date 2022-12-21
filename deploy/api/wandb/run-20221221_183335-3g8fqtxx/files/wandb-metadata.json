@@ -1,0 +1,23 @@
+{
+    "os": "Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.31",
+    "python": "3.9.12",
+    "heartbeatAt": "2022-12-21T11:33:38.278696",
+    "startedAt": "2022-12-21T11:33:35.970314",
+    "docker": null,
+    "gpu": "NVIDIA GeForce GTX 1050",
+    "gpu_count": 1,
+    "cpu_count": 8,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "<python with no main file>",
+    "git": {
+        "remote": "https://github.com/baochi0212/deep-learning-tourxQA",
+        "commit": "76816b01e7ee1a01487dd699aabd3ab506659636"
+    },
+    "email": "chideptraika29@gmail.com",
+    "root": "/home/xps/educate/code/hust/XQA",
+    "host": "DESKTOP-L55QTJ7",
+    "username": "xps",
+    "executable": "/home/xps/anaconda3/envs/deeplearning/bin/python"
+}

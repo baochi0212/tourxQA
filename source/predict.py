@@ -151,7 +151,7 @@ def predict_IDSF(args):
     # Convert input file to TensorDataset
     pad_token_label_id = args.ignore_index
     tokenizer = load_tokenizer(args)
-    lines = read_input_file(args)
+    lines = read_input_file(args) if not args.text_question else [args.text_question]
     dataset = convert_input_file_to_tensor_dataset(lines, args, tokenizer, pad_token_label_id)
 
     # Predict
@@ -219,7 +219,11 @@ def predict_IDSF(args):
                     line = line + word + " "
                 else:
                     line = line + "[{}:{}] ".format(word, pred)
-            f.write("<{}> -> {}\n".format(intent_label_lst[intent_pred], line.strip()))
+            if not args.text_question:
+                f.write("<{}> -> {}\n".format(intent_label_lst[intent_pred], line.strip()))
+            else: 
+                #return the label and slot filling for question
+                return intent_label_lst[intent_pred], line.strip()
 
     logger.info("Prediction Done!")
 
@@ -231,7 +235,7 @@ def predict_QA(args):
 
         tokenizer = load_tokenizer(args)
         #lines format: <Q @@ C>  
-        lines = read_input_file(args)
+        lines = read_input_file(args) if not args.text_question else [args.text_question]
         
         for line in lines:
             q, c = line.split("@@")
@@ -257,14 +261,19 @@ def predict_QA(args):
             # print("????", inputs["input_ids"][0])
             # print("FULL", tokenizer.decode(inputs["input_ids"]))
             pred = ' '.join(tokenizer.decode(inputs["input_ids"][0]).split()[start:end+1])
-            print("PRED", pred)
-            with open(args.output_file, 'a') as f:
-                f.write(pred + '\n')
-
+            if not args.text_question:
+                with open(args.output_file, 'a') as f:
+                    f.write(pred + '\n')
+            else:
+                #return prediction
+                return pred
         logger.info("Prediction done")
 
 
 if __name__ == "__main__":
+    '''
+    we can both test and test dataset/ sample_input file .txt/ directly input to console !!!
+    '''
     if args.module_role == 'IDSF':
         if args.predict_task == "test example":
             init_logger()
@@ -275,8 +284,11 @@ if __name__ == "__main__":
             test_dataset = load_and_cache_examples(args, tokenizer, mode="test")
             trainer = Trainer_IDSF(args, module)
             trainer.predict(test_dataset)
-    else:
+    elif args.text_question:
         init_logger()
+        predict_QA(args)
+    else:
+        predict_IDSF(args)
         predict_QA(args)
         
         

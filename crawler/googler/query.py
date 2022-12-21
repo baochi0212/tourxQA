@@ -66,9 +66,4 @@ class Crawl:
 
 
 if __name__ == "__main__":
-    Crawl("kenh14").query(num_results=3)
-    # print(len(glob(f"{database_dir}/test/*")))
-    #retriever 
-    # candidate_documents = retriever.retrieve(
-    #     query="Da Nang",
-    #     top_k=3
+    Crawl("kenh14").query(q="mon an ngon Da Nang", num_results=3)
