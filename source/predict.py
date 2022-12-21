@@ -196,7 +196,8 @@ def predict_IDSF(args):
                 else:
                     slot_preds = np.append(slot_preds, slot_logits.detach().cpu().numpy(), axis=0)
                 all_slot_label_mask = np.append(all_slot_label_mask, batch[3].detach().cpu().numpy(), axis=0)
-
+    #confusion
+    prob = np.max(intent_preds, axis=1)
     intent_preds = np.argmax(intent_preds, axis=1)
 
     if not args.use_crf:
@@ -224,7 +225,7 @@ def predict_IDSF(args):
             else: 
                 #return the label and slot filling for question
                 with open(args.text_question_log_dir, 'w') as f:
-                    f.write("prob <{}> -> <{}> -> {}\n".format(np.max(intent_preds), intent_label_lst[intent_pred], line.strip()))
+                    f.write("prob <{}> -> <{}> -> {}\n".format(prob, intent_label_lst[intent_pred], line.strip()))
 
     logger.info("Prediction Done!")
 
