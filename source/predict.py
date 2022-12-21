@@ -173,6 +173,7 @@ def predict_IDSF(args):
             }
             if args.model_type != "distilbert":
                 inputs["token_type_ids"] = batch[2]
+            print("INPUT", inputs['input_ids'].shape)
             outputs = model(**inputs)
             _, (intent_logits, slot_logits) = outputs[:2]
 
