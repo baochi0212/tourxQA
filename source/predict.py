@@ -198,7 +198,7 @@ def predict_IDSF(args):
                     slot_preds = np.append(slot_preds, slot_logits.detach().cpu().numpy(), axis=0)
                 all_slot_label_mask = np.append(all_slot_label_mask, batch[3].detach().cpu().numpy(), axis=0)
     #confusion
-    prob = torch.max(nn.functional.softmax(intent_logits, -1), axis=1).item()
+    prob = torch.max(nn.functional.softmax(intent_logits, -1), axis=1)
     intent_preds = np.argmax(intent_preds, axis=1)
 
     if not args.use_crf:
