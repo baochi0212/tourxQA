@@ -8,6 +8,9 @@ from models import Student, QuestionAnswer
 
 working_dir = os.environ['dirs']
 database_dir = f"{working_dir}/data/database"
+source_dir = f"{working_dir}/source"
+log_dir = './log.txt'
+automation_dir = f"{working_dir}/crawler/automatic_post"
 
 
 # router = APIRouter()
@@ -40,7 +43,12 @@ def get_intent(request: Request, input: QuestionAnswer = Body(...)):
     
     question = input['question']
     #IDSF module
+    os.system(f'python {source_dir}/predict.py --text_question {question}')
+    with open(log_dir, 'r') as f:
+        intent, slots = f.readlines()
     #if good intent and slots -> automation
+    if intent == 'flight':
+        os.system(f'python {automation_dir}/web_service.py') #parse the arguments
     #else -> QA module
 
     
