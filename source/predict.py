@@ -5,6 +5,7 @@ import os
 
 import numpy as np
 import torch
+import torch.nn as nn
 from torch.utils.data import DataLoader, SequentialSampler, TensorDataset
 from tqdm import tqdm
 from utils import MODEL_DICT, get_intent_labels, get_slot_labels, init_logger, load_tokenizer
@@ -197,7 +198,7 @@ def predict_IDSF(args):
                     slot_preds = np.append(slot_preds, slot_logits.detach().cpu().numpy(), axis=0)
                 all_slot_label_mask = np.append(all_slot_label_mask, batch[3].detach().cpu().numpy(), axis=0)
     #confusion
-    prob = np.max(intent_preds, axis=1)
+    prob = torch.max(nn.functional.softmax(intent_logits, -1), axis=1).item()
     intent_preds = np.argmax(intent_preds, axis=1)
 
     if not args.use_crf:
