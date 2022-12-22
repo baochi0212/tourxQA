@@ -234,7 +234,8 @@ def predict_IDSF(args):
                 with open(args.text_question_log_dir, 'w') as f:
                     f.write("intent prob <{}> -> slot prob <{}> -> <{}> -> {}\n".format(intent_prob, slot_prob, intent_label_lst[intent_pred], line.strip()))
                     for word, pred in zip(words, slot_preds):
-                        f.write(f"{pred} : {word}" + '\n') if pred != 'O' else pass
+                        if pred != 'O':
+                            f.write(f"{pred} : {word}" + '\n')
 
     logger.info("Prediction Done!")
 
