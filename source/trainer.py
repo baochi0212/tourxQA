@@ -16,7 +16,7 @@ from modules.QA import QAModule
 from utils import *
 from main import args
 
-from data_loader import load_and_cache_examples, QADataset
+from data_loader import *
 logger = logging.getLogger(__name__)
 
 class Trainer_IDSF:

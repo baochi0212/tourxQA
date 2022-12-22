@@ -1,5 +1,8 @@
-intent prob <0.89312514066696167> -> slot prob <0.3658316433429718> -> <airfare> -> Cho tớ tìm vé đi từ [Huế:B-fromloc.city_name] đến [Đà_Nẵng:B-toloc.city_name] [hạng:B-class_type] [thương_gia:I-class_type]
-B-fromloc.city_name : Huế
-B-toloc.city_name : Đà_Nẵng
+intent prob <0.89312514066696167> -> slot prob <0.3658316433429718> -> <flight> -> Cho tớ tìm vé đi từ [Huế:B-fromloc.city_name] đến [Đà_Nẵng:B-toloc.city_name] [hạng:B-class_type] [thương_gia:I-class_type]
+B-fromloc.city_name : Hai_Phong
+B-toloc.city_name : Vinh
 B-class_type : hạng
 I-class_type : thương_gia
+B-num_person: 20
+I-num_person: người_lớn
+

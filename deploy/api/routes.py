@@ -1,8 +1,11 @@
 import os
 
 from fastapi import APIRouter, Body, Request, Response, HTTPException, status
-from fastapi.encoders import jsonable_encoder
+from fastapi.responses import FileResponse
 from typing import List
+from glob import glob
+from PIL import Image
+
 
 from models import Student, QuestionAnswer
 
@@ -24,8 +27,8 @@ def reset_dict(sys_dict):
     for key in sys_dict.keys():
         reset_value(key, sys_dict)
         if type(sys_dict[key]) == dict:
-            for key in sys_dict[key].keys():
-                reset_value(key, sys_dict[key])
+            for k in sys_dict[key].keys():
+                reset_value(k, sys_dict[key])
 
     return sys_dict
 
@@ -34,17 +37,28 @@ def status_dict(sys_dict):
     check the status of the system dict
     '''
     lack_items = []
+    status = True
     for key, value in sys_dict.items():
         if type(value) == dict:
-            for k, value in sys_dict.items():
-                if value in ['', 0]:
-                    lack_items.append(key)
+            all_blank = True
+            for k, value in sys_dict[key].items():
+                if value != '':
+                    all_blank = False
+
+            if all_blank:
+                lack_items.extend(list(sys_dict[key].keys()))
+                status = False
+            else:
+                for k, value in sys_dict[key].items():
+                    if value == '':
+                        sys_dict[key][k] = 0
                     
 
-        elif value in ['', 0]:
+        elif value in ['']:
             lack_items.append(key)
+            status = False
 
-    return lack_items
+    return lack_items, sys_dict, status
 
     
 
@@ -71,26 +85,28 @@ def status_dict(sys_dict):
 #     return list(request.app.database["testcollection"].find({"_id": "20200083"}))
 #tourxQA
 qa_router = APIRouter( )
-flight_dict = {'from_city': '', 'to_city': '', 'num_class': '', 'pass_dict': {'adult': 0, 'child': 0, 'infant': 0 }, 'num_person': ''}
-web_service = False
 
-@qa_router.post("/", response_description="Get Answer", response_model=None)
+
+
+@qa_router.post("/", response_description="Get Answer")
 def get_response(request: Request, input: QuestionAnswer = Body(...)):
     '''
     given question, run the modules and save results in log file for using
     '''
-    
-    question = input['question']
+    flight_dict = {'from_city': '', 'to_city': '', 'num_class': '', 'pass_dict': {'adult': '', 'child': '', 'infant': ''}, 'num_person': ''}
+    # question = input['question']
     #IDSF module
-    os.system(f'python {source_dir}/predict.py --text_question {question}')
+    # os.system(f'python {source_dir}/predict.py --text_question {question}')
     with open(log_dir, 'r') as f:
-        output = f.readlines()[0] #result
+        output = f.readlines() #result
         #if intent prob is reliable:
-        intent_prob = float(output.split('->')[0].split('<')[1].split('>')[0])
-        slots = [line.split(':') for line in f.readlines()[1:]]
-        slot_dict = dict([(key, value) for key, value in slots])
+        intent_prob = float(output[0].split('->')[0].split('<')[1].split('>')[0])
+        slots = [tuple(line.strip().split(':')) for line in output[1:] if len(line.strip()) > 0]
+        print("SLOTS: ", slots)
+        # print([line for line in output[1:]])
+        slot_dict = dict([item for item in slots])
         if intent_prob > 0.5:
-            intent = output.split('->')[2].strip()
+            intent = output[0].split('->')[2].strip()
 
             
         #flight case:
@@ -100,8 +116,10 @@ def get_response(request: Request, input: QuestionAnswer = Body(...)):
             #parse the slots
             for key, value in slot_dict.items():
                 if 'fromloc.city_name' in key:
+                    value = ' '.join([i for i in value.split('_')])
                     flight_dict['from_city'] += f' {value}'
                 elif 'toloc.city_name' in key:
+                    value = ' '.join([i for i in value.split('_')])
                     flight_dict['to_city'] += f' {value}'
                 elif 'class_type' in key:
                     flight_dict['num_class'] += f' {value}'
@@ -114,10 +132,10 @@ def get_response(request: Request, input: QuestionAnswer = Body(...)):
 
             
         
-        elif 'class_type' in list(slot_dict.keys())[0]:
+        elif 'class_type' in list(slot_dict.keys()):
             flight_dict['num_class'] += f' {value}'
 
-        elif 'num_person' in list(slot_dict.keys())[0]:
+        elif 'num_person' in list(slot_dict.keys()):
             # passenger:
             flight_dict['num_person'] += f' {value}'
         #parse string values to numbers
@@ -134,11 +152,13 @@ def get_response(request: Request, input: QuestionAnswer = Body(...)):
 
 
         #Haven't own 'nuff information
-        lack_items = status_dict(flight_dict)
+        lack_items, flight_dict, web_service = status_dict(flight_dict)
         if len(lack_items) == 0:
             pass
         else:
             web_service = True
+
+       
 
         
                     
@@ -148,7 +168,21 @@ def get_response(request: Request, input: QuestionAnswer = Body(...)):
 
     #if good intent and slots -> automation
     if web_service == True:
-        os.system(f'python {automation_dir}/web_service.py') #parse the arguments
+        #demo the ticket query
+        flight_dict.pop('num_person'    )
+        queries = [f'--{key} "{value}"' for key, value in flight_dict.items() if type(value) != dict]
+        queries.extend([f'--{key} {value}' for key, value in flight_dict['pass_dict'].items()])
+        web_query = ' '.join(queries)
+        # return web_query
+        # return queries
+        os.system(f'python {automation_dir}/web_service.py ' + web_query) #parse the arguments
+        page_img= Image.open(f"{automation_dir}/traveloka.png")
+        request_img = Image.open(f"{automation_dir}/request.png")
+        result_images = []
+        for file in glob(f"{automation_dir}/results/*"):
+            result_images.append(Image.open(file))
+        
+        return page_img, request_img
 
 
     #else -> QA module
