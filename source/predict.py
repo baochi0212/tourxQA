@@ -216,6 +216,7 @@ def predict_IDSF(args):
     with open(args.output_file, "w", encoding="utf-8") as f:
         for words, slot_preds, intent_pred in zip(lines, slot_preds_list, intent_preds):
             line = ""
+            print("word", words)
             for word, pred in zip(words, slot_preds):
                 if pred == "O":
                     line = line + word + " "
