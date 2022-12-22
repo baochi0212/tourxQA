@@ -358,6 +358,7 @@ if __name__ == "__main__":
         module = IDSFModule(args)
     
         train_dataset = load_and_cache_examples(args, tokenizer, mode="train")
+        print("Dataset", len(train_dataset))
         val_dataset = load_and_cache_examples(args, tokenizer, mode="dev")
         module = IDSFModule(args)
         trainer = Trainer_IDSF(args, module)

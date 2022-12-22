@@ -52,23 +52,23 @@ def status_dict(sys_dict):
             
 
 
-router = APIRouter()
-@router.post("/", response_description="Add new student", status_code=status.HTTP_201_CREATED, response_model=Student)
-def post_item(request: Request, student: Student = Body(...)):
-    student = jsonable_encoder(student)
-    new_student = request.app.database['testcollection'].insert_one(student)
-    created_student = request.app.database["testcollection"].find_one(
-        {"_id": new_student.inserted_id}
-    )
+# router = APIRouter()
+# @router.post("/", response_description="Add new student", status_code=status.HTTP_201_CREATED, response_model=Student)
+# def post_item(request: Request, student: Student = Body(...)):
+#     student = jsonable_encoder(student)
+#     new_student = request.app.database['testcollection'].insert_one(student)
+#     created_student = request.app.database["testcollection"].find_one(
+#         {"_id": new_student.inserted_id}
+#     )
     
 
-    return created_student
+#     return created_student
 
-@router.get("/", response_description="List all students", response_model=List[Student])
-def list_books(request: Request):
-    # books = list(request.app.database["testcollection"].find(limit=100))
-    # return books
-    return list(request.app.database["testcollection"].find({"_id": "20200083"}))
+# @router.get("/", response_description="List all students", response_model=List[Student])
+# def list_books(request: Request):
+#     # books = list(request.app.database["testcollection"].find(limit=100))
+#     # return books
+#     return list(request.app.database["testcollection"].find({"_id": "20200083"}))
 #tourxQA
 qa_router = APIRouter( )
 flight_dict = {'from_city': '', 'to_city': '', 'num_class': '', 'pass_dict': {'adult': 0, 'child': 0, 'infant': 0 }, 'num_person': ''}
