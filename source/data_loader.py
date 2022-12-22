@@ -280,7 +280,6 @@ def load_and_cache_examples(args, tokenizer, mode):
     if os.path.exists(cached_features_file):
         logger.info("Loading features from cached file %s", cached_features_file)
         features = torch.load(cached_features_file)
-        print(cached_features_file)
     else:
         # Load data features from dataset file
         print("CREATE NEW")
@@ -312,8 +311,8 @@ def load_and_cache_examples(args, tokenizer, mode):
                         
     return dataset
 
-if __name__ == '__main__':
-    tokenizer = AutoTokenizer.from_pretrained('vinai/phobert-base')
-    print(load_and_cache_examples(args, tokenizer, 'train`'))
+# if __name__ == '__main__':
+#     tokenizer = AutoTokenizer.from_pretrained('vinai/phobert-base')
+#     print(load_and_cache_examples(args, tokenizer, 'train`'))
 
     

@@ -130,6 +130,7 @@ def get_response(request: Request, input: QuestionAnswer = Body(...)):
         elif 'hạng_nhì' in flight_dict['num_class']:
             flight_dict['num_class'] = 0
         #num_person:
+        #"x nguoi lon y tre em z so sinh"
 
         
                     
