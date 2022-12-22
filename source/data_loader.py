@@ -7,10 +7,9 @@ import pandas as pd
 import torch
 from torch.utils.data import TensorDataset
 from torch.utils import data
-
-
 from utils import get_intent_labels, get_slot_labels, get_label, string2list
-
+from main import args
+from transformers import AutoTokenizer
 logger = logging.getLogger(__name__)
 
 class QADataset(data.Dataset):
@@ -163,7 +162,7 @@ class JointProcessor(object):
         """
         #idsf_data_dir and corresponding level (word-level for example)
         data_path = os.path.join(self.args.idsf_data_dir, mode)
-        print("CCCCCCCCCCCCCCCCCCCCCCCC", len(open(os.path.join(data_path, self.input_text_file), 'r').readlines()))
+        print(len(open(os.path.join(data_path, self.input_text_file), 'r').readlines()))
         logger.info("LOOKING AT {}".format(data_path))
         return self._create_examples(texts=self._read_file(os.path.join(data_path, self.input_text_file)),
                                      intents=self._read_file(os.path.join(data_path, self.intent_label_file)),
@@ -281,8 +280,10 @@ def load_and_cache_examples(args, tokenizer, mode):
     if os.path.exists(cached_features_file):
         logger.info("Loading features from cached file %s", cached_features_file)
         features = torch.load(cached_features_file)
+        print("EXISTED")
     else:
         # Load data features from dataset file
+        print("CREATE NEW")
         logger.info("Creating features from dataset file at %s", args.idsf_data_dir)
         if mode == "train":
             examples = processor.get_examples("train")
@@ -310,3 +311,9 @@ def load_and_cache_examples(args, tokenizer, mode):
                             all_token_type_ids, all_intent_label_ids, all_slot_labels_ids)
                         
     return dataset
+
+if __name__ == '__main__':
+    tokenizer = AutoTokenizer.from_pretrained('vinai/phobert-base')
+    print(load_and_cache_examples(args, tokenizer, 'train`'))
+
+    
