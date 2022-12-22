@@ -163,6 +163,7 @@ class JointProcessor(object):
         """
         #idsf_data_dir and corresponding level (word-level for example)
         data_path = os.path.join(self.args.idsf_data_dir, mode)
+        print("CCCCCCCCCCCCCCCCCCCCCCCC", len(open(os.path.join(data_path, self.input_text_file), 'r').readlines()))
         logger.info("LOOKING AT {}".format(data_path))
         return self._create_examples(texts=self._read_file(os.path.join(data_path, self.input_text_file)),
                                      intents=self._read_file(os.path.join(data_path, self.intent_label_file)),
@@ -307,4 +308,5 @@ def load_and_cache_examples(args, tokenizer, mode):
 
     dataset = TensorDataset(all_input_ids, all_attention_mask,
                             all_token_type_ids, all_intent_label_ids, all_slot_labels_ids)
+                        
     return dataset
