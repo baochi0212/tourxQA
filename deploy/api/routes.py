@@ -45,7 +45,13 @@ def get_intent(request: Request, input: QuestionAnswer = Body(...)):
     #IDSF module
     os.system(f'python {source_dir}/predict.py --text_question {question}')
     with open(log_dir, 'r') as f:
-        intent, slots = f.readlines()
+        output = f.readlines()
+        #if intent prob is reliable:
+        intent_prob = float(output.split('->')[0].split('<')[1].split('>')[0])
+        if intent_prob > 0.7:
+            intent = output.split('->')[2].strip()
+            #flight case:
+            if intent == '<flight>':
     #if good intent and slots -> automation
     if intent == 'flight':
         os.system(f'python {automation_dir}/web_service.py') #parse the arguments
