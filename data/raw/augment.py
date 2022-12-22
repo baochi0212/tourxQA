@@ -23,7 +23,7 @@ def get_rand(value_list):
     return value_list[i]
 
 
-def add_new_data(intents=['airfare', 'flight'], num_samples=100):
+def add_new_data(intents=['airfare', 'flight'], num_samples=200):
     #add new terms to filtering sentences
     def condition(i):
 
@@ -43,6 +43,7 @@ def add_new_data(intents=['airfare', 'flight'], num_samples=100):
         path_in = f"/{data_dir}/{mode}/seq.in"
         path_out = f"{data_dir}/{mode}/seq.out"
         path_label = f"{data_dir}/{mode}/label"
+        f_label = open(path_label, 'a')
         ins = [line.strip().split() for line in open(path_in, 'r').readlines()]
         outs = [line.strip().split() for line in open(path_out, 'r').readlines()]
         labels = [line.strip().split()[0] for line in open(path_label, 'r').readlines()]
@@ -58,11 +59,13 @@ def add_new_data(intents=['airfare', 'flight'], num_samples=100):
                             
                             f_in.write(' '.join(ins[i]) + ' ' + word + '\n')
                             f_out.write(' '.join(outs[i]) +  ' ' + out + '\n')
+                            f_label.write(labels[i] + '\n')
                             num_samples -= 1 
                         if outs[-1] == 'O' and outs[-2] != 'O':
                             word, out = generate()
                             f_in.write(' '.join(ins[i][:-1]) + ' ' + word + ' '  + ins[i][-1] + '\n')
                             f_out.write(' '.join(outs[i][:-1]) + ' ' + out + ' ' +  outs[i][-1] + '\n')
+                            f_label.write(labels[i] + '\n')
                             num_samples -= 1 
                 num_samples = 100
                         

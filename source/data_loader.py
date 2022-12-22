@@ -163,7 +163,7 @@ class JointProcessor(object):
         """
         #idsf_data_dir and corresponding level (word-level for example)
         data_path = os.path.join(self.args.idsf_data_dir, mode)
-        print("CCCCCCCCCCCCCCCCCCCCCCCC", len(open(os.path.join(data_path, self.input_text_file), 'r').readlines()))
+        print(len(open(os.path.join(data_path, self.input_text_file), 'r').readlines()))
         logger.info("LOOKING AT {}".format(data_path))
         return self._create_examples(texts=self._read_file(os.path.join(data_path, self.input_text_file)),
                                      intents=self._read_file(os.path.join(data_path, self.intent_label_file)),
