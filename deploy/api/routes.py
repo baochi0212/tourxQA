@@ -6,7 +6,7 @@ from typing import List
 
 from models import Student, QuestionAnswer
 
-working_dir = os.environ['dirs']
+working_dir = os.environ['dir']
 database_dir = f"{working_dir}/data/database"
 source_dir = f"{working_dir}/source"
 log_dir = './log.txt'
@@ -52,23 +52,23 @@ def status_dict(sys_dict):
             
 
 
-# router = APIRouter()
-# @router.post("/", response_description="Add new student", status_code=status.HTTP_201_CREATED, response_model=Student)
-# def post_item(request: Request, student: Student = Body(...)):
-#     student = jsonable_encoder(student)
-#     new_student = request.app.database['testcollection'].insert_one(student)
-#     created_student = request.app.database["testcollection"].find_one(
-#         {"_id": new_student.inserted_id}
-#     )
+router = APIRouter()
+@router.post("/", response_description="Add new student", status_code=status.HTTP_201_CREATED, response_model=Student)
+def post_item(request: Request, student: Student = Body(...)):
+    student = jsonable_encoder(student)
+    new_student = request.app.database['testcollection'].insert_one(student)
+    created_student = request.app.database["testcollection"].find_one(
+        {"_id": new_student.inserted_id}
+    )
     
 
-#     return created_student
+    return created_student
 
-# @router.get("/", response_description="List all students", response_model=List[Student])
-# def list_books(request: Request):
-#     # books = list(request.app.database["testcollection"].find(limit=100))
-#     # return books
-#     return list(request.app.database["testcollection"].find({"_id": "20200083"}))
+@router.get("/", response_description="List all students", response_model=List[Student])
+def list_books(request: Request):
+    # books = list(request.app.database["testcollection"].find(limit=100))
+    # return books
+    return list(request.app.database["testcollection"].find({"_id": "20200083"}))
 #tourxQA
 qa_router = APIRouter( )
 flight_dict = {'from_city': '', 'to_city': '', 'num_class': '', 'pass_dict': {'adult': 0, 'child': 0, 'infant': 0 }, 'num_person': ''}
@@ -130,6 +130,7 @@ def get_response(request: Request, input: QuestionAnswer = Body(...)):
         elif 'hạng_nhì' in flight_dict['num_class']:
             flight_dict['num_class'] = 0
         #num_person:
+
         
                     
 
