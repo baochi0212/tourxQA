@@ -12,6 +12,26 @@ source_dir = f"{working_dir}/source"
 log_dir = './log.txt'
 automation_dir = f"{working_dir}/crawler/automatic_post"
 
+def reset_dict(sys_dict):
+    '''
+    reset the system storage for the new request
+    '''
+    def reset_value(key, dict):
+        if type(dict[key]) == str:
+            dict[key] = ''
+        elif type(dict[key]) == int:
+            dict[key] = 0
+    for key in sys_dict.keys():
+        reset_value(key, sys_dict)
+        if type(sys_dict[key]) == dict:
+            for key in sys_dict[key].keys():
+                reset_value(key, sys_dict[key])
+
+    return sys_dict
+
+    
+            
+
 
 # router = APIRouter()
 # @router.post("/", response_description="Add new student", status_code=status.HTTP_201_CREATED, response_model=Student)
@@ -32,7 +52,7 @@ automation_dir = f"{working_dir}/crawler/automatic_post"
 #     return list(request.app.database["testcollection"].find({"_id": "20200083"}))
 #tourxQA
 qa_router = APIRouter( )
-
+flight_dict = {'from_city': '', 'to_city': '', 'num_class': '', 'pass_dict': {'adult': 0, 'child': 0, 'infant': 0 }}
 
 
 @qa_router.post("/", response_description="Get Intent and Slot", response_model=QuestionAnswer)
@@ -48,25 +68,43 @@ def get_intent(request: Request, input: QuestionAnswer = Body(...)):
         output = f.readlines()[0] #result
         #if intent prob is reliable:
         intent_prob = float(output.split('->')[0].split('<')[1].split('>')[0])
-        if intent_prob > 0.7:
+        slots = [line.split(':') for line in f.readlines()[1:]]
+        slot_dict = dict([(key, value) for key, value in slots])
+        if intent_prob > 0.5:
             intent = output.split('->')[2].strip()
-            slots = [line.split(':') for line in f.readlines()[1:]]
-            slot_dict = dict([(key, value) for key, value in slots])
+
             
             #flight case:
             if intent == '<flight>':
+                #reset the dict
+                flight_dict = reset_dict(flight_dict)
+
                 #parse the slots
-                parse_dict = {'from_city': '', 'to_city': '', 'num_class': 0, 'pass_dict': {'adult': 0, 'child': 0, 'infant': 0 }}
                 for key, value in slot_dict.items():
                     if 'fromloc.city_name' in key:
-                        parse_dict['from_city'] += f' {value}'
+                        flight_dict['from_city'] += f' {value}'
                     elif 'toloc.city_name' in key:
-                        parse_dict['to_city'] += f' {value}'
+                        flight_dict['to_city'] += f' {value}'
+                    elif 'class_type' in key:
+                        flight_dict['num_class'] += f' {value}'
+                if 'thương_gia' in flight_dict['num_class']:
+                    flight_dict['num_class'] = 2
+                elif 'hạng_nhất' in flight_dict['num_class']:
+                    flight_dict['num_class'] = 1
+                elif 'hạng_nhì' in flight_dict['num_class']:
+                    flight_dict['num_class'] = 0
+            elif 'num_person' in list(slot_dict.keys())[0]:
+                #passenger:
+                pass                  
+
                 
     #if good intent and slots -> automation
     if intent == 'flight':
         os.system(f'python {automation_dir}/web_service.py') #parse the arguments
+
+
     #else -> QA module
+    
 
     
 
