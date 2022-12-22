@@ -152,7 +152,7 @@ def predict_IDSF(args):
     # Convert input file to TensorDataset
     pad_token_label_id = args.ignore_index
     tokenizer = load_tokenizer(args)
-    lines = read_input_file(args) if not args.text_question else [args.text_question]
+    lines = read_input_file(args) if not args.text_question else [args.text_question.split()]
     dataset = convert_input_file_to_tensor_dataset(lines, args, tokenizer, pad_token_label_id)
 
     # Predict
