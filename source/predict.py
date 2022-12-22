@@ -8,6 +8,8 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, SequentialSampler, TensorDataset
 from tqdm import tqdm
+from underthesea import word_tokenize
+
 from utils import MODEL_DICT, get_intent_labels, get_slot_labels, init_logger, load_tokenizer
 from trainer import Trainer_IDSF, Trainer_QA
 
@@ -152,7 +154,7 @@ def predict_IDSF(args):
     # Convert input file to TensorDataset
     pad_token_label_id = args.ignore_index
     tokenizer = load_tokenizer(args)
-    lines = read_input_file(args) if not args.text_question else [args.text_question.split()]
+    lines = read_input_file(args) if not args.text_question else [word_tokenize(args.text_question, format="text").split()]
     dataset = convert_input_file_to_tensor_dataset(lines, args, tokenizer, pad_token_label_id)
 
     # Predict
