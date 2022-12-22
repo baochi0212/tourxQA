@@ -4,8 +4,7 @@ from dotenv import dotenv_values
 from pymongo import MongoClient
 import urllib
 import datetime
-from routes import router as test_router
-
+from routes import qa_router 
 '''
     start up, shut down and API routers management
 '''
@@ -36,4 +35,4 @@ def startup_db_client():
 def shutdown_db_client():
     app.mongodb_client.close()
 
-app.include_router(test_router, prefix="/student")
+app.include_router(qa_router, prefix="/travel_QA")

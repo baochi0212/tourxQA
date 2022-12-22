@@ -72,7 +72,7 @@ def status_dict(sys_dict):
 #tourxQA
 qa_router = APIRouter( )
 flight_dict = {'from_city': '', 'to_city': '', 'num_class': '', 'pass_dict': {'adult': 0, 'child': 0, 'infant': 0 }, 'num_person': ''}
-
+web_service = False
 
 @qa_router.post("/", response_description="Get Answer", response_model=None)
 def get_response(request: Request, input: QuestionAnswer = Body(...)):
@@ -108,10 +108,9 @@ def get_response(request: Request, input: QuestionAnswer = Body(...)):
                 elif 'num_person' in key:
                     flight_dict['num_person'] += f' {value}'
 
-            #LACK items
-            lack_items = status_dict(flight_dict)
-            if len(lack_items) > 0:
-                pass
+
+
+                
 
             
         
@@ -131,15 +130,24 @@ def get_response(request: Request, input: QuestionAnswer = Body(...)):
             flight_dict['num_class'] = 0
         #num_person:
         #"x nguoi lon y tre em z so sinh"
+        flight_dict['pass_dict']['adult'] = int(flight_dict['num_person'].split("người_lớn")[0].strip())
+
+
+        #Haven't own 'nuff information
+        lack_items = status_dict(flight_dict)
+        if len(lack_items) == 0:
+            pass
+        else:
+            web_service = True
 
         
                     
 
 
-    #checking fi                 
+    #checking if           
 
     #if good intent and slots -> automation
-    if intent == 'flight':
+    if web_service == True:
         os.system(f'python {automation_dir}/web_service.py') #parse the arguments
 
 
