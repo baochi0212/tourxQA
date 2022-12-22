@@ -198,7 +198,12 @@ def predict_IDSF(args):
                     slot_preds = np.append(slot_preds, slot_logits.detach().cpu().numpy(), axis=0)
                 all_slot_label_mask = np.append(all_slot_label_mask, batch[3].detach().cpu().numpy(), axis=0)
     #confusion
-    prob = torch.max(nn.functional.softmax(intent_logits, -1), axis=1)
+    intent_prob, _ = torch.max(nn.functional.softmax(intent_logits, -1), axis=1)
+    intent_prob = intent_prob.item()
+    slot_prob, _ = torch.max(nn.functional.softmax(slot_logits, -1), axis=-1)
+    slot_prob = slot_prob.mean().item()
+
+
     intent_preds = np.argmax(intent_preds, axis=1)
 
     if not args.use_crf:
@@ -227,7 +232,7 @@ def predict_IDSF(args):
             else: 
                 #return the label and slot filling for question
                 with open(args.text_question_log_dir, 'w') as f:
-                    f.write("prob <{}> -> <{}> -> {}\n".format(prob, intent_label_lst[intent_pred], line.strip()))
+                    f.write("intent prob <{}> -> slot prob <{}> -> <{}> -> {}\n".format(intent_prob, slot_prob, intent_label_lst[intent_pred], line.strip()))
 
     logger.info("Prediction Done!")
 
