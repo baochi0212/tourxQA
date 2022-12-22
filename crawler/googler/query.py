@@ -10,7 +10,7 @@ from haystack.utils import convert_files_to_docs
 from haystack.nodes import BM25Retriever
 #directory
 working_dir = os.environ['dir']
-database_dir = f"{working_dir}/deploy/database"
+database_dir = f"{working_dir}/data/database"
 
 
 # # Get the host where Elasticsearch is running, default to localhost
@@ -66,4 +66,9 @@ class Crawl:
 
 
 if __name__ == "__main__":
-    Crawl("kenh14").query(q="mon an ngon Da Nang", num_results=3)
+    # Crawl("kenh14").query(num_results=3)
+    q="mon an ngon Da Nang" 
+    num_results=3
+    for i, result in enumerate(search(q + " " + 'kenh14', num_results=num_results)):
+            with open(f"{database_dir}/test/urls.txt", "w") as f:
+                f.write(result + '\n')
