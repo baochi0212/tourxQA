@@ -7,3 +7,4 @@ class Student(BaseModel):
 
 class QuestionAnswer(BaseModel):
     question: str = Field(...)
+    
