@@ -350,6 +350,7 @@ class Trainer_QA(Trainer_IDSF):
 
         
 if __name__ == "__main__":
+    init_logger()
     tokenizer = load_tokenizer(args)
     set_seed(args)
 
