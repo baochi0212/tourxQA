@@ -14,7 +14,7 @@ database_dir = f"{working_dir}/data/database"
 
 
 # # Get the host where Elasticsearch is running, default to localhost
-# host = os.environ.get("ELASTICSEARCH_HOST", "localhost")
+# host = os.environ.get("E`L`ASTICSEARCH_HOST", "localhost")
 # document_store = ElasticsearchDocumentStore(host=host, username="baochi0212", password="Baochi2002", index="document")
 
 
@@ -34,18 +34,41 @@ class Crawl:
         if not os.path.exists(f"{database_dir}/test/urls.txt"):
             open(f"{database_dir}/test/urls.txt", "w")
     def json2txt(self):
+        def parse(string):
+            new_string = ""
+            start = True
+            a, b = 1, 1
+            while a != -1 and b != -1:
+                a, b = string.find('<'), string.find('>')
+            
+                c = b + string[b+1:].find('<')
+                if a != 0 and start:
+                    new_string = string[:a]
+                    start = False
+                if c > 0:
+                    join_char = ' '
+                    new_string = join_char.join([new_string.strip(), string[b+1:c].strip()])
+                else:
+                    join_char = ' '
+                    new_string = join_char.join([new_string.strip(), string.strip()])
+                string = string[b+1:]
+            return new_string.strip()
         files = []
         for file in glob(f"{database_dir}/test/*.json"):
             with open(file, 'r') as f:
                 files.extend(json.load(f))
+        f_write = open(f'{database_dir}/test/docs.txt', 'w')
         #write to text file
         for i, line in enumerate(files):
-            with open(f'{database_dir}/test/docs/text_{i}.txt', 'w') as f:
-                f.write(line['content'])
+            if line['content'].strip().startswith('<p>Kenh14.vn') or line['content'].strip().startswith('<p>Điện thoại'):
+                continue
+            else:
+                f_write.write(parse(line['content']) + '\n')
     def query(self, q="mon an ngon Da Nang", num_results=3):
         for i, result in enumerate(search(q + " " + self.name, num_results=num_results)):
             with open(f"{database_dir}/test/urls.txt", "a") as f:
                 f.write(result + '\n')
+
 
         self.crawl()
         self.json2txt()
@@ -66,9 +89,9 @@ class Crawl:
 
 
 if __name__ == "__main__":
-    # Crawl("kenh14").query(num_results=3)
-    q="mon an ngon Da Nang" 
-    num_results=3
-    for i, result in enumerate(search(q + " " + 'kenh14', num_results=num_results)):
-            with open(f"{database_dir}/test/urls.txt", "w") as f:
-                f.write(result + '\n')
+    Crawl("kenh14").query(num_results=3)
+    # q="mon an ngon Da Nang" 
+    # num_results=3
+    # for i, result in enumerate(search(q + " " + 'kenh14', num_results=num_results)):
+    #         with open(f"{database_dir}/test/urls.txt", "w") as f:
+    #             f.write(result + '\n')

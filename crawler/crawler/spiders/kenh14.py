@@ -7,7 +7,7 @@ import pandas as pd
 import argparse
 parser = argparse.ArgumentParser()
 working_dir = os.environ['dir']
-database_dir = f"{working_dir}/deploy/database"
+database_dir = f"{working_dir}/data/database"
 
 
 
