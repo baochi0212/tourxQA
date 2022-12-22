@@ -29,6 +29,25 @@ def reset_dict(sys_dict):
 
     return sys_dict
 
+def status_dict(sys_dict):
+    '''
+    check the status of the system dict
+    '''
+    lack_items = []
+    for key, value in sys_dict.items():
+        if type(value) == dict:
+            for k, value in sys_dict.items():
+                if value in ['', 0]:
+                    lack_items.append(key)
+                    
+
+        elif value in ['', 0]:
+            lack_items.append(key)
+
+    return lack_items
+
+    
+
     
             
 
@@ -52,11 +71,11 @@ def reset_dict(sys_dict):
 #     return list(request.app.database["testcollection"].find({"_id": "20200083"}))
 #tourxQA
 qa_router = APIRouter( )
-flight_dict = {'from_city': '', 'to_city': '', 'num_class': '', 'pass_dict': {'adult': 0, 'child': 0, 'infant': 0 }}
+flight_dict = {'from_city': '', 'to_city': '', 'num_class': '', 'pass_dict': {'adult': 0, 'child': 0, 'infant': 0 }, 'num_person': ''}
 
 
-@qa_router.post("/", response_description="Get Intent and Slot", response_model=QuestionAnswer)
-def get_intent(request: Request, input: QuestionAnswer = Body(...)):
+@qa_router.post("/", response_description="Get Answer", response_model=None)
+def get_response(request: Request, input: QuestionAnswer = Body(...)):
     '''
     given question, run the modules and save results in log file for using
     '''
@@ -74,44 +93,61 @@ def get_intent(request: Request, input: QuestionAnswer = Body(...)):
             intent = output.split('->')[2].strip()
 
             
-            #flight case:
-            if intent == '<flight>':
-                #reset the dict
-                flight_dict = reset_dict(flight_dict)
+        #flight case:
+        if intent == '<flight>':
+            #reset the dict
+            flight_dict = reset_dict(flight_dict)
+            #parse the slots
+            for key, value in slot_dict.items():
+                if 'fromloc.city_name' in key:
+                    flight_dict['from_city'] += f' {value}'
+                elif 'toloc.city_name' in key:
+                    flight_dict['to_city'] += f' {value}'
+                elif 'class_type' in key:
+                    flight_dict['num_class'] += f' {value}'
+                elif 'num_person' in key:
+                    flight_dict['num_person'] += f' {value}'
 
-                #parse the slots
-                for key, value in slot_dict.items():
-                    if 'fromloc.city_name' in key:
-                        flight_dict['from_city'] += f' {value}'
-                    elif 'toloc.city_name' in key:
-                        flight_dict['to_city'] += f' {value}'
-                    elif 'class_type' in key:
-                        flight_dict['num_class'] += f' {value}'
-                if 'thương_gia' in flight_dict['num_class']:
-                    flight_dict['num_class'] = 2
-                elif 'hạng_nhất' in flight_dict['num_class']:
-                    flight_dict['num_class'] = 1
-                elif 'hạng_nhì' in flight_dict['num_class']:
-                    flight_dict['num_class'] = 0
-            elif 'num_person' in list(slot_dict.keys())[0]:
-                #passenger:
-                pass                  
+            #LACK items
+            lack_items = status_dict(flight_dict)
+            if len(lack_items) > 0:
+                pass
 
-                
+            
+        
+        elif 'class_type' in list(slot_dict.keys())[0]:
+            flight_dict['num_class'] += f' {value}'
+
+        elif 'num_person' in list(slot_dict.keys())[0]:
+            # passenger:
+            flight_dict['num_person'] += f' {value}'
+        #parse string values to numbers
+        #class_type:
+        if 'thương_gia' in flight_dict['num_class']:
+            flight_dict['num_class'] = 2
+        elif 'hạng_nhất' in flight_dict['num_class']:
+            flight_dict['num_class'] = 1
+        elif 'hạng_nhì' in flight_dict['num_class']:
+            flight_dict['num_class'] = 0
+        #num_person:
+        
+                    
+
+
+    #checking fi                 
+
     #if good intent and slots -> automation
     if intent == 'flight':
         os.system(f'python {automation_dir}/web_service.py') #parse the arguments
 
 
     #else -> QA module
-    
 
     
 
+    
+
 
 
     
 
-@qa_router.get("/", response_description="Get Answer", response_model=QuestionAnswer)
-def get_answer(request: Request):
-    pass

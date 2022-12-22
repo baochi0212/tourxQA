@@ -202,6 +202,7 @@ def predict_IDSF(args):
     #confusion
     intent_prob, _ = torch.max(nn.functional.softmax(intent_logits, -1), axis=1)
     intent_prob = intent_prob.item()
+    print("SLOT ERROR", slot_logits.shape)
     slot_prob, _ = torch.max(nn.functional.softmax(slot_logits, -1), axis=-1)
     slot_prob = slot_prob.mean().item()
 
