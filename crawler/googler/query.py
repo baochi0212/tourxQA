@@ -58,17 +58,26 @@ class Crawl:
             with open(file, 'r') as f:
                 files.extend(json.load(f))
         f_write = open(f'{database_dir}/test/docs.txt', 'w')
+        
         #write to text file
         for i, line in enumerate(files):
-            if line['content'].strip().startswith('<p>Kenh14.vn') or line['content'].strip().startswith('<p>Điện thoại'):
-                continue
-            else:
-                text = parse(line['content'])
-                if not text.startswith('Điện thoại:'):
-                    f_write.write(text + '\n')
+            text = parse(line['content'])
+            f_write.write(text + '\n')
+        f_write.close()
+
+        #format the document
+        f_read = open(f'{database_dir}/test/docs.txt', 'r')
+        lines = f_read.readlines()
+        f_write = open(f'{database_dir}/test/docs.txt', 'w')
+        for line in lines:
+            if not (line.startswith('Điện thoại') or line.startswith('Kenh14')):
+                print(line)
+                f_write.write(line.strip() + '\n')
+
+        f_write.close()
 
         
-    def query(self, q="mon an ngon Da Nang", num_results=3):
+    def query(self, q="Da Nang co mon gi ngon", num_results=3):
         for i, result in enumerate(search(q + " " + self.name, num_results=num_results)):
             with open(f"{database_dir}/test/urls.txt", "a") as f:
                 f.write(result + '\n')
@@ -99,3 +108,4 @@ if __name__ == "__main__":
     # for i, result in enumerate(search(q + " " + 'kenh14', num_results=num_results)):
     #         with open(f"{database_dir}/test/urls.txt", "w") as f:
     #             f.write(result + '\n')
+  
