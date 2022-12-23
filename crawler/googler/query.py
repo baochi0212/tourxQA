@@ -63,7 +63,11 @@ class Crawl:
             if line['content'].strip().startswith('<p>Kenh14.vn') or line['content'].strip().startswith('<p>Điện thoại'):
                 continue
             else:
-                f_write.write(parse(line['content']) + '\n')
+                text = parse(line['content'])
+                if not text.startswith('Điện thoại:'):
+                    f_write.write(text + '\n')
+
+        
     def query(self, q="mon an ngon Da Nang", num_results=3):
         for i, result in enumerate(search(q + " " + self.name, num_results=num_results)):
             with open(f"{database_dir}/test/urls.txt", "a") as f:

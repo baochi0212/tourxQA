@@ -40,7 +40,7 @@ parser.add_argument("--eval_batch_size", default=64, type=int, help="Batch size 
 parser.add_argument(
     "--max_seq_len", default=50, type=int, help="The maximum total input sequence length after tokenization."
 )
-parser.add_argument("--learning_rate", default=5e-5, type=float, help="The initial learning rate for Adam.")
+parser.add_argument("--learning_rate", default=5e-6, type=float, help="The initial learning rate for Adam.")
 parser.add_argument(
     "--n_epochs", default=10.0, type=float, help="Total number of training epochs to perform."
 )
