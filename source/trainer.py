@@ -47,7 +47,7 @@ class Trainer_IDSF:
         #optimizer + scheduler
         optimizer = AdamW(optimizer_grouped_parameters, lr=self.args.learning_rate, eps=self.args.adam_epsilon)
         scheduler = get_linear_schedule_with_warmup(
-            optimizer, num_warmup_steps=t_total*0.05, num_training_steps=t_total
+            optimizer, num_warmup_steps=self.args.warmup_steps, num_training_steps=t_total
         )
         if "bert" not in self.args.model_type:
             optimizer = torch.optim.Adam(self.model.parameters(), lr=self.args.learning_rate)
