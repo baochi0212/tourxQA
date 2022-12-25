@@ -12,7 +12,6 @@ from transformers import (
     XLMRobertaConfig,
     XLMRobertaTokenizer,
 )
-from collections import Counter
 
 
 MODEL_CLASSES = {
@@ -114,44 +113,3 @@ def get_sentence_frame_acc(intent_preds, intent_labels, slot_preds, slot_labels)
 
     semantic_acc = np.multiply(intent_result, slot_result).mean()
     return {"semantic_frame_acc": semantic_acc}
-def convert_tokens_to_labels(word, label_dict):
-    if word in label_dict.keys():
-        return label_dict[word]
-    else:
-        return label_dict['UNK']
-
-
-def to_graph_format(files):
-    '''
-    - get label dict
-    - read train, test, val
-    '''
-
-    path = './PhoATIS/word-level'
-
-    label_dict = {}
-    count = 0
-    with open(f'{path}/intent_label.txt', 'r') as f:
-        for label in f.readlines():
-            label = label.strip()
-            if label not in label_dict:
-                label_dict[label] = count 
-                count += 1
-
-    with open(path + '/phoatis_text.txt', 'w') as f1:
-        with open(path + '/phoatis_intent.txt', 'w') as f2: 
-            for file in files:
-                idx = 0 #for indexing in the label .txt file
-                for line in open(f'{path}/{file}/seq.in', 'r').readlines():
-                    f1.write(line)
-                for line in open(f'{path}/{file}/label', 'r').readlines():
-                    line = str(idx) + '\t' + file + '\t' + str(convert_tokens_to_labels(line.strip(), label_dict)) + '\n'
-                    idx += 1 
-                    f2.write(line)
-
-    
-if __name__ == '__main__':
-    to_graph_format(['train', 'dev', 'test'])
-
-        
-    

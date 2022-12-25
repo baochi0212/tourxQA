@@ -23,4 +23,3 @@ ground_service
 meal
 quantity
 restriction
-accomodation

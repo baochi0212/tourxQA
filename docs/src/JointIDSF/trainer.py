@@ -78,7 +78,6 @@ class Trainer(object):
                 "weight_decay": 0.0,
             },
         ]
-        #optimizer + scheduler
         optimizer = AdamW(optimizer_grouped_parameters, lr=self.args.learning_rate, eps=self.args.adam_epsilon)
         scheduler = get_linear_schedule_with_warmup(
             optimizer, num_warmup_steps=self.args.warmup_steps, num_training_steps=t_total
@@ -147,8 +146,8 @@ class Trainer(object):
                             print("Early stopping")
                             break
 
-                    if self.args.save_steps > 0 and global_step % self.args.save_steps == 0:
-                        self.save_model()
+                    # if self.args.save_steps > 0 and global_step % self.args.save_steps == 0:
+                    #     self.save_model()
 
                 if 0 < self.args.max_steps < global_step:
                     epoch_iterator.close()
@@ -208,6 +207,7 @@ class Trainer(object):
                     inputs["token_type_ids"] = batch[2]
                 outputs = self.model(**inputs)
                 tmp_eval_loss, (intent_logits, slot_logits) = outputs[:2]
+
                 eval_loss += tmp_eval_loss.mean().item()
             nb_eval_steps += 1
 
@@ -239,6 +239,7 @@ class Trainer(object):
                 out_slot_labels_ids = np.append(
                     out_slot_labels_ids, inputs["slot_labels_ids"].detach().cpu().numpy(), axis=0
                 )
+
         eval_loss = eval_loss / nb_eval_steps
         results = {"loss": eval_loss}
 
@@ -266,11 +267,8 @@ class Trainer(object):
             logger.info("  %s = %s", key, str(results[key]))
         if mode == "test":
             self.write_evaluation_result("eval_test_results.txt", results)
-            print("TEST RESULTS: ", results)
         elif mode == "dev":
             self.write_evaluation_result("eval_dev_results.txt", results)
-            print("DEV: ", results)
-        
         return results
 
     def save_model(self):
@@ -281,9 +279,8 @@ class Trainer(object):
         model_to_save.save_pretrained(self.args.model_dir)
 
         # Save training arguments together with the trained model
-        torch.save(self.args, os.path.join(self.args.model_dir, 'training_args.bin'))
+        torch.save(self.args, os.path.join(self.args.model_dir, "training_args.bin"))
         logger.info("Saving model checkpoint to %s", self.args.model_dir)
-
 
     def load_model(self):
         # Check whether model exists

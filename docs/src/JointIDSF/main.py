@@ -30,8 +30,8 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--task", default='phobert', required=True, type=str, help="The name of the task to train")
-    parser.add_argument("--model_dir", default='./model_dir', required=False, type=str, help="Path to save, load model")
+    # parser.add_argument("--task", default=None, required=True, type=str, help="The name of the task to train")
+    parser.add_argument("--model_dir", default=None, required=True, type=str, help="Path to save, load model")
     parser.add_argument("--data_dir", default="./PhoATIS", type=str, help="The input data dir")
     parser.add_argument("--intent_label_file", default="intent_label.txt", type=str, help="Intent Label file")
     parser.add_argument("--slot_label_file", default="slot_label.txt", type=str, help="Slot Label file")
@@ -97,7 +97,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--early_stopping",
         type=int,
-        default=5,
+        default=50,
         help="Number of unincreased validation step to wait for early stopping",
     )
     parser.add_argument("--gpu_id", type=int, default=0, help="Select gpu id")

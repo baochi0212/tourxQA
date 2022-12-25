@@ -6,7 +6,6 @@ export MODEL_DIR=JointBERT-CRF_PhoBERTencoder
 export MODEL_DIR=$MODEL_DIR"/"$lr"/"$c"/"$s
 echo "${MODEL_DIR}"
 python3 main.py --token_level word-level \
-                --task phobert\
                   --model_type phobert \
                   --model_dir $MODEL_DIR \
                   --data_dir PhoATIS \
