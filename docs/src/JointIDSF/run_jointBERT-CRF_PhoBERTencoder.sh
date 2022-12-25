@@ -1,4 +1,4 @@
-export lr=5e-5
+export lr=3e-5
 export c=0.6
 export s=100
 echo "${lr}"

@@ -1,4 +1,4 @@
-export lr=4e-5
+export lr=1e-5
 export c=0.45
 export s=10
 echo "${lr}"
