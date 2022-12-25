@@ -97,7 +97,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--early_stopping",
         type=int,
-        default=10,
+        default=5,
         help="Number of unincreased validation step to wait for early stopping",
     )
     parser.add_argument("--gpu_id", type=int, default=0, help="Select gpu id")
