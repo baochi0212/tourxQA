@@ -1,5 +1,5 @@
 #As we initialize JointIDSF from JointBERT, user need to train a base model JointBERT first
-# ./run_jointBERT-CRF_PhoBERTencoder.sh
+./run_jointBERT-CRF_PhoBERTencoder.sh
 #Train JointIDSF
 export lr=4e-5
 export c=0.15
