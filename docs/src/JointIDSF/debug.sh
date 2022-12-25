@@ -2,7 +2,7 @@
 ./run_jointBERT-CRF_PhoBERTencoder.sh
 #Train JointIDSF
 export lr=4e-5
-export c=0.15
+export c=0.3
 export s=100
 echo "${lr}"
 export MODEL_DIR=JointIDSF_PhoBERTencoder

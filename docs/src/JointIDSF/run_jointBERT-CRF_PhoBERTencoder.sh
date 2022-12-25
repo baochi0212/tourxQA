@@ -1,4 +1,4 @@
-export lr=3e-5
+export lr=5e-5
 export c=0.6
 export s=100
 echo "${lr}"
@@ -15,7 +15,6 @@ python3 main.py --token_level word-level \
                   --save_steps 140 \
                   --logging_steps 140 \
                   --num_train_epochs 50\
-                  --use_intent_context_attention \
                   --tuning_metric mean_intent_slot \
                   --use_crf \
                   --gpu_id 0 \
