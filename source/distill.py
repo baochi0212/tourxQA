@@ -6,7 +6,8 @@ import torch.nn as nn
 from main import args
 from transformers import AutoConfig, DistilBertConfig
 from utils import MODEL_DICT, get_intent_labels, get_slot_labels, load_tokenizer, compute_metrics
-
+from data_loader import load_and_cache_examples
+from torchsummary import summary
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -73,6 +74,10 @@ if __name__ == '__main__':
     intent_label_lst, slot_label_lst = get_intent_labels(args), get_slot_labels(args)
     teacher_model = JointPhoBERT(teacher_config, args, intent_label_lst, slot_label_lst)
     student_model = JointDistillBERT(student_config, args, intent_label_lst, slot_label_lst)
-    pprint(teacher_model)
-    pprint(student_model)
+    
+    #size 
+    tokenizer = load_tokenizer(args)
+    train_dataset = load_and_cache_examples(args, tokenizer, mode="train")
+    # pprint(summary(teacher_model, [input.shape for input in train_dataset[0]]))
+    print([input.shape for input in train_dataset[0]])
     
