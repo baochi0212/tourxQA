@@ -71,7 +71,7 @@ class JointPhoBERT(RobertaPreTrainedModel):
         # 2. Slot Softmax
         if slot_labels_ids is not None:
             if self.args.use_crf:
-                slot_loss = self.crf(slot_logits, slot_labels_ids, mask=attention_mask.byte(), reduction="mean")
+                slot_loss = self.crf(slot_logits, slot_labels_ids, mask=attention_mask.byte(), reduction="token_mean")
                 slot_loss = -1 * slot_loss  # negative log-likelihood
             else:
                 slot_loss_fct = nn.CrossEntropyLoss(ignore_index=self.args.ignore_index)
