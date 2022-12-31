@@ -42,7 +42,7 @@ parser.add_argument(
 )
 parser.add_argument("--learning_rate", default=5e-6, type=float, help="The initial learning rate for Adam.")
 parser.add_argument(
-    "--n_epochs", default=4, type=float, help="Total number of training epochs to perform."
+    "--n_epochs", default=1, type=float, help="Total number of training epochs to perform."
 )
 parser.add_argument("--weight_decay", default=0.0, type=float, help="Weight decay if we apply some.")
 parser.add_argument(
@@ -61,7 +61,7 @@ parser.add_argument(
 )
 parser.add_argument("--warmup_steps", default=0, type=int, help="Linear warmup over warmup_steps.")
 parser.add_argument("--dropout_rate", default=0.1, type=float, help="Dropout for fully-connected layers")
-parser.add_argument("--logging_steps", type=int, default=200, help="Log every X updates steps.")
+parser.add_argument("--logging_steps", type=int, default=70, help="Log every X updates steps.")
 parser.add_argument("--save_steps", type=int, default=-1, help="Save checkpoint every X updates steps.")
 parser.add_argument("--do_train", action="store_true", help="Whether to run training.")
 parser.add_argument("--do_eval", action="store_true", help="Whether to run eval on the test set.")

@@ -397,9 +397,10 @@ class Distill_IDSF:
         print("Total parameters for the student network are: {}".format(student_params))
         
 def run_distill(teacher_args, student_args, teacher_module, student_module, train_dataset, val_dataset):
-    distill_module = Distill_IDSF(teacher_args, student_args, teacher_module, student_module, train_dataset, val_dataset)
-    teacher_logits = distill_module.train_teacher()
-    distill_module.train_student(teacher_logits=teacher_logits)
+    for i in range(10):
+        distill_module = Distill_IDSF(teacher_args, student_args, teacher_module, student_module, train_dataset, val_dataset)
+        teacher_logits = distill_module.train_teacher()
+        distill_module.train_student(teacher_logits=teacher_logits)
     distill_module.get_parameters()
 
 
