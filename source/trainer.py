@@ -281,7 +281,7 @@ class Trainer_IDSF:
                 self.args.max_steps // (len(train_dataloader) // self.args.gradient_accumulation_steps) + 1
             )
         else:
-            t_total = len(train_dataloader) // self.args.gradient_accumulation_steps * self.args.num_train_epochs
+            t_total = len(train_dataloader) // self.args.gradient_accumulation_steps * self.args.n_epochs
         # Prepare optimizer and schedule (linear warmup and decay)
         no_decay = ["bias", "LayerNorm.weight"]
         optimizer_grouped_parameters = [
@@ -302,7 +302,7 @@ class Trainer_IDSF:
         # Train!
         logger.info("***** Running training *****")
         logger.info("  Num examples = %d", len(self.train_dataset))
-        logger.info("  Num Epochs = %d", self.args.num_train_epochs)
+        logger.info("  Num Epochs = %d", self.args.n_epochs)
         logger.info("  Total train batch size = %d", self.args.train_batch_size)
         logger.info("  Gradient Accumulation steps = %d", self.args.gradient_accumulation_steps)
         logger.info("  Total optimization steps = %d", t_total)
@@ -313,7 +313,7 @@ class Trainer_IDSF:
         tr_loss = 0.0
         self.model.zero_grad()
 
-        train_iterator = tqdm(int(self.args.num_train_epochs))
+        train_iterator = tqdm(int(self.args.n_epochs))
         early_stopping = EarlyStopping(patience=self.args.early_stopping, verbose=True)
 
         for _ in train_iterator:
