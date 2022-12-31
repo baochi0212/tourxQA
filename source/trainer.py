@@ -331,7 +331,7 @@ class Trainer_IDSF:
                     "intent_label_ids": batch[3],
                     "slot_labels_ids": batch[4],
                 }
-                if self.args.model_type != "distilbert":
+                if self.args.model_type != "distill-bert":
                     inputs["token_type_ids"] = batch[2]
                 outputs = self.model(**inputs)
                 
