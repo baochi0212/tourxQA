@@ -39,6 +39,8 @@ import torch
 import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
 
+from trainer import Trainer_IDSF
+
 
 class BaseClass:
     """
@@ -370,17 +372,20 @@ class BaseClass:
 
 
 class Distill_IDSF:
-    def __init__(self, teacher_module, student_module):
+    def __init__(self, teacher_args, student_args, teacher_module, student_module):
         super().__init__()
+        self.teacher_args = teacher_args
+        self.student_args = student_args
         self.teacher_module = teacher_module
         self.student_module = student_module
 
     def train_teacher(self, model_dir='./distillation/teacher.pt'):
-        self.teacher_module.fit_distill()
+        self.teacher_trainer = Trainer_IDSF(self.teacher_args, self.teacher_module)
+        self.teacher_trainer.fit_distill()
         
     def train_student(self, model_dir='./distillation/student.pt'):
-        self.student_module.fit_distill()
-
+        self.student_trainer = Trainer_IDSF(self.student_args, self.student_module)
+        self.student_trainer.fit_distill()
     def get_parameters(self):
         teacher_params = sum(p.numel() for p in self.teacher_module.model.parameters())
         student_params = sum(p.numel() for p in self.student_module.model.parameters())
