@@ -334,6 +334,7 @@ class Trainer_IDSF:
                 if self.args.model_type != "distill-bert":
                     inputs["token_type_ids"] = batch[2]
                 outputs = self.model(**inputs)
+                print("LENGTH OUTPUTS", len(outputs))
                 
                 #distillation
                 intent_loss_fct = nn.CrossEntropyLoss()
