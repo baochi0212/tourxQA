@@ -427,5 +427,6 @@ if __name__ == "__main__":
 
     teacher_module = IDSFModule(teacher_args)
     student_module = IDSFModule(student_args)
+    student_module.config.vocab_size = teacher_module.config.vocab_size #vocab config 
     run_distill(teacher_args, student_args, teacher_module, student_module, train_dataset, val_dataset)
 
