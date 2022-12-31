@@ -398,8 +398,11 @@ class Distill_IDSF:
         
 def run_distill(teacher_args, student_args, teacher_module, student_module, train_dataset, val_dataset):
     for i in range(10):
+        
         distill_module = Distill_IDSF(teacher_args, student_args, teacher_module, student_module, train_dataset, val_dataset)
-        teacher_logits = distill_module.train_teacher()
+        print("TEACHER HERE :))")t
+        eacher_logits = distill_module.train_teacher()
+        print("STUDENT HERE :<<<")
         distill_module.train_student(teacher_logits=teacher_logits)
     distill_module.get_parameters()
 
