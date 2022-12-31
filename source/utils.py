@@ -5,7 +5,7 @@ import re
 
 import numpy as np
 import torch
-from model.IDSF_modules import JointPhoBERT, JointXLMR, JointLSTM, JointGRU, JointDistillBERT
+from model.IDSF_modules import *
 from model.QA_modules import QARoberta
 from seqeval.metrics import f1_score, precision_score, recall_score
 from transformers import (

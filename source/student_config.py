@@ -116,4 +116,4 @@ parser.add_argument(
     "--embedding_type", default="soft", type=str, help="Embedding type for intent vector (hard/soft)"
 )
 parser.add_argument("--use_attention_mask", action="store_true", help="Whether to use attention mask")
-args = parser.parse_args()
+student_args = parser.parse_args()
