@@ -301,7 +301,7 @@ class Trainer_IDSF:
 
         # Train!
         logger.info("***** Running training *****")
-        logger.info("  Num examples = %d", len(self.train_dataset))
+        logger.info("  Num examples = %d", len(train_dataset))
         logger.info("  Num Epochs = %d", self.args.n_epochs)
         logger.info("  Total train batch size = %d", self.args.train_batch_size)
         logger.info("  Gradient Accumulation steps = %d", self.args.gradient_accumulation_steps)
