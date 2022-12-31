@@ -372,7 +372,7 @@ class BaseClass:
 
 
 class Distill_IDSF:
-    def __init__(self, teacher_args, student_args, teacher_module, student_module):
+    def __init__(self, teacher_args, student_args, teacher_module, student_module, train_dataset, val_dataset):
         super().__init__()
         self.teacher_args = teacher_args
         self.student_args = student_args
@@ -381,11 +381,11 @@ class Distill_IDSF:
 
     def train_teacher(self, model_dir='./distillation/teacher.pt'):
         self.teacher_trainer = Trainer_IDSF(self.teacher_args, self.teacher_module)
-        self.teacher_trainer.fit_distill()
+        self.teacher_trainer.fit_distill(train_dataset, val_dataset)
         
     def train_student(self, model_dir='./distillation/student.pt'):
         self.student_trainer = Trainer_IDSF(self.student_args, self.student_module)
-        self.student_trainer.fit_distill()
+        self.student_trainer.fit_distill(train_dataset, val_dataset)
     def get_parameters(self):
         teacher_params = sum(p.numel() for p in self.teacher_module.model.parameters())
         student_params = sum(p.numel() for p in self.student_module.model.parameters())
@@ -394,7 +394,7 @@ class Distill_IDSF:
         print("Total parameters for the teacher network are: {}".format(teacher_params))
         print("Total parameters for the student network are: {}".format(student_params))
         
-def run_distill(teacher_args, student_args, teacher_module, student_module):
+def run_distill(teacher_args, student_args, teacher_module, student_module, train_dataset, val_dataset):
     distill_module = Distill_IDSF(teacher_args, student_args, teacher_module, student_module)
     distill_module.train_teacher()
     distill_module.train_student()
@@ -403,7 +403,7 @@ def run_distill(teacher_args, student_args, teacher_module, student_module):
 
 
 if __name__ == "__main__":
-    # tokenizer = AutoTokenizer.from_pretrained("vinai/phobert-base")
+    tokenizer = AutoTokenizer.from_pretrained("vinai/phobert-base")
     # teacher_config = AutoConfig.from_pretrained("vinai/phobert-base")
     # student_config = AutoConfig.from_pretrained("distilbert-base-uncased")
     # student_config.vocab_size = teacher_config.vocab_size
@@ -416,9 +416,10 @@ if __name__ == "__main__":
     # input = train_dataset[0][:3]
     # # print([i for i in train_dataset[0]])
     # # summary(model, [i.shape for i in input], batch_size=-1, dtypes=[torch.long, torch.long, torch.long, torch.long, torch.long], device='cpu')
-    
+    train_dataset = load_and_cache_examples(args, tokenizer, mode="train")
+    val_dataset = load_and_cache_examples(args, tokenizer, mode="dev")
 
     teacher_module = IDSFModule(teacher_args)
     student_module = IDSFModule(student_args)
-    run_distill(teacher_args, student_args, teacher_module, student_module)
+    run_distill(teacher_args, student_args, teacher_module, student_module, train_dataset, val_dataset)
 

@@ -271,10 +271,10 @@ class Trainer_IDSF:
         load_dir = self.args.idsf_model_dir + f"/{self.args.model_type}_{int(self.args.n_epochs)}_{self.args.learning_rate}.pt" if not path else path
         self.model.load_state_dict(torch.load(load_dir))
     
-    def fit_distill(self, role='teacher'): 
+    def fit_distill(self, train_dataset, val_dataset, role='teacher'): 
         self.args.n_epochs = 1
-        train_sampler = data.RandomSampler(self.train_dataset)
-        train_dataloader = data.DataLoader(self.train_dataset, sampler=train_sampler, batch_size=self.args.train_batch_size)
+        train_sampler = data.RandomSampler(train_dataset)
+        train_dataloader = data.DataLoader(train_dataset, sampler=train_sampler, batch_size=self.args.train_batch_size)
         if self.args.max_steps > 0:
             t_total = self.args.max_steps
             self.args.num_train_epochs = (
@@ -351,7 +351,7 @@ class Trainer_IDSF:
 
                     if self.args.logging_steps > 0 and global_step % self.args.logging_steps == 0:
                         print("\nTuning metrics:", self.args.tuning_metric)
-                        results = self.evaluate("dev")
+                        results = self.eval(val_dataset, "dev")
                         early_stopping(results[self.args.tuning_metric], self.model, self.args)
                         if early_stopping.early_stop:
                             print("Early stopping")
