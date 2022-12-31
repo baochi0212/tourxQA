@@ -42,7 +42,7 @@ parser.add_argument(
 )
 parser.add_argument("--learning_rate", default=5e-6, type=float, help="The initial learning rate for Adam.")
 parser.add_argument(
-    "--n_epochs", default=1, type=float, help="Total number of training epochs to perform."
+    "--n_epochs", default=4, type=float, help="Total number of training epochs to perform."
 )
 parser.add_argument("--weight_decay", default=0.0, type=float, help="Weight decay if we apply some.")
 parser.add_argument(
@@ -73,7 +73,7 @@ parser.add_argument(
     type=int,
     help="Specifies a target value that is ignored and does not contribute to the input gradient",
 )
-parser.add_argument("--intent_loss_coef", type=float, default=0.5, help="Coefficient for the intent loss.")
+parser.add_argument("--intent_loss_coef", type=float, default=1, help="Coefficient for the intent loss.")
 parser.add_argument(
     "--token_level",
     type=str,
