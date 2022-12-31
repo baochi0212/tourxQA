@@ -23,7 +23,7 @@ parser.add_argument('--input_file', default='sample_input.txt', type=str)
 parser.add_argument('--predict_task', default="test dataset", type=str)
 parser.add_argument('--rnn_num_layers', default=3, type=int)
 parser.add_argument('--model_type', default='phobert', type=str)
-parser.add_argument('--device', default='cpu', type=str)
+parser.add_argument('--device', default='cuda', type=str)
 parser.add_argument('--task', default='phoATIS', type=str)
 parser.add_argument('--level', default='word-level', type=str)
 parser.add_argument('--batch_size', type=int, default=64)
@@ -42,7 +42,7 @@ parser.add_argument(
 )
 parser.add_argument("--learning_rate", default=5e-6, type=float, help="The initial learning rate for Adam.")
 parser.add_argument(
-    "--n_epochs", default=10.0, type=float, help="Total number of training epochs to perform."
+    "--n_epochs", default=1, type=float, help="Total number of training epochs to perform."
 )
 parser.add_argument("--weight_decay", default=0.0, type=float, help="Weight decay if we apply some.")
 parser.add_argument(
