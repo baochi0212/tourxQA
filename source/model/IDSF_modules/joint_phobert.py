@@ -87,5 +87,5 @@ class JointPhoBERT(RobertaPreTrainedModel):
 
         outputs = ((intent_logits, slot_logits),) + outputs[2:]  # add hidden states and attention if they are here
 
-        outputs = (total_loss,) + outputs + ((intent_logits, intent_label_ids, self.num_intent_labels))
+        outputs = (total_loss,) + outputs + ([intent_logits, intent_label_ids, self.num_intent_labels])
         return outputs
