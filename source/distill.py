@@ -420,5 +420,5 @@ if __name__ == "__main__":
 
     teacher_module = IDSFModule(teacher_args)
     student_module = IDSFModule(student_args)
-    run_distill(teacher_module, student_module)
+    run_distill(teacher_args, student_args, teacher_module, student_module)
 
