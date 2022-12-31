@@ -277,7 +277,7 @@ class Trainer_IDSF:
         train_dataloader = data.DataLoader(train_dataset, sampler=train_sampler, batch_size=self.args.train_batch_size)
         if self.args.max_steps > 0:
             t_total = self.args.max_steps
-            self.args.num_train_epochs = (
+            self.args.n_epochs = (
                 self.args.max_steps // (len(train_dataloader) // self.args.gradient_accumulation_steps) + 1
             )
         else:
