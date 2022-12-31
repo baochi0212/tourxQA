@@ -6,6 +6,7 @@ sys.path.append(os.environ['source'])
 import torch
 from torch.utils import data
 import torch.nn as nn
+import torch.nn.functional as F
 
 from tqdm.auto import tqdm
 from early_stopping import EarlyStopping
@@ -272,7 +273,7 @@ class Trainer_IDSF:
         load_dir = self.args.idsf_model_dir + f"/{self.args.model_type}_{int(self.args.n_epochs)}_{self.args.learning_rate}.pt" if not path else path
         self.model.load_state_dict(torch.load(load_dir))
     
-    def fit_distill(self, train_dataset, val_dataset, role='teacher'): 
+    def fit_distill(self, train_dataset, val_dataset, teacher_logits=None): 
         train_sampler = data.RandomSampler(train_dataset)
         train_dataloader = data.DataLoader(train_dataset, sampler=train_sampler, batch_size=self.args.train_batch_size)
         if self.args.max_steps > 0:
@@ -334,11 +335,13 @@ class Trainer_IDSF:
                     inputs["token_type_ids"] = batch[2]
                 outputs = self.model(**inputs)
                 
+                #distillation
                 intent_loss_fct = nn.CrossEntropyLoss()
                 intent_logits, num_intent_labels, intent_label_ids = outputs[-3], outputs[-2], outputs[-1]
+                intent_logits = intent_logits.view(-1, num_intent_labels)
                 loss = intent_loss_fct(
-                    intent_logits.view(-1, num_intent_labels), intent_label_ids.view(-1)
-                )
+                  intent_logits, intent_label_ids.view(-1)
+                ) if not teacher_logits else nn.KLDivLoss(F.softmax(intent_logits, -1), F.softmax(teacher_logits, -1)) + intent_loss_fct(intent_logits, intent_label_ids.view(-1))
 
                 if self.args.gradient_accumulation_steps > 1:
                     loss = loss / self.args.gradient_accumulation_steps
@@ -373,7 +376,8 @@ class Trainer_IDSF:
                 train_iterator.close()
                 break
 
-        return global_step, tr_loss / global_step
+        if not teacher_logits:
+            return intent_logits
 
 
         

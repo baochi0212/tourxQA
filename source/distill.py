@@ -385,9 +385,9 @@ class Distill_IDSF:
         self.teacher_trainer = Trainer_IDSF(self.teacher_args, self.teacher_module)
         self.teacher_trainer.fit_distill(self.train_dataset, self.val_dataset)
         
-    def train_student(self, model_dir='./distillation/student.pt'):
+    def train_student(self, model_dir='./distillation/student.pt', teacher_logits=None):
         self.student_trainer = Trainer_IDSF(self.student_args, self.student_module)
-        self.student_trainer.fit_distill(self.train_dataset, self.val_dataset)
+        self.student_trainer.fit_distill(self.train_dataset, self.val_dataset, teacher_logits=teacher_logits)
     def get_parameters(self):
         teacher_params = sum(p.numel() for p in self.teacher_module.model.parameters())
         student_params = sum(p.numel() for p in self.student_module.model.parameters())
@@ -398,8 +398,8 @@ class Distill_IDSF:
         
 def run_distill(teacher_args, student_args, teacher_module, student_module, train_dataset, val_dataset):
     distill_module = Distill_IDSF(teacher_args, student_args, teacher_module, student_module, train_dataset, val_dataset)
-    distill_module.train_teacher()
-    distill_module.train_student()
+    teacher_logits = distill_module.train_teacher()
+    distill_module.train_student(teacher_logits=teacher_logits)
     distill_module.get_parameters()
 
 
