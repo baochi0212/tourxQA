@@ -394,8 +394,8 @@ class Distill_IDSF:
         print("Total parameters for the teacher network are: {}".format(teacher_params))
         print("Total parameters for the student network are: {}".format(student_params))
         
-def run_distill(teacher_module, student_module):
-    distill_module = Distill_IDSF(teacher_module, student_module)
+def run_distill(teacher_args, student_args, teacher_module, student_module):
+    distill_module = Distill_IDSF(teacher_args, student_args, teacher_module, student_module)
     distill_module.train_teacher()
     distill_module.train_student()
     distill_module.get_parameters()
