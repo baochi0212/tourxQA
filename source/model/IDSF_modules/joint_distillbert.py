@@ -87,6 +87,6 @@ class JointDistillBERT(DistilBertPreTrainedModel):
 
         outputs = ((intent_logits, slot_logits),) + outputs[2:]  # add hidden states and attention if they are here
 
-        outputs = (total_loss,) + outputs
+        outputs = (total_loss,) + outputs + ((intent_logits, self.num_intent_labels, intent_label_ids))
 
         return outputs  # (loss), logits, (hidden_states), (attentions) # Logits is a tuple of intent and slot logits
