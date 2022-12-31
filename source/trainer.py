@@ -335,8 +335,7 @@ class Trainer_IDSF:
                 outputs = self.model(**inputs)
                 
                 intent_loss_fct = nn.CrossEntropyLoss()
-                print("LENGTH", len(outputs[-1]))
-                intent_logits, num_intent_labels, intent_label_ids = outputs[-1]
+                intent_logits, num_intent_labels, intent_label_ids = outputs[-3], outputs[-2], outputs[-1]
                 loss = intent_loss_fct(
                     intent_logits.view(-1, num_intent_labels), intent_label_ids.view(-1)
                 )
