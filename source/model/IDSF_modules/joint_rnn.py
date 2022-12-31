@@ -190,7 +190,7 @@ class JointGRU(nn.Module):
 
         outputs = ((intent_logits, slot_logits),) # add hidden states and attention if they are here
 
-        outputs = (total_loss,) + outputs
+        outputs = (total_loss,) + outputs 
 
         return outputs  # (loss), logits, (hidden_states), (attentions) # Logits is a tuple of intent and slot logits
 

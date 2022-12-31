@@ -33,7 +33,7 @@ class JointPhoBERT(RobertaPreTrainedModel):
         if args.use_crf:
             self.crf = CRF(num_tags=self.num_slot_labels, batch_first=True)
 
-    def forward(self, input_ids, attention_mask, token_type_ids, intent_label_ids, slot_labels_ids):
+    def forward(self, input_ids, attention_mask, token_type_ids, intent_label_ids, slot_labels_ids, role='teacher'):
         outputs = self.roberta(
             input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids
         )  # sequence_output, pooled_output, (hidden_states), (attentions)
@@ -87,6 +87,5 @@ class JointPhoBERT(RobertaPreTrainedModel):
 
         outputs = ((intent_logits, slot_logits),) + outputs[2:]  # add hidden states and attention if they are here
 
-        outputs = (total_loss,) + outputs
-
-        return outputs  # (loss), logits, (hidden_states), (attentions) # Logits is a tuple of intent and slot logits
+        outputs = (total_loss,) + outputs + (intent_logits, intent_label_ids, self.num_intent_labels)
+        return outputs

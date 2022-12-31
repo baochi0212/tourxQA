@@ -5,6 +5,7 @@ import sys
 sys.path.append(os.environ['source'])
 import torch
 from torch.utils import data
+import torch.nn as nn
 
 from tqdm.auto import tqdm
 from early_stopping import EarlyStopping
@@ -332,7 +333,12 @@ class Trainer_IDSF:
                 if self.args.model_type != "distilbert":
                     inputs["token_type_ids"] = batch[2]
                 outputs = self.model(**inputs)
-                loss = outputs[0]
+                
+                intent_loss_fct = nn.CrossEntropyLoss()
+                intent_logits, num_intent_labels, intent_label_ids = outputs[-1]
+                loss = intent_loss_fct(
+                    intent_logits.view(-1, num_intent_labels), intent_label_ids.view(-1)
+                )
 
                 if self.args.gradient_accumulation_steps > 1:
                     loss = loss / self.args.gradient_accumulation_steps
