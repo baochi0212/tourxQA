@@ -387,7 +387,7 @@ class Distill_IDSF:
         
     def train_student(self, model_dir='./distillation/student.pt'):
         self.student_trainer = Trainer_IDSF(self.student_args, self.student_module)
-        self.student_trainer.fit_distill(self.train_dataset, self.clval_dataset)
+        self.student_trainer.fit_distill(self.train_dataset, self.val_dataset)
     def get_parameters(self):
         teacher_params = sum(p.numel() for p in self.teacher_module.model.parameters())
         student_params = sum(p.numel() for p in self.student_module.model.parameters())
