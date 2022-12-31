@@ -272,7 +272,6 @@ class Trainer_IDSF:
         self.model.load_state_dict(torch.load(load_dir))
     
     def fit_distill(self, train_dataset, val_dataset, role='teacher'): 
-        self.args.n_epochs = 1
         train_sampler = data.RandomSampler(train_dataset)
         train_dataloader = data.DataLoader(train_dataset, sampler=train_sampler, batch_size=self.args.train_batch_size)
         if self.args.max_steps > 0:
