@@ -9,7 +9,10 @@ chat bot supporting tourism
 
 ### Installations
 
-* via Pip: *pip install -r requirements.txt* 
+* via Pip: 
+```
+pip install -r requirements.txt
+```
 
 ### Executing program
 
