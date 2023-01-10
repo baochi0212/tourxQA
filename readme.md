@@ -20,7 +20,7 @@ pip install -r requirements.txt
 ```
 Use how_to_run_tourxQA.ipynb
 ```
-### Strucure 
+### Struc 
 * model + modules: source/model, source/modules
 * trainer: source/trainer
 * run script: source/runtime
