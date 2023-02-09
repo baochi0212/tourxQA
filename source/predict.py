@@ -277,7 +277,7 @@ def predict_QA(args):
             # print("FULL", tokenizer.decode(inputs["input_ids"]))
             pred = ' '.join(tokenizer.decode(inputs["input_ids"][0]).split()[start:end+1])
             if not args.text_question:
-                with open(args.output_file, 'a') as f:
+                with open(args.output_file, 'w') as f:
                     f.write(pred + '\n')
             else:
                 with open(args.text_question_log_dir, 'w') as f:
