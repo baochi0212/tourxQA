@@ -246,6 +246,7 @@ def predict_QA(args):
     with torch.no_grad():
         #model
         model = load_model(args, args.device)
+        model.eval()
 
 
         tokenizer = load_tokenizer(args)
