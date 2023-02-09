@@ -276,7 +276,7 @@ def predict_QA(args):
             print("PREDICTION", start, end)
             # print("????", inputs["input_ids"][0])
             # print("FULL", tokenizer.decode(inputs["input_ids"]))
-            pred = ' '.join(tokenizer.decode(inputs["input_ids"][0]).split()[start:end+1])
+            pred = ' '.join(tokenizer.decode(inputs["input_ids"][0])[start:end+1])
             if not args.text_question:
                 with open(args.output_file, 'w') as f:
                     f.write(pred + '\n')
