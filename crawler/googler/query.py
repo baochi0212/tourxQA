@@ -1,17 +1,18 @@
 from glob import glob
 import os
 import json
-
+import argparse
 from googlesearch import search
 
 
-from haystack.document_stores import ElasticsearchDocumentStore
-from haystack.utils import convert_files_to_docs
-from haystack.nodes import BM25Retriever
+# from haystack.document_stores import ElasticsearchDocumentStore
+# from haystack.utils import convert_files_to_docs
+# from haystack.nodes import BM25Retriever
 #directory
 working_dir = os.environ['dir']
 database_dir = f"{working_dir}/data/database"
-
+parser = argparse.ArgumentParser()
+parser.add_argument('--query', type=str, default='đà nẵng có món gì ngon ?')
 
 # # Get the host where Elasticsearch is running, default to localhost
 # host = os.environ.get("E`L`ASTICSEARCH_HOST", "localhost")
@@ -78,13 +79,16 @@ class Crawl:
 
         
     def query(self, q="Da Nang co mon gi ngon", num_results=3):
+        #save urls queried
         for i, result in enumerate(search(q + " " + self.name, num_results=num_results)):
-            with open(f"{database_dir}/test/urls.txt", "a") as f:
-                f.write(result + '\n')
+            #only .chn 
+            if result[-3:] == 'chn':
+                with open(f"{database_dir}/test/urls.txt", "a") as f:
+                    f.write(result + '\n')
 
-
-        self.crawl()
-        self.json2txt()
+        #crawl
+        # self.crawl()
+        # self.json2txt()
                 
             
     def crawl(self):
@@ -102,7 +106,8 @@ class Crawl:
 
 
 if __name__ == "__main__":
-    Crawl("kenh14").query(num_results=3)
+    args = parser.parse_args()
+    Crawl("kenh14").query(q=args.query, num_results=1)
     # q="mon an ngon Da Nang" 
     # num_results=3
     # for i, result in enumerate(search(q + " " + 'kenh14', num_results=num_results)):
