@@ -254,7 +254,7 @@ def predict_QA(args):
         lines = read_input_file(args) if not args.text_question else [args.text_question]
         
         for line in lines:
-            q, c = line.split("@@")
+            q, c = line.split("[SEP]")
             input = tokenizer(q.strip(), c.strip(), return_tensors='pt',
                 max_length=args.qa_max_length,
                 truncation="only_second",
@@ -277,12 +277,10 @@ def predict_QA(args):
             # print("????", inputs["input_ids"][0])
             # print("FULL", tokenizer.decode(inputs["input_ids"]))
             pred = tokenizer.decode(inputs["input_ids"][0][start:end+1])
+            #read question from sample input instead of direct text from CLI
             if not args.text_question:
                 with open(args.output_file, 'w') as f:
                     f.write(pred + '\n')
-            else:
-                with open(args.text_question_log_dir, 'w') as f:
-                    f.write("<{}> -> {}\n".format(intent_label_lst[intent_pred], line.strip()))
         logger.info("Prediction done")
 
 
