@@ -4,6 +4,7 @@ import pandas as pd
 from telegram.constants import ParseMode
 from prettytable import PrettyTable
 from underthesea import word_tokenize
+from glob import glob 
 
 
 BOT_TOKEN = os.environ['BOT_TOKEN']
@@ -11,6 +12,7 @@ bot = telebot.TeleBot(BOT_TOKEN)
 working_dir = os.environ['dir']
 google_dir = working_dir + '/crawler/googler'
 source_dir = working_dir +'/source'
+automation_dir = working_dir + '/crawler/automatic_post'
 
 @bot.message_handler(commands=['hello'])
 def send_welcome(message):
@@ -69,16 +71,27 @@ def main_IDSF(message):
         else:
             slot_dict[key] = value.replace('_', ' ')
     
-    #msg
+    #msg 1 -> check the information + request infor:
     table = PrettyTable(list(slot_dict.keys()))
     table.add_row(list(slot_dict.values())) 
     bot.reply_to(message, f'<pre>{table}</pre>', parse_mode=ParseMode.HTML)
+    bot.sendPhoto(message.chat.id, open(automation_dir+'/request.png', 'rb'))
 
-
-
+    #msg 2 -> execute the command:
+    '''
+    - Give out all the details
+    - Give out the prices
+    '''
+    #details:
+    if intent == '<flight>':
+        for file in glob(automation_dir + '/results/*.png'):
+            bot.sendPhoto(message.chat.id, open(file, 'rb'))
+    #cost:
+    if intent == '<cost>':
+        bot.reply_to(message, "The price is: ................")
         
     #answer
-    bot.send_message(message.chat.id, )
+    bot.send_message(message.chat.id, open(""))
 def main_QA(message):
     #get passage
     query = message.text
