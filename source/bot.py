@@ -31,7 +31,7 @@ def main(message):
     #get passage
     query = message.text
     #google search
-    os.system(f'python {google_dir}/query.py --query {query}')
+    os.system(f'python {google_dir}/query.py --query "{query}"')
     #predict
     os.system('python predict.py --pretrained --model_type xlm-roberta-large --pretrained_model  xlm-roberta-large --device cuda --task QA --train_batch_size 16 --eval_batch_size 32 --tuning_metric F1_score --logging_step 1000 --n_epochs 5 --module_role QA')
     #read output
