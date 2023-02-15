@@ -75,7 +75,7 @@ def main_IDSF(message):
     table = PrettyTable(list(slot_dict.keys()))
     table.add_row(list(slot_dict.values())) 
     bot.reply_to(message, f'<pre>{table}</pre>', parse_mode=ParseMode.HTML)
-    bot.sendPhoto(message.chat.id, open(automation_dir+'/request.png', 'rb'))
+    bot.send_photo(message.chat.id, open(automation_dir+'/request.png', 'rb'))
 
     #msg 2 -> execute the command:
     '''
@@ -85,7 +85,7 @@ def main_IDSF(message):
     #details:
     if intent == '<flight>':
         for file in glob(automation_dir + '/results/*.png'):
-            bot.sendPhoto(message.chat.id, open(file, 'rb'))
+            bot.send_photo(message.chat.id, open(file, 'rb'))
     #cost:
     if intent == '<cost>':
         bot.reply_to(message, "The price is: ................")
