@@ -271,15 +271,17 @@ def predict_QA(args):
                 }
                 inputs = dict([(key, value.to(args.device)) for key, value in inputs.items()])
                 #inputs for calculating validation loss
-                outputs = model(**inputs)
-                start, end = outputs
-                print("PREDICTION", start, end)
+                outputs = model(**inputs, confidence=True)
+                start, end, start_value, end_value = outputs
                 # print("????", inputs["input_ids"][0])
                 # print("FULL", tokenizer.decode(inputs["input_ids"]))
                 pred = tokenizer.decode(inputs["input_ids"][0][start:end+1])
                 #read question from sample input instead of direct text from CLI
                 if not args.text_question:
-                        f.write(pred + '\n')
+                        if start_value > 0.5 and end_value > 0.5:
+                            f.write(pred + '\n')
+                        else:
+                            f.write("NO ANSWER" + '\n')
         logger.info("Prediction done")
 
 

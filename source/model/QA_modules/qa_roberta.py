@@ -34,7 +34,7 @@ class QARoberta(nn.Module):
         self.relu = torch.nn.ReLU()
         self.loss_fn = CE_loss_fn
     
-    def forward(self, input_ids, attention_mask, token_type_ids, start=None, end=None):
+    def forward(self, input_ids, attention_mask, token_type_ids, start=None, end=None, confidence=False):
         outputs = self.bert_model(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)['last_hidden_state']
         logits = self.relu(self.linear(outputs))
         start_logits, end_logits = logits[:, :, 0], logits[:, :, 1]
@@ -44,4 +44,8 @@ class QARoberta(nn.Module):
             return loss, (start_logits, end_logits)
         else:
             #return the index for prediction
-            return torch.argmax(start_logits, -1), torch.argmax(end_logits, -1)
+            if not confidence:
+                return torch.argmax(start_logits, -1), torch.argmax(end_logits, -1)
+            else:
+                #use for confidence level of inference
+                return torch.argmax(start_logits, -1), torch.argmax(end_logits, -1), torch.max(start_logits, -1)[0], torch.max(end_logits, -1)[0]
