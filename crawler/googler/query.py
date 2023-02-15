@@ -124,14 +124,17 @@ class Crawl:
                 
     def crawl(self):
         #reset url-file and input-file after one crawling session
-        os.system(f'rm {database_dir}/test/urls.txt && touch {database_dir}/test/urls.txt') 
+        
         os.system(f'rm {working_dir}/source/sample_input.txt && touch {working_dir}/source/sample_input.txt') 
         os.system(f'rm {database_dir}/test/text.json && touch {database_dir}/test/text.json')
         current_docs = len(glob(f"{database_dir}/test/*.json"))
         print("NUM DOCS", current_docs)
         print("INPUT LINES", len(open(f"{working_dir}/source/sample_input.txt", 'r').readlines()))
         os.system(f"scrapy runspider {working_dir}/crawler/crawler/spiders/{self.name}.py -o {database_dir}/test/text.json")
+        print("OUTPUT LINES", len(open(f"{database_dir}/test/text.json", 'r').readlines()))
         
+        #remove urls
+        os.system(f'rm {database_dir}/test/urls.txt && touch {database_dir}/test/urls.txt') 
         
     
 
@@ -141,7 +144,7 @@ class Crawl:
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    Crawl("kenh14").query(q=args.query, num_results=3)
+    Crawl("kenh14").query(q=args.query, num_results=5)
     # q="mon an ngon Da Nang" 
     # num_results=3
     # for i, result in enumerate(search(q + " " + 'kenh14', num_results=num_results)):
