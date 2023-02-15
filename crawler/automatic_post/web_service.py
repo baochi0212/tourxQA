@@ -11,6 +11,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import json
+import os
 import fuckit
 import time
 import argparse
@@ -27,7 +28,7 @@ display.start()
 options.add_argument('--headless')
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
 # create instance of Chrome webdriver
-automation_dir = "/home/xps/educate/code/hust/XQA/crawler/automatic_post"
+automation_dir = os.environ['dir'] + "/crawler/automatic_post"
 driver_path = f"{automation_dir}/chromedriver"
 driver=webdriver.Chrome(executable_path=driver_path, chrome_options=options,  desired_capabilities={"page_load_strategy": "none"})
 
