@@ -87,11 +87,9 @@ def main_IDSF(message):
         for file in glob(automation_dir + '/results/*.png'):
             bot.send_photo(message.chat.id, open(file, 'rb'))
     #cost:
-    if intent == '<cost>':
+    if intent == '<airfare>':
         bot.reply_to(message, "The price is: ................")
         
-    #answer
-    bot.send_message(message.chat.id, open(""))
 def main_QA(message):
     #get passage
     query = message.text
