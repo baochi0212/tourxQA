@@ -252,35 +252,34 @@ def predict_QA(args):
         tokenizer = load_tokenizer(args)
         #lines format: <Q @@ C>  
         lines = read_input_file(args) if not args.text_question else [args.text_question]
-        
-        for line in lines:
-            q, c = line.split("[SEP]")
-            input = tokenizer(q.strip(), c.strip(), return_tensors='pt',
-                max_length=args.qa_max_length,
-                truncation="only_second",
-                return_offsets_mapping=True,
-                padding="max_length",
-                return_token_type_ids=True,)
+        with open(args.output_file, 'w') as f:
+            for line in lines:
+                q, c = line.split("[SEP]")
+                input = tokenizer(q.strip(), c.strip(), return_tensors='pt',
+                    max_length=args.qa_max_length,
+                    truncation="only_second",
+                    return_offsets_mapping=True,
+                    padding="max_length",
+                    return_token_type_ids=True,)
 
+            
         
-    
-            inputs = {
-                "input_ids": input.input_ids,
-                "attention_mask": input.attention_mask,
-                "token_type_ids": input.token_type_ids,
-            }
-            inputs = dict([(key, value.to(args.device)) for key, value in inputs.items()])
-            #inputs for calculating validation loss
-            outputs = model(**inputs)
-            start, end = outputs
-            print("PREDICTION", start, end)
-            # print("????", inputs["input_ids"][0])
-            # print("FULL", tokenizer.decode(inputs["input_ids"]))
-            pred = tokenizer.decode(inputs["input_ids"][0][start:end+1])
-            #read question from sample input instead of direct text from CLI
-            if not args.text_question:
-                with open(args.output_file, 'w') as f:
-                    f.write(pred + '\n')
+                inputs = {
+                    "input_ids": input.input_ids,
+                    "attention_mask": input.attention_mask,
+                    "token_type_ids": input.token_type_ids,
+                }
+                inputs = dict([(key, value.to(args.device)) for key, value in inputs.items()])
+                #inputs for calculating validation loss
+                outputs = model(**inputs)
+                start, end = outputs
+                print("PREDICTION", start, end)
+                # print("????", inputs["input_ids"][0])
+                # print("FULL", tokenizer.decode(inputs["input_ids"]))
+                pred = tokenizer.decode(inputs["input_ids"][0][start:end+1])
+                #read question from sample input instead of direct text from CLI
+                if not args.text_question:
+                        f.write(pred + '\n')
         logger.info("Prediction done")
 
 
