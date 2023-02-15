@@ -53,8 +53,32 @@ def main_IDSF(message):
     
     #idsf
     os.system('python predict.py --pretrained --model_type phobert --n_epochs 50 --train_batch_size 32 --eval_batch_size 32  --device cuda    --logging_steps 140 --module_role IDSF  --intent_loss_coef 0.6 --learning_rate 5e-5 --predict_task "test example"')
+    #parse output 
+    outputs = open("./sample_output.txt", "r").readlines()[0].strip()
+    # -> intent
+    intent = outputs.split('->')[0]
+    # -> slots
+    slot_dict = {}
+    slot_outputs = [output.split(']')[0] for output in outputs.split('[')[1:]]
+    for slot_output in slot_outputs:
+        value, key = slot_output.split(':')
+        key = key.replace('B-', '')
+        key = key.replace('I-', '')
+        if key in slot_dict.keys():
+            slot_dict[key] += f' {value}'
+        else:
+            slot_dict[key] = value.replace('_', ' ')
+    
+    #msg
+    table = PrettyTable(list(slot_dict.keys()))
+    table.add_row(list(slot_dict.values())) 
+    bot.reply_to(message, f'<pre>{table}</pre>', parse_mode=ParseMode.HTML)
+
+
+
+        
     #answer
-    bot.send_message(message.chat.id, open("./sample_output.txt", "r").readlines()[0].strip())
+    bot.send_message(message.chat.id, )
 def main_QA(message):
     #get passage
     query = message.text
