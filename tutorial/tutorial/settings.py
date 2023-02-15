@@ -1,4 +1,4 @@
-# Scrapy settings for chatbot project
+# Scrapy settings for tutorial project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,15 +7,14 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'crawler'
+BOT_NAME = "tutorial"
 
-SPIDER_MODULES = ['crawler.spiders']
-NEWSPIDER_MODULE = 'crawler.spiders'
-# FEED_EXPORT_ENCODING = 'utf-8'
+SPIDER_MODULES = ["tutorial.spiders"]
+NEWSPIDER_MODULE = "tutorial.spiders"
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'chatbot (+http://www.yourdomain.com)'
+#USER_AGENT = "tutorial (+http://www.yourdomain.com)"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -39,32 +38,32 @@ ROBOTSTXT_OBEY = True
 
 # Override the default request headers:
 #DEFAULT_REQUEST_HEADERS = {
-#   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-#   'Accept-Language': 'en',
+#    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+#    "Accept-Language": "en",
 #}
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'chatbot.middlewares.ChatbotSpiderMiddleware': 543,
+#    "tutorial.middlewares.TutorialSpiderMiddleware": 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'chatbot.middlewares.ChatbotDownloaderMiddleware': 543,
+#    "tutorial.middlewares.TutorialDownloaderMiddleware": 543,
 #}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
 #EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
+#    "scrapy.extensions.telnet.TelnetConsole": None,
 #}
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 #ITEM_PIPELINES = {
-#    'chatbot.pipelines.ChatbotPipeline': 300,
+#    "tutorial.pipelines.TutorialPipeline": 300,
 #}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -84,49 +83,11 @@ ROBOTSTXT_OBEY = True
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
 #HTTPCACHE_ENABLED = True
 #HTTPCACHE_EXPIRATION_SECS = 0
-#HTTPCACHE_DIR = 'httpcache'
+#HTTPCACHE_DIR = "httpcache"
 #HTTPCACHE_IGNORE_HTTP_CODES = []
-#HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+#HTTPCACHE_STORAGE = "scrapy.extensions.httpcache.FilesystemCacheStorage"
 
-# SPLASH_URL = 'http://127.0.0.1:8050'
-# DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'
-# HTTPCACHE_STORAGE = 'scrapy_splash.SplashAwareFSCacheStorage'
-# COOKIES_ENABLED = True 
-# SPLASH_COOKIES_DEBUG = False
-# SPIDER_MIDDLEWARES = {
-#     'scrapy_splash.SplashDeduplicateArgsMiddleware': 100,
-# }
-# DOWNLOADER_MIDDLEWARES = {
-#     'scrapy_splash.SplashCookiesMiddleware': 723,
-#     'scrapy_splash.SplashMiddleware': 725,
-# 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
-# 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': 400,
-# }
-
-# settings.py
-
-# # Splash Server Endpoint
-# SPLASH_URL = 'http://localhost:8050'
-
-
-# # Enable Splash downloader middleware and change HttpCompressionMiddleware priority
-# DOWNLOADER_MIDDLEWARES = {
-#     'scrapy_splash.SplashCookiesMiddleware': 723,
-#     'scrapy_splash.SplashMiddleware': 725,
-#     'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
-# }
-
-# # Enable Splash Deduplicate Args Filter
-# SPIDER_MIDDLEWARES = {
-#     'scrapy_splash.SplashDeduplicateArgsMiddleware': 100,
-# }
-
-# # Define the Splash DupeFilter
-# DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'
-
+# Set settings whose default value is deprecated to a future-proof value
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
-
-
-

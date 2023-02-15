@@ -31,7 +31,7 @@ parser.add_argument('--query', type=str, default='đà nẵng có món gì ngon 
 class Crawl:
     def __init__(self, bot_name="kenh14"):
         self.name = bot_name
-        
+    
     def json2txt(self):
         def parse(string):
             new_string = ""

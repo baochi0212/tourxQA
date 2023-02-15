@@ -254,6 +254,7 @@ def predict_QA(args):
         lines = read_input_file(args) if not args.text_question else [args.text_question]
         with open(args.output_file, 'w') as f:
             for line in lines:
+                output_file = ' '.join([line.strip() for line in open(args.output_file, 'r').readlines()])
                 q, c = line.split("[SEP]")
                 input = tokenizer(q.strip(), c.strip(), return_tensors='pt',
                     max_length=args.qa_max_length,
@@ -280,7 +281,10 @@ def predict_QA(args):
                 #read question from sample input instead of direct text from CLI
                 if not args.text_question:
                         if start_value > 0.3 or end_value > 0.3:
-                            f.write(pred + '\n')
+                            if pred in output_file:
+                                continue
+                            else:
+                                f.write(pred + '\n')
                         else:
                             f.write("NO ANSWER" + '\n')
         logger.info("Prediction done")
