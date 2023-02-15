@@ -31,9 +31,6 @@ parser.add_argument('--query', type=str, default='đà nẵng có món gì ngon 
 class Crawl:
     def __init__(self, bot_name="kenh14"):
         self.name = bot_name
-        #urls for bot to scrape
-        if not os.path.exists(f"{database_dir}/test/urls.txt"):
-            open(f"{database_dir}/test/urls.txt", "w")
     def json2txt(self):
         def parse(string):
             new_string = ""
@@ -109,8 +106,9 @@ class Crawl:
     def query(self, q="Da Nang co mon gi ngon", num_results=5):
         #urls.txt have been reset in self.crawl() method
         #save urls queried
+        print("URL CHECKING !!!!.....")
         for i, result in enumerate(search(q + " " + self.name, num_results=num_results)):
-            print("URL CHECKING !!!!.....")
+            
             #only .chn 
             if result[-3:] == 'chn':
                 with open(f"{database_dir}/test/urls.txt", "a") as f_write:
