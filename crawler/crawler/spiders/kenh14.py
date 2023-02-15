@@ -10,8 +10,8 @@ parser = argparse.ArgumentParser()
 working_dir = os.environ['dir']
 database_dir = f"{working_dir}/data/database"
 crawler_dir = working_dir + "crawler"
-sys.args.append(crawler_dir)
-sys.args.append(working_dir)
+sys.argv.append(crawler_dir)
+sys.argv.append(working_dir)
 
 
 
