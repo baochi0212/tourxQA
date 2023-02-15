@@ -95,7 +95,7 @@ class Crawl:
             input = input.replace('<s>', '')
             f_write.write(input + '\n')
         f_write.close()
-        os.system(f'rm {json_file} && touch {json_file}')
+        
 
 
 
@@ -123,16 +123,18 @@ class Crawl:
         self.to_input(q, f"{database_dir}/test/text.json")
                 
     def crawl(self):
-        current_docs = len(glob(f"{database_dir}/test/*.json"))
-        print("num", current_docs)
-        os.system(f"scrapy runspider {working_dir}/crawler/crawler/spiders/{self.name}.py -o {database_dir}/test/text.json")
-        
-        
         #reset url-file and input-file after one crawling session
         f_write = open(f"{database_dir}/test/urls.txt", "w")
         f_write.close()
         f_write = open(f"{working_dir}/test/sample_input.txt", "w")
         f_write.close()
+        os.system(f'rm {database_dir}/test/text.json && touch {database_dir}/test/text.json')
+        current_docs = len(glob(f"{database_dir}/test/*.json"))
+        print("NUM DOCS", current_docs)
+        os.system(f"scrapy runspider {working_dir}/crawler/crawler/spiders/{self.name}.py -o {database_dir}/test/text.json")
+        
+        
+    
 
 
 
