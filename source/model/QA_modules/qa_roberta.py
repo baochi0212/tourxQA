@@ -49,4 +49,4 @@ class QARoberta(nn.Module):
                 return torch.argmax(start_logits, -1), torch.argmax(end_logits, -1)
             else:
                 #use for confidence level of inference
-                return torch.argmax(start_logits, -1), torch.argmax(end_logits, -1), torch.max(self.softmax(start_logits, -1), -1)[0], torch.argmax(self.softmax(end_logits, -1), -1)[0]
+                return torch.argmax(start_logits, -1), torch.argmax(end_logits, -1), torch.max(self.softmax(start_logits, -1), -1)[0], torch.max(self.softmax(end_logits, -1), -1)[0]
