@@ -5,9 +5,13 @@ from crawler.utils import parse_json, parse_csv
 import os
 import pandas as pd
 import argparse
+import sys
 parser = argparse.ArgumentParser()
 working_dir = os.environ['dir']
 database_dir = f"{working_dir}/data/database"
+crawler_dir = working_dir + "crawler/crawler"
+sys.args.append(crawler_dir)
+
 
 
 
