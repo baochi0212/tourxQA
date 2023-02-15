@@ -33,6 +33,7 @@ class QARoberta(nn.Module):
         self.linear = torch.nn.Linear(config.hidden_size, 2)
         self.relu = torch.nn.ReLU()
         self.loss_fn = CE_loss_fn
+        self.softmax = torch.nn.function.softmax
     
     def forward(self, input_ids, attention_mask, token_type_ids, start=None, end=None, confidence=False):
         outputs = self.bert_model(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)['last_hidden_state']
@@ -48,4 +49,4 @@ class QARoberta(nn.Module):
                 return torch.argmax(start_logits, -1), torch.argmax(end_logits, -1)
             else:
                 #use for confidence level of inference
-                return torch.argmax(start_logits, -1), torch.argmax(end_logits, -1), torch.max(start_logits, -1)[0], torch.max(end_logits, -1)[0]
+                return torch.argmax(start_logits, -1), torch.argmax(self.softmax(end_logits, -1), -1), torch.max(self.softmax(start_logits, -1), -1)[0], torch.max(end_logits, -1)[0]
