@@ -10,8 +10,6 @@ working_dir = os.environ['dir']
 database_dir = f"{working_dir}/data/database"
 crawler_dir = working_dir + "crawler"
 sys.path.append(crawler_dir)
-sys.path.append(working_dir)
-
 from crawler.items import ChatbotItem
 from crawler.utils import parse_json, parse_csv
 
