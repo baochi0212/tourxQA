@@ -8,7 +8,7 @@ import sys
 parser = argparse.ArgumentParser()
 working_dir = os.environ['dir']
 database_dir = f"{working_dir}/data/database"
-crawler_dir = working_dir + "crawler/crawler"
+crawler_dir = working_dir + "/crawler/crawler"
 sys.path.append(crawler_dir)
 from items import ChatbotItem
 from utils import parse_json, parse_csv
