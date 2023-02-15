@@ -31,7 +31,7 @@ parser.add_argument('--query', type=str, default='đà nẵng có món gì ngon 
 class Crawl:
     def __init__(self, bot_name="kenh14"):
         self.name = bot_name
-        os.system(f'mkdir {database_dir}/test/urls.txt"')
+        
     def json2txt(self):
         def parse(string):
             new_string = ""
@@ -95,7 +95,7 @@ class Crawl:
             input = input.replace('<s>', '')
             f_write.write(input + '\n')
         f_write.close()
-
+        os.system(f'rm {json_file} && touch {json_file}')
 
 
 
@@ -105,6 +105,8 @@ class Crawl:
         
 
     def query(self, q="Da Nang co mon gi ngon", num_results=5):
+        #always keep the system fresh:
+        #if [ -e "file" ] ; then echo True \n fi
         #urls.txt have been reset in self.crawl() method
         #save urls queried
         print("URL CHECKING !!!!.....")
@@ -129,7 +131,7 @@ class Crawl:
         #reset url-file and input-file after one crawling session
         f_write = open(f"{database_dir}/test/urls.txt", "w")
         f_write.close()
-        f_write = open(f"{database_dir}/test/urls.txt", "w")
+        f_write = open(f"{working_dir}/test/sample_input.txt", "w")
         f_write.close()
 
 
