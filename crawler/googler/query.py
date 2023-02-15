@@ -124,10 +124,8 @@ class Crawl:
                 
     def crawl(self):
         #reset url-file and input-file after one crawling session
-        f_write = open(f"{database_dir}/test/urls.txt", "w")
-        f_write.close()
-        f_write = open(f"{working_dir}/test/sample_input.txt", "w")
-        f_write.close()
+        os.system(f'rm {database_dir}/test/urls.txt" && touch {database_dir}/test/urls.txt') 
+        os.system(f'rm {working_dir}/test/sample_input.txt" && touch {working_dir}/test/sample_input.txt') 
         os.system(f'rm {database_dir}/test/text.json && touch {database_dir}/test/text.json')
         current_docs = len(glob(f"{database_dir}/test/*.json"))
         print("NUM DOCS", current_docs)
