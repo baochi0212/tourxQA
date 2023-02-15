@@ -129,6 +129,7 @@ class Crawl:
         os.system(f'rm {database_dir}/test/text.json && touch {database_dir}/test/text.json')
         current_docs = len(glob(f"{database_dir}/test/*.json"))
         print("NUM DOCS", current_docs)
+        print("INPUT LINES", len(open(f"{working_dir}/source/sample_input.txt", 'r').readlines()))
         os.system(f"scrapy runspider {working_dir}/crawler/crawler/spiders/{self.name}.py -o {database_dir}/test/text.json")
         
         
