@@ -9,7 +9,7 @@ import sys
 parser = argparse.ArgumentParser()
 working_dir = os.environ['dir']
 database_dir = f"{working_dir}/data/database"
-crawler_dir = working_dir + "crawler/crawler"
+crawler_dir = working_dir + "crawler"
 sys.args.append(crawler_dir)
 
 
