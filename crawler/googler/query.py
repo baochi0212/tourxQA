@@ -92,7 +92,7 @@ class Crawl:
         f_write = open(sample_input_dir, 'w')
         for input_ids in tokens['input_ids']:
             input = tokenizer.decode(input_ids)
-            print("TEXT", input)
+            print("TEXT", input[:10], '................................')
             input = input.replace('</s></s>', '[SEP]')
             input = input.replace('<s>', '')
             f_write.write(input + '\n')
@@ -106,10 +106,11 @@ class Crawl:
 
         
 
-    def query(self, q="Da Nang co mon gi ngon", num_results=3):
+    def query(self, q="Da Nang co mon gi ngon", num_results=5):
         #urls.txt have been reset in self.crawl() method
         #save urls queried
         for i, result in enumerate(search(q + " " + self.name, num_results=num_results)):
+            print("URL CHECKING !!!!.....")
             #only .chn 
             if result[-3:] == 'chn':
                 with open(f"{database_dir}/test/urls.txt", "a") as f_write:
