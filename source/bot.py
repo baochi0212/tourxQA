@@ -106,7 +106,7 @@ def main_IDSF(message):
         
 def main_QA(message):
     #get passage and urls
-    urls = ' '.join([line.strip() for line in open(f'{working_dir}/database/test/urls.txt', 'r').readlines()])
+    urls = ' '.join([line.strip() for line in open(f'{working_dir}/data/database/test/urls.txt', 'r').readlines()])
     query = message.text
     #google search
     os.system(f'python {google_dir}/query.py --query "{query}"')
