@@ -106,10 +106,10 @@ def main_IDSF(message):
         
 def main_QA(message):
     #get passage and urls
-    urls = ' '.join([line.strip() for line in open(f'{working_dir}/data/database/test/urls.txt', 'r').readlines()])
     query = message.text
     #google search
     os.system(f'python {google_dir}/query.py --query "{query}"')
+    urls = ' '.join([line.strip() for line in open(f'{working_dir}/data/database/test/urls.txt', 'r').readlines()])
     #predict
     os.system('python predict.py --pretrained --model_type xlm-roberta-large --pretrained_model  xlm-roberta-large --device cuda --task QA --train_batch_size 16 --eval_batch_size 32 --tuning_metric F1_score --logging_step 1000 --n_epochs 5 --module_role QA')
     #read output
