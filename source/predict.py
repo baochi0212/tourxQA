@@ -279,7 +279,7 @@ def predict_QA(args):
                 pred = tokenizer.decode(inputs["input_ids"][0][start:end+1])
                 #read question from sample input instead of direct text from CLI
                 if not args.text_question:
-                        if start_value > 0.3 or end_value > 0.3:
+                        if start_value > 0.3 and end_value > 0.3:
                             if pred in output_file:
                                 continue
                             else:
