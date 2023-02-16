@@ -58,9 +58,12 @@ def main_IDSF(message):
     outputs = open("./sample_output.txt", "r").readlines()[0].strip()
     # -> intent
     intent = outputs.split('->')[0]
+    intent = intent.replace('<', '').replace('>', '')
+    print(intent)
     # -> slots
     slot_dict = {}
-    slot_dict['intent'] = intent.replace('<', '').replace('>', '')
+
+    # slot_dict['intent'] = intent
     slot_outputs = [output.split(']')[0] for output in outputs.split('[')[1:]]
     for slot_output in slot_outputs:
         value, key = slot_output.split(':')
