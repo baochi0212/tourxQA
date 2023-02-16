@@ -67,13 +67,14 @@ def main_IDSF(message):
     slot_outputs = [output.split(']')[0] for output in outputs.split('[')[1:]]
     for slot_output in slot_outputs:
         value, key = slot_output.split(':')
+        while '_' in value:
+            value = value.replace('_', ' ')
         key = key.replace('B-', '')
         key = key.replace('I-', '')
         if key in slot_dict.keys():
             slot_dict[key] += f' {value}'
         else:
-            while '_' in value:
-                value = value.replace('_', ' ')
+          
             slot_dict[key] = value
     #msg 1 -> check the information + request infor:
     table = PrettyTable(list(slot_dict.keys()))
