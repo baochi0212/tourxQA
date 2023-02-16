@@ -97,6 +97,7 @@ def main_IDSF(message):
     print("COST", intent)
     if intent.strip() == 'airfare':
         table = ''.join(open(f'{automation_dir}/results/prices.txt', 'r').readlines())
+        print(table)
         bot.send_message(message.chat.id, "The price info is: ....")
         bot.send_message(message.chat.id, f'<pre>{table}</pre>', parse_mode=ParseMode.HTML)
 
