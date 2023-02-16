@@ -60,7 +60,7 @@ def main_IDSF(message):
     intent = outputs.split('->')[0]
     # -> slots
     slot_dict = {}
-    # slot_dict['intent'] = intent
+    slot_dict['intent'] = rf'{intent}'
     slot_outputs = [output.split(']')[0] for output in outputs.split('[')[1:]]
     for slot_output in slot_outputs:
         value, key = slot_output.split(':')
