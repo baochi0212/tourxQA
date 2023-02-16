@@ -47,7 +47,7 @@ def main_IDSF(message):
         f_write = open("sample_input.txt", "w")
         output_write = open("sample_output.txt", "w")
         for line in f.readlines():
-            print(line)
+            print(lineQA)
             f_write.write(word_tokenize(line, format="text"))
     f_write.close()
     output_write.close()
@@ -61,7 +61,7 @@ def main_IDSF(message):
     intent = outputs.split('->')[0]
     # -> slots
     slot_dict = {}
-    slot_dict['intent'] = intent
+    # slot_dict['intent'] = intent
     slot_outputs = [output.split(']')[0] for output in outputs.split('[')[1:]]
     for slot_output in slot_outputs:
         value, key = slot_output.split(':')
