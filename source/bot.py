@@ -77,7 +77,7 @@ def main_IDSF(message):
     #msg 1 -> check the information + request infor:
     table = PrettyTable(list(slot_dict.keys()))
     table.add_row(list(slot_dict.values())) 
-    bot.reply_to(message, f'<pre>{table}</pre>', parse_mode=ParseMode.HTML)
+    bot.send_message(message.chat.id, f'<pre>{table}</pre>', parse_mode=ParseMode.HTML)
     
     #automated filling + crawling stuffs
     os.system(f'python {working_dir}/crawler/auto*/web*.py')
