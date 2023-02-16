@@ -280,7 +280,7 @@ def predict_QA(args):
                 #read question from sample input instead of direct text from CLI
                 if not args.text_question:
                         if start_value + end_value > 0.9:
-                            if pred in output_file:
+                            if pred.strip() in output_file:
                                 continue
                             else:
                                 f.write(pred + '\n')
