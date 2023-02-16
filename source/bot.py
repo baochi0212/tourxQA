@@ -97,7 +97,7 @@ def main_IDSF(message):
     #cost:
     print("COST", intent)
     if intent.strip() == 'airfare':
-        table = pickle.load(open(f'{automation_dir}/results/prices.pkl', 'rb')
+        table = pickle.load(open(f'{automation_dir}/results/prices.pkl', 'rb'))
         print(table)
         bot.send_message(message.chat.id, "The price info is: ....")
         bot.send_message(message.chat.id, f'<pre>{table}</pre>', parse_mode=ParseMode.HTML)
