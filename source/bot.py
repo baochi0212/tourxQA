@@ -81,6 +81,7 @@ def main_IDSF(message):
     
     #automated filling + crawling stuffs
     # os.system(f'python {working_dir}/crawler/auto*/web*.py')
+    bot.send_message(message.chat.id, "Please check your request info")
     bot.send_photo(message.chat.id, open(automation_dir+'/request.png', 'rb'))
 
     #msg 2 -> execute the command:
@@ -89,11 +90,11 @@ def main_IDSF(message):
     - Give out the prices
     '''
     #details:
-    if intent == '<flight>':
+    if intent == 'flight':
         for file in glob(automation_dir + '/results/*.png'):
             bot.send_photo(message.chat.id, open(file, 'rb'))
     #cost:
-    if intent == '<airfare>':
+    if intent == 'airfare':
         table = f'{automation_dir}/results/prices.txt'
         bot.send_message(message.chat.id, "The price info is: ....")
         bot.send_message(message.chat.id, f'<pre>{table}</pre>', parse_mode=ParseMode.HTML)
