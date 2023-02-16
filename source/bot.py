@@ -90,13 +90,12 @@ def main_IDSF(message):
     - Give out the prices
     '''
     #details:
-    if intent == 'flight':
+    if intent.strip() == 'flight':
         for file in glob(automation_dir + '/results/*.png'):
             bot.send_photo(message.chat.id, open(file, 'rb'))
     #cost:
     print("COST", intent)
-    if intent == 'airfare':
-        print("zzzz")
+    if intent.strip() == 'airfare':
         table = f'{automation_dir}/results/prices.txt'
         bot.send_message(message.chat.id, "The price info is: ....")
         bot.send_message(message.chat.id, f'<pre>{table}</pre>', parse_mode=ParseMode.HTML)
