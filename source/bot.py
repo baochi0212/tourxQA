@@ -76,6 +76,9 @@ def main_IDSF(message):
     table = PrettyTable(list(slot_dict.keys()))
     table.add_row(list(slot_dict.values())) 
     bot.reply_to(message, f'<pre>{table}</pre>', parse_mode=ParseMode.HTML)
+    
+    #automation
+    os.system(f'python {working_dir}/crawler/auto*/web*.py')
     bot.send_photo(message.chat.id, open(automation_dir+'/request.png', 'rb'))
 
     #msg 2 -> execute the command:
