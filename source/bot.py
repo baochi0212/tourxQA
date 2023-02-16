@@ -54,7 +54,7 @@ def main_IDSF(message):
 
     
     #idsf
-    os.system('python predict.py --pretrained --model_type phobert --n_epochs 15 --train_batch_size 32 --eval_batch_size 32  --device cuda    --logging_steps 140 --module_role IDSF  --intent_loss_coef 0.6 --learning_rate 5e-5 --predict_task "test example"')
+    os.system('python predict.py --pretrained --model_type phobert --n_epochs 30 --train_batch_size 32 --eval_batch_size 32  --device cuda    --logging_steps 140 --module_role IDSF  --intent_loss_coef 0.6 --learning_rate 5e-5 --predict_task "test example"')
     #parse output 
     outputs = open("./sample_output.txt", "r").readlines()[0].strip()
     # -> intent
@@ -77,7 +77,7 @@ def main_IDSF(message):
     table.add_row(list(slot_dict.values())) 
     bot.reply_to(message, f'<pre>{table}</pre>', parse_mode=ParseMode.HTML)
     
-    #automation
+    #automated filling + crawling stuffs
     os.system(f'python {working_dir}/crawler/auto*/web*.py')
     bot.send_photo(message.chat.id, open(automation_dir+'/request.png', 'rb'))
 
