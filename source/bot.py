@@ -117,6 +117,7 @@ def main_QA(message):
     for msg in open(source_dir + '/sample_output.txt', 'r'):
         if msg.strip() != 'NO ANSWER' and len(msg.strip()) > 0:
             bot.send_message(message.chat.id, msg.strip())
+    print(urls)
     bot.send_message(message.chat.id, f"View more at: {urls}")
 
 
