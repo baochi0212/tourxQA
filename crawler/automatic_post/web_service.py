@@ -14,6 +14,7 @@ import json
 import os
 import fuckit
 import time
+from prettytable import PrettyTable
 import argparse
 
 from pyvirtualdisplay import Display
@@ -81,16 +82,31 @@ def send_request(from_city='Hai Phong', to_city='Vinh', num_class=0, pass_dict={
     time.sleep(1)
     driver.find_elements(By.CSS_SELECTOR, "div[class='css-901oao css-bfa6kz r-jwli3a r-1sixt3s r-1o4mh9l r-b88u0q r-f0eezp r-q4m81j']")[1].click()
     
-    #wait and take screenshot
+    #wait, scroll and take screenshot + scrape the price of each
+    os.system(f"rm {automation_dir}/results/prices.txt")
     print("FILLED THE FORM !!!")
+    time.sleep(3)
     num_images = args.num_images
+    temp = 0
     for i in range(num_images):
         time.sleep(3)
         window_height = driver.get_window_size()['height']
-        print(window_height)
+        if window_height == temp: break
+        else: temp = window_height
         driver.execute_script(f"window.scrollTo(0, {window_height*(i+1)});")
         time.sleep(1)
-        driver.save_screenshot(f"{automation_dir}/results/temp{i}.png")
+        #css part
+        table = PrettyTable(['brand', 'price'])
+        
+        brand = [b.text for b in driver.find_elements(By.CSS_SELECTOR, "[class='css-901oao r-1sixt3s r-ubezar r-majxgm r-135wba7 r-1fnot1l r-fdjqy7']")]
+        price = [p.text for p in driver.find_elements(By.CSS_SELECTOR, "[class='css-901oao r-1sixt3s r-adyw6z r-b88u0q r-rjixqe r-fdjqy7']")]
+        for b, p in zip(brand, price): table.add_row([b, p])
+        with open(f"{automation_dir}/results/prices.txt", 'w') as f:
+            f.write(str(table))
+        f.close()
+
+
+        # driver.save_screenshot(f"{automation_dir}/results/temp{i}.png")
 
 
     

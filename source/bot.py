@@ -80,7 +80,7 @@ def main_IDSF(message):
     bot.send_message(message.chat.id, f'<pre>{table}</pre>', parse_mode=ParseMode.HTML)
     
     #automated filling + crawling stuffs
-    os.system(f'python {working_dir}/crawler/auto*/web*.py')
+    # os.system(f'python {working_dir}/crawler/auto*/web*.py')
     bot.send_photo(message.chat.id, open(automation_dir+'/request.png', 'rb'))
 
     #msg 2 -> execute the command:
@@ -94,7 +94,10 @@ def main_IDSF(message):
             bot.send_photo(message.chat.id, open(file, 'rb'))
     #cost:
     if intent == '<airfare>':
-        bot.reply_to(message, "The price is: ................")
+        table = f'{automation_dir}/results/prices.txt'
+        bot.send_message(message.chat.id, "The price info is: ....")
+        bot.send_message(message.chat.id, f'<pre>{table}</pre>', parse_mode=ParseMode.HTML)
+
         
 def main_QA(message):
     #get passage

@@ -1,0 +1,14 @@
++---------------------------+---------------+
+|           brand           |     price     |
++---------------------------+---------------+
+|    VietJet Air + 1 more   | 2.872.400 VND |
+|      Vietnam Airlines     | 5.341.000 VND |
+|      Vietnam Airlines     | 5.567.000 VND |
+|      Vietnam Airlines     | 5.582.000 VND |
+|      Vietnam Airlines     | 5.582.000 VND |
+|    VietJet Air + 1 more   | 5.743.400 VND |
+| Vietnam Airlines + 1 more | 6.289.400 VND |
+| Vietnam Airlines + 1 more | 6.348.400 VND |
+| Vietnam Airlines + 1 more | 6.436.400 VND |
+| Vietnam Airlines + 1 more | 6.512.000 VND |
++---------------------------+---------------+
