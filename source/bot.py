@@ -94,7 +94,9 @@ def main_IDSF(message):
         for file in glob(automation_dir + '/results/*.png'):
             bot.send_photo(message.chat.id, open(file, 'rb'))
     #cost:
+    print("COST")
     if intent == 'airfare':
+        print("zzzz")
         table = f'{automation_dir}/results/prices.txt'
         bot.send_message(message.chat.id, "The price info is: ....")
         bot.send_message(message.chat.id, f'<pre>{table}</pre>', parse_mode=ParseMode.HTML)
