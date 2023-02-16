@@ -105,16 +105,20 @@ def main_IDSF(message):
 
         
 def main_QA(message):
-    #get passage
+    #get passage and urls
+    urls = ' '.join([line.strip() for line in open(f'{working_dir}/database/test/urls.txt', 'r').readlines()])
     query = message.text
     #google search
     os.system(f'python {google_dir}/query.py --query "{query}"')
     #predict
     os.system('python predict.py --pretrained --model_type xlm-roberta-large --pretrained_model  xlm-roberta-large --device cuda --task QA --train_batch_size 16 --eval_batch_size 32 --tuning_metric F1_score --logging_step 1000 --n_epochs 5 --module_role QA')
     #read output
+    bot.send_message(message.chat.id, "HERE IS SOME INFORMATION I FOUND :))")
     for msg in open(source_dir + '/sample_output.txt', 'r'):
         if msg.strip() != 'NO ANSWER' and len(msg.strip()) > 0:
             bot.send_message(message.chat.id, msg.strip())
+    bot.send_message(message.chat.id, f"View more at: {urls}")
+
 
     # outputs = get_prediction(input)
     # table = PrettyTable(['text', 'label', 'probability'])

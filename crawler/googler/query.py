@@ -109,6 +109,8 @@ class Crawl:
         #if [ -e "file" ] ; then echo True \n fi
         #urls.txt have been reset in self.crawl() method
         #save urls queried
+        #remove urls
+        os.system(f'rm {database_dir}/test/urls.txt && touch {database_dir}/test/urls.txt') 
         print("URL CHECKING !!!!.....")
         for i, result in enumerate(search(q + " " + self.name, num_results=num_results)):
             
@@ -133,8 +135,7 @@ class Crawl:
         os.system(f"scrapy runspider {working_dir}/crawler/crawler/spiders/{self.name}.py -o {database_dir}/test/text.json")
         print("OUTPUT LINES", len(open(f"{database_dir}/test/text.json", 'r').readlines()))
         
-        #remove urls
-        os.system(f'rm {database_dir}/test/urls.txt && touch {database_dir}/test/urls.txt') 
+
         
     
 
