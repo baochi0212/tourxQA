@@ -59,11 +59,10 @@ def main_IDSF(message):
     # -> intent
     intent = outputs.split('->')[0]
     intent = intent.replace('<', '').replace('>', '')
-    print(intent)
+    bot.reply_to(message, f"Your intent is {intent}")
     # -> slots
     slot_dict = {}
-
-    # slot_dict['intent'] = intent
+    slot_dict['intent'] = intent
     slot_outputs = [output.split(']')[0] for output in outputs.split('[')[1:]]
     for slot_output in slot_outputs:
         value, key = slot_output.split(':')
@@ -72,8 +71,9 @@ def main_IDSF(message):
         if key in slot_dict.keys():
             slot_dict[key] += f' {value}'
         else:
-            slot_dict[key] = value.replace('_', ' ')
-    
+            while '_' in value:
+                value = value.replace('_', ' ')
+            slot_dict[key] = value
     #msg 1 -> check the information + request infor:
     table = PrettyTable(list(slot_dict.keys()))
     table.add_row(list(slot_dict.values())) 
