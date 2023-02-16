@@ -5,6 +5,7 @@ from telegram.constants import ParseMode
 from prettytable import PrettyTable
 from underthesea import word_tokenize
 from glob import glob 
+import pickle
 
 
 BOT_TOKEN = os.environ['BOT_TOKEN']
@@ -96,7 +97,7 @@ def main_IDSF(message):
     #cost:
     print("COST", intent)
     if intent.strip() == 'airfare':
-        table = ''.join(open(f'{automation_dir}/results/prices.txt', 'r').readlines())
+        table = pickle.load(open(f'{automation_dir}/results/prices.pkl', 'rb')
         print(table)
         bot.send_message(message.chat.id, "The price info is: ....")
         bot.send_message(message.chat.id, f'<pre>{table}</pre>', parse_mode=ParseMode.HTML)

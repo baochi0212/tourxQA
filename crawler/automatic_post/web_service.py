@@ -16,6 +16,7 @@ import fuckit
 import time
 from prettytable import PrettyTable
 import argparse
+import pickle
 
 from pyvirtualdisplay import Display
 import time
@@ -83,7 +84,7 @@ def send_request(from_city='Hai Phong', to_city='Vinh', num_class=0, pass_dict={
     driver.find_elements(By.CSS_SELECTOR, "div[class='css-901oao css-bfa6kz r-jwli3a r-1sixt3s r-1o4mh9l r-b88u0q r-f0eezp r-q4m81j']")[1].click()
     
     #wait, scroll and take screenshot + scrape the price of each
-    os.system(f"rm {automation_dir}/results/prices.txt")
+    os.system(f"rm {automation_dir}/results/prices.pkl")
     print("FILLED THE FORM !!!")
     time.sleep(3)
     num_images = args.num_images
@@ -101,8 +102,8 @@ def send_request(from_city='Hai Phong', to_city='Vinh', num_class=0, pass_dict={
         brand = [b.text for b in driver.find_elements(By.CSS_SELECTOR, "[class='css-901oao r-1sixt3s r-ubezar r-majxgm r-135wba7 r-1fnot1l r-fdjqy7']")]
         price = [p.text for p in driver.find_elements(By.CSS_SELECTOR, "[class='css-901oao r-1sixt3s r-adyw6z r-b88u0q r-rjixqe r-fdjqy7']")]
         for b, p in zip(brand, price): table.add_row([b, p])
-        with open(f"{automation_dir}/results/prices.txt", 'w') as f:
-            f.write(str(table))
+        with open(f"{automation_dir}/results/prices.pkl", 'wb') as f:
+            pickle.dump(str(table), f)
         f.close()
 
 
