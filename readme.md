@@ -1,5 +1,5 @@
 # deep-learning
-tourist aid
+tourist aid 
 ## Description
 
 chat bot supporting tourism
@@ -11,7 +11,7 @@ chat bot supporting tourism
 
 * via Pip: 
 ```
-pip install -r requirements.txt
+pip install -q -r requirements.txt
 ```
 
 ### Executing program
